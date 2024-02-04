@@ -30,12 +30,13 @@ class BufferWidgetReceiver : AppWidgetProvider() {
 
 		val prefs = PreferenceManager(context)
 
-		Log.d("TESTET", String.format("%s", intent.hasExtra(WIDGET_PASTE_ACTION)));
 		if (intent.hasExtra(WIDGET_COPY_ACTION)) {
 			val text = intent.getStringExtra(WIDGET_COPY_ACTION)
+			Log.d("TESTET", String.format("copy %s", text));
 			copy(context, text ?: "")
 		}
 		if (intent.hasExtra(WIDGET_PASTE_ACTION)) {
+			Log.d("TESTET", String.format("%s", getFromClipboard(context)));
 			Toast.makeText(context, getFromClipboard(context), Toast.LENGTH_SHORT).show()
 		}
 	}
@@ -48,7 +49,7 @@ class BufferWidgetReceiver : AppWidgetProvider() {
 
 	private fun getFromClipboard(context: Context): String {
 		val manager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-		return manager.primaryClip?.getItemAt(0)?.text.toString()
+		return manager.text.toString()
 	}
 
 	override fun onUpdate(
@@ -57,9 +58,7 @@ class BufferWidgetReceiver : AppWidgetProvider() {
 		appWidgetIds: IntArray
 	) {
 
-		val intent = Intent(context, BufferWidgetReceiver::class.java).apply {
-			putExtra(WIDGET_PASTE_ACTION, "")
-		}
+		val intent = Intent(context, BufferWidgetReceiver::class.java).apply { putExtra(WIDGET_PASTE_ACTION, "") }
 		val views = RemoteViews(
 			context.packageName,
 			R.layout.layout_main_widget_screen
@@ -67,7 +66,7 @@ class BufferWidgetReceiver : AppWidgetProvider() {
 			setOnClickPendingIntent(
 				R.id.add, PendingIntent.getBroadcast(
 					context, 0,
-					intent,  FLAG_IMMUTABLE
+					intent, FLAG_UPDATE_CURRENT or FLAG_IMMUTABLE
 				)
 			)
 			setRemoteAdapter(R.id.listView, getRemoteList(context))
@@ -84,7 +83,7 @@ class BufferWidgetReceiver : AppWidgetProvider() {
 				RemoteViews(context.packageName, R.layout.item_list).apply {
 					setCharSequence(R.id.text, "setText", string)
 					setOnClickPendingIntent(
-						R.id.root,
+						R.id.copy,
 						PendingIntent.getBroadcast(
 							context,
 							0,
