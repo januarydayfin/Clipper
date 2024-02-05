@@ -1,6 +1,7 @@
 package com.krayapp.buffercompanion
 
 import android.app.PendingIntent
+import android.app.PendingIntent.FLAG_IMMUTABLE
 import android.app.PendingIntent.FLAG_MUTABLE
 import android.app.PendingIntent.FLAG_UPDATE_CURRENT
 import android.appwidget.AppWidgetManager
@@ -9,10 +10,8 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.util.Log
 import android.widget.RemoteViews
-import android.widget.RemoteViews.RemoteCollectionItems
 import android.widget.Toast
 
 class BufferWidgetReceiver : AppWidgetProvider() {
@@ -25,13 +24,12 @@ class BufferWidgetReceiver : AppWidgetProvider() {
     override fun onReceive(context: Context, intent: Intent) {
         super.onReceive(context, intent)
 
-        val prefs = PreferenceManager(context)
-
         if (intent.hasExtra(WIDGET_COPY_ACTION)) {
             val text = intent.getStringExtra(WIDGET_COPY_ACTION)
             copy(context, text ?: "")
         }
         if (intent.hasExtra(WIDGET_PASTE_ACTION)) {
+            Log.d("TESTET", String.format("%s", getFromClipboard(context)));
             Toast.makeText(context, getFromClipboard(context), Toast.LENGTH_SHORT).show()
         }
     }
@@ -43,12 +41,12 @@ class BufferWidgetReceiver : AppWidgetProvider() {
     }
 
     private fun getFromClipboard(context: Context): String {
-        try {
-            val manager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-            return manager.text.toString()
-        } catch (e: Exception) {
-            return ""
-        }
+
+        val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+
+        Log.d("TESTET", String.format("%s", clipboard.primaryClip != null));
+
+        return ""
     }
 
     override fun onUpdate(
@@ -67,6 +65,7 @@ class BufferWidgetReceiver : AppWidgetProvider() {
         }
 
         views.setPendingIntentTemplate(R.id.listView, intent)
+
         appWidgetManager.updateAppWidget(appWidgetIds, views)
     }
 
