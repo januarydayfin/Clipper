@@ -1,6 +1,5 @@
 package com.krayapp.buffercompanion
 
-import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.widget.RemoteViews

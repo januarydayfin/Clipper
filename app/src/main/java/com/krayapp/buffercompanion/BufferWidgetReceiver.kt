@@ -20,7 +20,6 @@ class BufferWidgetReceiver : AppWidgetProvider() {
         val WIDGET_PASTE_ACTION = "WIDGET_PASTE_ACTION"
     }
 
-
     override fun onReceive(context: Context, intent: Intent) {
         super.onReceive(context, intent)
 
@@ -28,10 +27,8 @@ class BufferWidgetReceiver : AppWidgetProvider() {
             val text = intent.getStringExtra(WIDGET_COPY_ACTION)
             copy(context, text ?: "")
         }
-        if (intent.hasExtra(WIDGET_PASTE_ACTION)) {
-            Log.d("TESTET", String.format("%s", getFromClipboard(context)));
-            Toast.makeText(context, getFromClipboard(context), Toast.LENGTH_SHORT).show()
-        }
+
+
     }
 
     private fun copy(context: Context, text: String) {
@@ -40,14 +37,6 @@ class BufferWidgetReceiver : AppWidgetProvider() {
         manager.setPrimaryClip(clip)
     }
 
-    private fun getFromClipboard(context: Context): String {
-
-        val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-
-        Log.d("TESTET", String.format("%s", clipboard.primaryClip != null));
-
-        return ""
-    }
 
     override fun onUpdate(
         context: Context,
