@@ -6,6 +6,8 @@ import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import android.widget.RemoteViewsService.RemoteViewsFactory
 import com.krayapp.buffercompanion.BufferWidgetReceiver.Companion.WIDGET_COPY_ACTION
+import com.krayapp.buffercompanion.data.RememberedRepo
+import com.krayapp.buffercompanion.data.room.StringEntity
 
 class BufferRemoteService : RemoteViewsService() {
     override fun onGetViewFactory(intent: Intent?): RemoteViewsFactory {
@@ -15,16 +17,18 @@ class BufferRemoteService : RemoteViewsService() {
 
 
 class ViewsFactory(private val context: Context, private val intent: Intent?) : RemoteViewsFactory {
-    val prefs = PreferenceManager(context)
-    private val dataList = ArrayList<String>()
+    private val repo = RememberedRepo(context)
+
+    private val dataList = ArrayList<StringEntity>()
+
     override fun onCreate() {
         dataList.clear()
-        dataList.addAll(prefs.getStrings())
+        repo.loadList { dataList.addAll(it) }
     }
 
     override fun onDataSetChanged() {
         dataList.clear()
-        dataList.addAll(prefs.getStrings())
+        repo.loadList { dataList.addAll(it) }
     }
 
     override fun onDestroy() {
@@ -37,11 +41,11 @@ class ViewsFactory(private val context: Context, private val intent: Intent?) : 
 
     override fun getViewAt(position: Int): RemoteViews {
         val remoteView = RemoteViews(context.packageName, R.layout.item_list).apply {
-            setCharSequence(R.id.text, "setText", dataList[position])
+            setCharSequence(R.id.text, "setText", dataList[position].text)
         }
 
         val intent = Intent(context, BufferWidgetReceiver::class.java).apply {
-            putExtra(WIDGET_COPY_ACTION, dataList[position])
+            putExtra(WIDGET_COPY_ACTION, dataList[position].text)
         }
 
         remoteView.setOnClickFillInIntent(R.id.itemRoot, intent)
