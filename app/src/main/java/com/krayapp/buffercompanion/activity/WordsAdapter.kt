@@ -1,10 +1,10 @@
-package com.krayapp.buffercompanion
+package com.krayapp.buffercompanion.activity
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.krayapp.buffercompanion.R
 import com.krayapp.buffercompanion.data.room.StringEntity
 import com.krayapp.buffercompanion.databinding.ItemListBinding
 

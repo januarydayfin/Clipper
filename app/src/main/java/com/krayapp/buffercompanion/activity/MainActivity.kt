@@ -1,6 +1,5 @@
-package com.krayapp.buffercompanion
+package com.krayapp.buffercompanion.activity
 
-import android.app.Activity
 import android.appwidget.AppWidgetManager
 import android.content.ClipboardManager
 import android.content.ComponentName
@@ -9,16 +8,15 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.KeyEvent
 import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.krayapp.buffercompanion.data.RememberedRepo
 import com.krayapp.buffercompanion.databinding.MainActivityBinding
+import com.krayapp.buffercompanion.widget.MainWidgetProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

@@ -1,12 +1,12 @@
-package com.krayapp.buffercompanion
+package com.krayapp.buffercompanion.widget
 
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import android.widget.RemoteViewsService.RemoteViewsFactory
-import com.krayapp.buffercompanion.MainWidgetProvider.Companion.WIDGET_COPY_ACTION
+import com.krayapp.buffercompanion.R
+import com.krayapp.buffercompanion.widget.MainWidgetProvider.Companion.WIDGET_COPY_ACTION
 import com.krayapp.buffercompanion.data.RememberedRepo
 import com.krayapp.buffercompanion.data.room.StringEntity
 

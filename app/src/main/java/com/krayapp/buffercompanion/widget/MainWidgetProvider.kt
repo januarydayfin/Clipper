@@ -1,4 +1,4 @@
-package com.krayapp.buffercompanion
+package com.krayapp.buffercompanion.widget
 
 import android.app.PendingIntent
 import android.app.PendingIntent.FLAG_MUTABLE
@@ -10,6 +10,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.widget.RemoteViews
+import com.krayapp.buffercompanion.R
 
 class MainWidgetProvider : AppWidgetProvider() {
     companion object {
