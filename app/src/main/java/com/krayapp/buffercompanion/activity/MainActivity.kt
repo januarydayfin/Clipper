@@ -57,7 +57,7 @@ class MainActivity : AppCompatActivity() {
         with(ItemTouchHelper(SwipeControl { removeString(it) })) {
             attachToRecyclerView(vb.recycler)
         }
-        repo.loadList { adapter.initData(ArrayList(it)) }
+        repo.loadList { runOnUiThread { adapter.initData(ArrayList(it)) } }
     }
 
     private fun removeString(text: String) {
