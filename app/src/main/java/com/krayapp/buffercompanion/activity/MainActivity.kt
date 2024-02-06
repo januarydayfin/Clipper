@@ -38,10 +38,12 @@ class MainActivity : AppCompatActivity() {
         vb.edit.setOnEditorActionListener(object : TextView.OnEditorActionListener {
             override fun onEditorAction(v: TextView?, actionId: Int, event: KeyEvent?): Boolean {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    val text = vb.edit.text.toString()
-                    repo.addText(text)
-                    addStringToAdapter(text)
-                    vb.edit.text.clear()
+                    val text = vb.edit.text.toString().trim()
+                    if (text.isNotEmpty()) {
+                        repo.addText(text)
+                        addStringToAdapter(text)
+                        vb.edit.text.clear()
+                    }
                     return true
                 }
                 return false
