@@ -1,5 +1,6 @@
 package com.krayapp.buffercompanion
 
+import android.app.Activity
 import android.appwidget.AppWidgetManager
 import android.content.ClipboardManager
 import android.content.ComponentName
@@ -9,7 +10,12 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import android.view.KeyEvent
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.krayapp.buffercompanion.data.RememberedRepo
 import com.krayapp.buffercompanion.databinding.MainActivityBinding
@@ -31,6 +37,18 @@ class MainActivity : AppCompatActivity() {
 
         vb.paste.setOnClickListener { pasteFromClip() }
         vb.update.setOnClickListener { updateWidget() }
+        vb.edit.setOnEditorActionListener(object : TextView.OnEditorActionListener {
+            override fun onEditorAction(v: TextView?, actionId: Int, event: KeyEvent?): Boolean {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    val text = vb.edit.text.toString()
+                    repo.addText(text)
+                    addStringToAdapter(text)
+                    vb.edit.text.clear()
+                    return true
+                }
+                return false
+            }
+        })
     }
 
     private fun initAdapter() {
@@ -38,13 +56,15 @@ class MainActivity : AppCompatActivity() {
         adapter = WordsAdapter { removeString(it) }
         vb.recycler.adapter = adapter
 
+        with(ItemTouchHelper(SwipeControl { removeString(it) })) {
+            attachToRecyclerView(vb.recycler)
+        }
         repo.loadList { adapter.initData(ArrayList(it)) }
     }
 
     private fun removeString(text: String) {
         CoroutineScope(Dispatchers.IO).launch {
             repo.remove(text)
-
         }
 
         runOnUiThread {
@@ -65,6 +85,7 @@ class MainActivity : AppCompatActivity() {
             action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
             putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
         }
+
 
         Handler(Looper.myLooper()!!).postDelayed({
             sendBroadcast(intent)

@@ -1,25 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:tools="http://schemas.android.com/tools"
-	android:layout_width="match_parent"
-	android:layout_height="match_parent"
-	android:orientation="vertical">
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:padding="@dimen/margin_from_screen"
+    android:layout_height="match_parent"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:orientation="vertical">
 
-	<Button
-		android:id="@+id/paste"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:text="past from clip" />
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_from_screen"
+        android:text="Swipe left to remove"
+        android:textAlignment="center"
+        app:layout_constraintTop_toTopOf="parent" />
 
-	<Button
-		android:id="@+id/update"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:text="update widget" />
 
-	<androidx.recyclerview.widget.RecyclerView
-		android:id="@+id/recycler"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		tools:listitem="@layout/item_list"/>
-</LinearLayout>
+    <com.krayapp.buffercompanion.shadow.ShadowLayout
+        android:layout_width="match_parent"
+        android:layout_margin="@dimen/margin_from_screen"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/linearLayout"
+        app:layout_constraintTop_toBottomOf="@id/title"
+        app:layout_constraintVertical_bias="0">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:listitem="@layout/item_list" />
+    </com.krayapp.buffercompanion.shadow.ShadowLayout>
+
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical | end"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@id/edit">
+
+        <Button
+            android:id="@+id/update"
+            style="@style/SubmitButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Refresh widger" />
+
+        <Button
+            android:id="@+id/paste"
+            style="@style/SubmitButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:text="Paste from buffer" />
+
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/edit"
+        style="@style/EditTextStyle"
+        android:maxLength="40"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter for input"
+        app:layout_constraintBottom_toBottomOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

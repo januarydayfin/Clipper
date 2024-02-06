@@ -1,8 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<color name="pastel_purple">#FFFFD9B3</color>
-	<color name="darker_pastel_purple">#FFFF7046</color>
-	<color name="pastel_teal">#FFFFA6E4</color>
-	<color name="black">#FF000000</color>
-	<color name="white">#FFFFFFFF</color>
+    <color name="colorPrimary">@color/azure_primary</color>
+    <color name="colorPrimaryDark">#205CDB</color>
+    <color name="colorPrimaryTransparent">#441F79E5</color>
+
+    <color name="colorAccent">@color/azure_primary</color>
+
+    <color name="azure_primary">#1F79E5</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <color name="blackTransparent">#48ffffff</color>
+    <color name="blackTransparentNumbers">#88F4F4F4</color>
+    <color name="chat_input_background_color">#E9E9E9</color>
+    <color name="zxing_viewfinder_laser">@color/colorCritical</color>
+
+    <color name="azure_disabled">#661F79E5</color>
+    <color name="greyish">#aaa8a8</color>
+
+    <color name="dialogs_background">#F4F4F4</color>
+    <color name="colorCard">#ffffff</color>
+    <color name="colorActivity">#F5F7FA</color>
+    <color name="colorActivityTransparent">#00F5F7FA</color>
+    <color name="newGuardEventBg">#f0f0f0</color>
+    <color name="colorTextPrimary">#666666</color>
+    <color name="tint_inactive">#ADADAD</color>
+    <color name="colorTextSecondary">#8C000000</color>
+    <color name="colorTextHint">#777777</color>
+    <color name="colorTextGrayHint">#B4B4B4</color>
+    <color name="colorTextInactive">#BDBDBD</color>
+    <color name="colorTransparent">#00000000</color>
+    <color name="color_red">#F36161</color>
+    <color name="danger_color">#FF5A4F</color>
+    <color name="yellow40">#FFB240</color>
+    <color name="colorGreenOld">#41E5C6</color>
+    <color name="green40">#009262</color>
+    <color name="grayBlue">#ABBED1</color>
+    <color name="grey40">#717171</color>
+    <color name="gray80">#212121</color>
+    <color name="gray50">#E9E9E9</color>
+    <color name="gray200">#C4C8CC</color>
+    <color name="gray450">#7F8285</color>
+    <color name="gray750">#3C3C3C</color>
+    <color name="gray900">#353535</color>
+    <color name="lightGray">#89939E</color>
+    <color name="switchInactiveColor">#B4B4B4</color>
+    <color name="colorSeparator">#D4D4D4</color>
+    <color name="colorCritical2">#FF7590</color>
+    <color name="chartLimitMax">@color/colorCritical2</color>
+    <color name="chartLimitMin">#92BFF5</color>
+    <color name="colorCriticalLight">#FF8266</color>
+    <color name="colorCritical">#F36161</color>
+    <color name="colorCriticalDark">#DC4D61</color>
+    <color name="colorWarning">#FF9D66</color>
+    <color name="transparent">#00000000</color>
+    <color name="transparent_white">#aaffffff</color>
+    <color name="cold_light">#9fc9ff</color>
+    <color name="warm_color">#ff9d66</color>
+
+    <color name="warm_color_background">#FFC85E</color>
+    <color name="warm_color_light">#FFF0E4</color>
+    <color name="cold_color_light">#F3FBFF</color>
+    <color name="shadow_highlight_color">#9CC7FF</color>
+    <color name="azure100">#559DF2</color>
+    <color name="low_temperature">#38AEFC</color>
+    <color name="azure_primary_dark">#103D73</color>
+    <color name="shadow_color">#99d0e0f0</color>
+    <color name="shadow_color2">#77d0e0f0</color>
+    <color name="shadow_color3">#ff7F8285</color>
+    <color name="page_segment_inactive">#7CC4C8CC</color>
+    <color name="chat_date_background">#5C000000</color>
+    <color name="promo_block_color">#E8EEF2</color>
+    <array name="color_seeds">
+        <item>#FF00FF</item>
+        <item>#FF007F</item>
+        <item>#FF0000</item>
+        <item>#FF8000</item>
+        <item>#FFFF00</item>
+        <item>#80FF00</item>
+        <item>#00FF00</item>
+        <item>#00FF80</item>
+        <item>#00FFFF</item>
+        <item>#0080FF</item>
+        <item>#0000FF</item>
+        <item>#7F00FF</item>
+    </array>
+
 </resources>

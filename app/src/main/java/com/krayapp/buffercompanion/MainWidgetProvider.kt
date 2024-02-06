@@ -11,6 +11,7 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import android.widget.RemoteViews
+import android.widget.Toast
 
 class MainWidgetProvider : AppWidgetProvider() {
     companion object {
@@ -39,6 +40,7 @@ class MainWidgetProvider : AppWidgetProvider() {
         appWidgetManager: AppWidgetManager,
         appWidgetIds: IntArray
     ) {
+        Toast.makeText(context, "widget refresh...", Toast.LENGTH_SHORT).show()
         val serviceIntent = Intent(context, BufferRemoteService::class.java)
 
         val views = RemoteViews(context.packageName, R.layout.layout_main_widget_screen).apply {

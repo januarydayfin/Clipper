@@ -1,25 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="match_parent"
-	android:layout_height="wrap_content"
-	android:id="@+id/itemRoot"
-	android:orientation="horizontal"
-	android:padding="10dp">
+    android:id="@+id/itemRoot"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingVertical="20dp">
 
-	<TextView
-		android:id="@+id/text"
-		android:layout_width="0dp"
-		android:layout_height="wrap_content"
-		android:layout_weight="0.8"
-		android:textAlignment="center"
-		android:maxLength="40"
-		android:textColor="@color/black" />
-
-	<ImageView
-		android:id="@+id/delete"
-		android:layout_width="0dp"
-		android:layout_height="20dp"
-		android:visibility="gone"
-		android:layout_weight="0.2"
-		android:src="@drawable/ic_recycle_empty" />
+    <TextView
+        android:id="@+id/text"
+        android:layout_width="0dp"
+        android:ellipsize="marquee"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.8"
+        android:maxLength="40"
+        android:textAlignment="center"
+        android:textColor="@color/black" />
 </LinearLayout>

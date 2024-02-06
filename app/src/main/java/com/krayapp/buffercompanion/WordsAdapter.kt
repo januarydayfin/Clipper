@@ -13,13 +13,15 @@ class WordsAdapter(private val onDelete: (String) -> Unit) :
     private val data = ArrayList<StringEntity>()
 
     fun addWord(text: String) {
-        data.add(StringEntity(text))
-        notifyItemInserted(data.size)
+        if (!data.contains(StringEntity(text))) {
+            data.add(StringEntity(text))
+            notifyItemInserted(data.size)
+        }
     }
 
     fun deleteWord(text: String) {
         var index = -1
-        for (i in 0..data.size) {
+        for (i in 0 until data.size) {
             if (text == data[i].text) {
                 index = i
                 break
@@ -27,7 +29,7 @@ class WordsAdapter(private val onDelete: (String) -> Unit) :
         }
         if (index != -1) {
             data.removeAt(index)
-            notifyItemRemoved(index)
+            notifyDataSetChanged()
         }
     }
 
@@ -56,7 +58,9 @@ class WordViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     private val vb = ItemListBinding.bind(view)
     fun onBind(text: String, onDelete: (String) -> Unit) {
         vb.text.text = text
-        vb.delete.visibility = View.VISIBLE
-        vb.delete.setOnClickListener { onDelete(text) }
+    }
+
+    fun getText(): String {
+        return vb.text.text.toString()
     }
 }

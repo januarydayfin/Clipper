@@ -7,13 +7,13 @@
 
 	<FrameLayout
 		android:layout_width="match_parent"
-		android:background="#E5E5E5"
+		android:background="@color/azure_primary"
 		android:layout_height="wrap_content">
 		<TextView
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:paddingVertical="5dp"
-			android:textColor="@color/black"
+			android:textColor="@color/white"
 			android:clickable="true"
 			android:focusable="true"
 			android:text="Quick Buffer"
