@@ -1,7 +1,6 @@
 package com.krayapp.buffercompanion
 
 import android.app.PendingIntent
-import android.app.PendingIntent.FLAG_IMMUTABLE
 import android.app.PendingIntent.FLAG_MUTABLE
 import android.app.PendingIntent.FLAG_UPDATE_CURRENT
 import android.appwidget.AppWidgetManager
@@ -12,9 +11,8 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import android.widget.RemoteViews
-import android.widget.Toast
 
-class BufferWidgetReceiver : AppWidgetProvider() {
+class MainWidgetProvider : AppWidgetProvider() {
     companion object {
         val WIDGET_COPY_ACTION = "WIDGET_COPY_ACTION"
         val WIDGET_PASTE_ACTION = "WIDGET_PASTE_ACTION"
@@ -27,8 +25,6 @@ class BufferWidgetReceiver : AppWidgetProvider() {
             val text = intent.getStringExtra(WIDGET_COPY_ACTION)
             copy(context, text ?: "")
         }
-
-
     }
 
     private fun copy(context: Context, text: String) {
@@ -49,12 +45,13 @@ class BufferWidgetReceiver : AppWidgetProvider() {
             setRemoteAdapter(R.id.listView, serviceIntent)
         }
 
-        val intent = Intent(context, BufferWidgetReceiver::class.java).run {
+        val intent = Intent(context, MainWidgetProvider::class.java).run {
             PendingIntent.getBroadcast(context, 0, this, FLAG_UPDATE_CURRENT or FLAG_MUTABLE)
         }
 
         views.setPendingIntentTemplate(R.id.listView, intent)
 
+        appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.listView)
         appWidgetManager.updateAppWidget(appWidgetIds, views)
     }
 

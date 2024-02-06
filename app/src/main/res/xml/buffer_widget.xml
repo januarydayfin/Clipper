@@ -4,5 +4,6 @@
 	android1:initialLayout="@layout/layout_main_widget_screen"
 	android1:previewLayout="@layout/layout_main_widget_screen"
 	android1:targetCellHeight="8"
+	android1:updatePeriodMillis="5000"
 	android1:resizeMode="vertical|horizontal"
 	android1:targetCellWidth="8" />

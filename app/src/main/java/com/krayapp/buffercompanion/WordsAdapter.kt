@@ -1,5 +1,6 @@
 package com.krayapp.buffercompanion
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,8 +12,26 @@ class WordsAdapter(private val onDelete: (String) -> Unit) :
     RecyclerView.Adapter<WordViewHolder>() {
     private val data = ArrayList<StringEntity>()
 
-    fun setData(data: ArrayList<StringEntity>) {
-        this.data.clear()
+    fun addWord(text: String) {
+        data.add(StringEntity(text))
+        notifyItemInserted(data.size)
+    }
+
+    fun deleteWord(text: String) {
+        var index = -1
+        for (i in 0..data.size) {
+            if (text == data[i].text) {
+                index = i
+                break
+            }
+        }
+        if (index != -1) {
+            data.removeAt(index)
+            notifyItemRemoved(index)
+        }
+    }
+
+    fun initData(data: ArrayList<StringEntity>) {
         this.data.addAll(data)
         notifyDataSetChanged()
     }
@@ -37,6 +56,7 @@ class WordViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     private val vb = ItemListBinding.bind(view)
     fun onBind(text: String, onDelete: (String) -> Unit) {
         vb.text.text = text
+        vb.delete.visibility = View.VISIBLE
         vb.delete.setOnClickListener { onDelete(text) }
     }
 }

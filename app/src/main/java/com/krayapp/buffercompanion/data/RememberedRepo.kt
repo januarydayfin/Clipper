@@ -1,6 +1,7 @@
 package com.krayapp.buffercompanion.data
 
 import android.content.Context
+import android.util.Log
 import androidx.room.Room
 import com.krayapp.buffercompanion.data.room.MainDB
 import com.krayapp.buffercompanion.data.room.StringEntity

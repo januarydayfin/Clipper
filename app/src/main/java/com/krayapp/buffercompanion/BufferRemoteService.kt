@@ -2,10 +2,11 @@ package com.krayapp.buffercompanion
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import android.widget.RemoteViewsService.RemoteViewsFactory
-import com.krayapp.buffercompanion.BufferWidgetReceiver.Companion.WIDGET_COPY_ACTION
+import com.krayapp.buffercompanion.MainWidgetProvider.Companion.WIDGET_COPY_ACTION
 import com.krayapp.buffercompanion.data.RememberedRepo
 import com.krayapp.buffercompanion.data.room.StringEntity
 
@@ -15,20 +16,20 @@ class BufferRemoteService : RemoteViewsService() {
     }
 }
 
-
 class ViewsFactory(private val context: Context, private val intent: Intent?) : RemoteViewsFactory {
     private val repo = RememberedRepo(context)
 
     private val dataList = ArrayList<StringEntity>()
 
     override fun onCreate() {
-        dataList.clear()
-        repo.loadList { dataList.addAll(it) }
+
     }
 
     override fun onDataSetChanged() {
-        dataList.clear()
-        repo.loadList { dataList.addAll(it) }
+        repo.loadList {
+            dataList.clear()
+            dataList.addAll(it)
+        }
     }
 
     override fun onDestroy() {
@@ -41,11 +42,15 @@ class ViewsFactory(private val context: Context, private val intent: Intent?) : 
 
     override fun getViewAt(position: Int): RemoteViews {
         val remoteView = RemoteViews(context.packageName, R.layout.item_list).apply {
-            setCharSequence(R.id.text, "setText", dataList[position].text)
+            setCharSequence(
+                R.id.text,
+                "setText",
+                if (dataList.size > 0) dataList[position].text else ""
+            )
         }
 
-        val intent = Intent(context, BufferWidgetReceiver::class.java).apply {
-            putExtra(WIDGET_COPY_ACTION, dataList[position].text)
+        val intent = Intent(context, MainWidgetProvider::class.java).apply {
+            putExtra(WIDGET_COPY_ACTION, if (dataList.size > 0) dataList[position].text else "")
         }
 
         remoteView.setOnClickFillInIntent(R.id.itemRoot, intent)
