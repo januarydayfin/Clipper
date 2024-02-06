@@ -16,7 +16,7 @@
 			android:textColor="@color/white"
 			android:clickable="true"
 			android:focusable="true"
-			android:text="Quick Buffer"
+			android:text="@string/app_name"
 			android:textAlignment="center" />
 	</FrameLayout>
 
