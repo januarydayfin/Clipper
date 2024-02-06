@@ -12,7 +12,6 @@
         android:ellipsize="marquee"
         android:layout_height="wrap_content"
         android:layout_weight="0.8"
-        android:maxLength="40"
         android:textAlignment="center"
         android:textColor="@color/black" />
 </LinearLayout>

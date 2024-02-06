@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <appwidget-provider
-	xmlns:android1="http://schemas.android.com/apk/res/android"
-	android1:initialLayout="@layout/layout_main_widget_screen"
-	android1:previewLayout="@layout/layout_main_widget_screen"
-	android1:targetCellHeight="8"
-	android1:resizeMode="vertical|horizontal"
-	android1:targetCellWidth="8" />
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:initialLayout="@layout/layout_main_widget_screen"
+	android:minWidth="80dp"
+	android:minHeight="80dp"
+	android:previewLayout="@layout/preview_layout"
+	android:targetCellHeight="8"
+	android:resizeMode="vertical|horizontal"
+	android:targetCellWidth="8" />

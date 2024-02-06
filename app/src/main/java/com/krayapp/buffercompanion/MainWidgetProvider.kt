@@ -9,18 +9,16 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import android.widget.RemoteViews
-import android.widget.Toast
 
 class MainWidgetProvider : AppWidgetProvider() {
     companion object {
-        val WIDGET_COPY_ACTION = "WIDGET_COPY_ACTION"
-        val WIDGET_PASTE_ACTION = "WIDGET_PASTE_ACTION"
+        val WIDGET_COPY_ACTION = "com.krayapp.buffercompanion.WIDGET_COPY_ACTION"
     }
 
     override fun onReceive(context: Context, intent: Intent) {
         super.onReceive(context, intent)
+
 
         if (intent.hasExtra(WIDGET_COPY_ACTION)) {
             val text = intent.getStringExtra(WIDGET_COPY_ACTION)
@@ -40,7 +38,6 @@ class MainWidgetProvider : AppWidgetProvider() {
         appWidgetManager: AppWidgetManager,
         appWidgetIds: IntArray
     ) {
-        Toast.makeText(context, "widget refresh...", Toast.LENGTH_SHORT).show()
         val serviceIntent = Intent(context, BufferRemoteService::class.java)
 
         val views = RemoteViews(context.packageName, R.layout.layout_main_widget_screen).apply {

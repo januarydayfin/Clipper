@@ -69,15 +69,17 @@ class MainActivity : AppCompatActivity() {
 
         runOnUiThread {
             adapter.deleteWord(text)
-            updateWidget()
         }
     }
 
     private fun addStringToAdapter(text: String) {
         adapter.addWord(text)
-        updateWidget()
     }
 
+    override fun onStop() {
+        updateWidget()
+        super.onStop()
+    }
     private fun updateWidget() {
         val ids: IntArray = AppWidgetManager.getInstance(application)
             .getAppWidgetIds(ComponentName(application, MainWidgetProvider::class.java))
@@ -85,12 +87,12 @@ class MainActivity : AppCompatActivity() {
             action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
             putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
         }
+        sendBroadcast(intent)
 
 
         Handler(Looper.myLooper()!!).postDelayed({
             sendBroadcast(intent)
-
-        }, 1000)
+        }, 3000)
     }
 
     private fun pasteFromClip() {

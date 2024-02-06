@@ -42,15 +42,28 @@ class ViewsFactory(private val context: Context, private val intent: Intent?) : 
 
     override fun getViewAt(position: Int): RemoteViews {
         val remoteView = RemoteViews(context.packageName, R.layout.item_list).apply {
-            setCharSequence(
-                R.id.text,
-                "setText",
-                if (dataList.size > 0) dataList[position].text else ""
-            )
+            try {
+                setCharSequence(
+                    R.id.text,
+                    "setText",
+                    dataList[position].text
+                )
+            } catch (e: Exception) {
+                setCharSequence(
+                    R.id.text,
+                    "setText",
+                    ""
+                )
+            }
+
         }
 
         val intent = Intent(context, MainWidgetProvider::class.java).apply {
-            putExtra(WIDGET_COPY_ACTION, if (dataList.size > 0) dataList[position].text else "")
+            try {
+                putExtra(WIDGET_COPY_ACTION, dataList[position].text)
+            } catch (e: Exception) {
+                putExtra(WIDGET_COPY_ACTION, "")
+            }
         }
 
         remoteView.setOnClickFillInIntent(R.id.itemRoot, intent)

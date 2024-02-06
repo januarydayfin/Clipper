@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/azure_primary">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            android:paddingVertical="5dp"
+            android:text="Quick Buffer"
+            android:textAlignment="center"
+            android:textColor="@color/white" />
+    </FrameLayout>
+
+
+    <TextView
+        android:paddingVertical="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ellipsize="marquee"
+        android:text="Скопированное поле"
+        android:textAlignment="center"
+        android:textColor="@color/black" />
+
+    <TextView
+        android:paddingVertical="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ellipsize="marquee"
+        android:text="Скопированное поле"
+        android:textAlignment="center"
+        android:textColor="@color/black" />
+
+    <TextView
+        android:paddingVertical="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ellipsize="marquee"
+        android:text="Скопированное поле"
+        android:textAlignment="center"
+        android:textColor="@color/black" />
+</LinearLayout>
