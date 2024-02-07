@@ -2,6 +2,7 @@ package com.krayapp.buffercompanion.widget
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import android.widget.RemoteViewsService.RemoteViewsFactory
@@ -45,48 +46,54 @@ class ViewsFactory(private val context: Context, private val intent: Intent?) : 
     }
 
     override fun getViewAt(position: Int): RemoteViews {
-        if (dataList[position] == StringEntity(context.packageName)) {
-            val appView = RemoteViews(context.packageName, R.layout.widget_header)
+        if (position < dataList.size) {
+            if (dataList[position] == StringEntity(context.packageName)) {
+                val appView = RemoteViews(context.packageName, R.layout.widget_header)
 
-            val intent = Intent(context, MainActivity::class.java).apply {
-                action = OPEN_ACTIVITY_ACTION
-            }
+                val intent = Intent(context, MainActivity::class.java).apply {
+                    action = OPEN_ACTIVITY_ACTION
+                }
 
-            appView.setOnClickFillInIntent(
-                R.id.openApp,
-                intent
-            )
-            return appView
-        }
-        val remoteView = RemoteViews(context.packageName, R.layout.item_list_widget).apply {
-            try {
-                setCharSequence(
-                    R.id.text,
-                    "setText",
-                    dataList[position].text
+                appView.setOnClickFillInIntent(
+                    R.id.openApp,
+                    intent
                 )
-            } catch (e: Exception) {
-                setCharSequence(
-                    R.id.text,
-                    "setText",
-                    ""
-                )
+                return appView
             }
+            val remoteView = RemoteViews(context.packageName, R.layout.item_list_widget).apply {
+                try {
+                    setCharSequence(
+                        R.id.text,
+                        "setText",
+                        dataList[position].text
+                    )
+                } catch (e: Exception) {
+                    Log.d("TESTET", String.format("%s", e.localizedMessage));
+
+                    setCharSequence(
+                        R.id.text,
+                        "setText",
+                        ""
+                    )
+                }
+
+            }
+
+            val intent = Intent(context, MainWidgetProvider::class.java).apply {
+                action = WIDGET_COPY_ACTION
+                try {
+                    putExtra(WIDGET_COPY_ACTION, dataList[position].text)
+                } catch (e: Exception) {
+                    putExtra(WIDGET_COPY_ACTION, "")
+                }
+            }
+
+            remoteView.setOnClickFillInIntent(R.id.itemRoot, intent)
+            return remoteView
 
         }
 
-        val intent = Intent(context, MainWidgetProvider::class.java).apply {
-            action = WIDGET_COPY_ACTION
-            try {
-                putExtra(WIDGET_COPY_ACTION, dataList[position].text)
-            } catch (e: Exception) {
-                putExtra(WIDGET_COPY_ACTION, "")
-            }
-        }
-
-        remoteView.setOnClickFillInIntent(R.id.itemRoot, intent)
-
-        return remoteView
+        return RemoteViews(context.packageName, R.layout.item_list_widget)
     }
 
     override fun getLoadingView(): RemoteViews {
