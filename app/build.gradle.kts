@@ -14,8 +14,8 @@ android {
 		applicationId = "com.krayapp.buffercompanion"
 		minSdk = 28
 		targetSdk = 34
-		versionCode = 3
-		versionName = "0.3a"
+		versionCode = 5
+		versionName = "0.5a"
 
 		testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 	}
