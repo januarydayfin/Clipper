@@ -11,6 +11,8 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.widget.RemoteViews
 import com.krayapp.buffercompanion.R
@@ -63,7 +65,13 @@ class MainWidgetProvider : AppWidgetProvider() {
         }
 
 
-        appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.listView)
+        Handler(Looper.myLooper()!!).postDelayed({
+            appWidgetManager.notifyAppWidgetViewDataChanged(
+                appWidgetIds,
+                R.id.listView
+            )
+        }, 3000)
+
         appWidgetManager.updateAppWidget(appWidgetIds, views)
     }
 
