@@ -3,17 +3,18 @@
     android:id="@+id/itemRoot"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
     android:background="@color/transparent"
+    android:orientation="horizontal"
     android:paddingVertical="20dp">
 
     <TextView
         android:id="@+id/text"
-        android:background="@color/transparent"
-        android:layout_width="0dp"
-        android:ellipsize="marquee"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="0.8"
+        android:layout_marginHorizontal="50dp"
+        android:background="@color/transparent"
+        android:ellipsize="end"
+        android:maxLines="2"
         android:textAlignment="center"
         android:textColor="@color/black" />
 </LinearLayout>

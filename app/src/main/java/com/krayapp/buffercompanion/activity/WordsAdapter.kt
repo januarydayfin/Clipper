@@ -6,10 +6,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.krayapp.buffercompanion.R
 import com.krayapp.buffercompanion.data.room.StringEntity
-import com.krayapp.buffercompanion.databinding.ItemListBinding
 import com.krayapp.buffercompanion.databinding.MainScreenAdapterItemBinding
 
-class WordsAdapter(private val onDelete: (String) -> Unit) :
+class WordsAdapter(private val onClicked: (String) -> Unit) :
     RecyclerView.Adapter<WordViewHolder>() {
     private val data = ArrayList<StringEntity>()
 
@@ -51,14 +50,17 @@ class WordsAdapter(private val onDelete: (String) -> Unit) :
 
     override fun onBindViewHolder(holder: WordViewHolder, position: Int) {
         if (position < data.size)
-            holder.onBind(data[position].text, onDelete)
+            holder.onBind(data[position].text, onClicked)
     }
 }
 
 class WordViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     private val vb = MainScreenAdapterItemBinding.bind(view)
-    fun onBind(text: String, onDelete: (String) -> Unit) {
+    private var originText = ""
+    fun onBind(text: String, onClicked: (String) -> Unit) {
+        originText = text
         vb.text.text = text
+        vb.root.setOnClickListener { onClicked(originText) }
     }
 
     fun getText(): String {

@@ -58,7 +58,7 @@ class ViewsFactory(private val context: Context, private val intent: Intent?) : 
             )
             return appView
         }
-        val remoteView = RemoteViews(context.packageName, R.layout.item_list).apply {
+        val remoteView = RemoteViews(context.packageName, R.layout.item_list_widget).apply {
             try {
                 setCharSequence(
                     R.id.text,

@@ -1,16 +1,19 @@
 package com.krayapp.buffercompanion.activity
 
 import android.appwidget.AppWidgetManager
+import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.KeyEvent
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -53,13 +56,26 @@ class MainActivity : AppCompatActivity() {
 
     private fun initAdapter() {
         vb.recycler.layoutManager = LinearLayoutManager(this)
-        adapter = WordsAdapter { removeString(it) }
+        adapter = WordsAdapter { copy(it) }
         vb.recycler.adapter = adapter
 
         with(ItemTouchHelper(SwipeControl { removeString(it) })) {
             attachToRecyclerView(vb.recycler)
         }
         repo.loadList { runOnUiThread { adapter.initData(ArrayList(it)) } }
+    }
+
+    private fun copy(text: String) {
+        val manager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clip = ClipData.newPlainText("label", text)
+        manager.setPrimaryClip(clip)
+
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2)
+            Toast.makeText(
+            this,
+            "Скопировано",
+            Toast.LENGTH_SHORT
+        ).show()
     }
 
     private fun removeString(text: String) {
