@@ -2,10 +2,13 @@ package com.krayapp.buffercompanion.widget
 
 import android.content.Context
 import android.content.Intent
-import android.util.Log
+import android.os.Bundle
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import android.widget.RemoteViewsService.RemoteViewsFactory
+import com.google.firebase.Firebase
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.analytics
 import com.krayapp.buffercompanion.R
 import com.krayapp.buffercompanion.activity.MainActivity
 import com.krayapp.buffercompanion.data.RememberedRepo
@@ -14,6 +17,7 @@ import com.krayapp.buffercompanion.widget.MainWidgetProvider.Companion.OPEN_ACTI
 import com.krayapp.buffercompanion.widget.MainWidgetProvider.Companion.WIDGET_COPY_ACTION
 
 class BufferRemoteService : RemoteViewsService() {
+
     override fun onGetViewFactory(intent: Intent?): RemoteViewsFactory {
         return ViewsFactory(applicationContext, intent)
     }
@@ -22,11 +26,14 @@ class BufferRemoteService : RemoteViewsService() {
 class ViewsFactory(private val context: Context, private val intent: Intent?) : RemoteViewsFactory {
     private val repo = RememberedRepo(context)
 
+    private val WIDGET_ADAPTER_FAIL = "WIDGET_ADAPTER_FAIL"
+    private val WIDGET_INTENT_FAIL = "WIDGET_INTENT_FAIL"
+    private val analytic: FirebaseAnalytics = Firebase.analytics
+
     private val dataList =
         ArrayList<StringEntity>().apply { add(StringEntity(context.packageName)) }
 
     override fun onCreate() {
-
     }
 
     override fun onDataSetChanged() {
@@ -68,7 +75,9 @@ class ViewsFactory(private val context: Context, private val intent: Intent?) : 
                         dataList[position].text
                     )
                 } catch (e: Exception) {
-                    Log.d("TESTET", String.format("%s", e.localizedMessage));
+                    analytic.logEvent(
+                        FirebaseAnalytics.Event.SELECT_ITEM,
+                        Bundle().apply { putString(WIDGET_ADAPTER_FAIL, e.localizedMessage) })
 
                     setCharSequence(
                         R.id.text,
@@ -84,6 +93,9 @@ class ViewsFactory(private val context: Context, private val intent: Intent?) : 
                 try {
                     putExtra(WIDGET_COPY_ACTION, dataList[position].text)
                 } catch (e: Exception) {
+                    analytic.logEvent(
+                        FirebaseAnalytics.Event.SELECT_ITEM,
+                        Bundle().apply { putString(WIDGET_INTENT_FAIL, e.localizedMessage) })
                     putExtra(WIDGET_COPY_ACTION, "")
                 }
             }
