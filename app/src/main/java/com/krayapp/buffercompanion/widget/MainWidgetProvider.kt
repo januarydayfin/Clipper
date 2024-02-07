@@ -2,28 +2,35 @@ package com.krayapp.buffercompanion.widget
 
 import android.app.PendingIntent
 import android.app.PendingIntent.FLAG_MUTABLE
+import android.app.PendingIntent.FLAG_NO_CREATE
 import android.app.PendingIntent.FLAG_UPDATE_CURRENT
+import android.app.PendingIntent.getActivity
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.widget.RemoteViews
 import com.krayapp.buffercompanion.R
+import com.krayapp.buffercompanion.activity.MainActivity
 
 class MainWidgetProvider : AppWidgetProvider() {
     companion object {
         val WIDGET_COPY_ACTION = "com.krayapp.buffercompanion.WIDGET_COPY_ACTION"
+        val OPEN_ACTIVITY_ACTION = "com.krayapp.buffercompanion.OPEN_ACTIVITY"
     }
 
     override fun onReceive(context: Context, intent: Intent) {
         super.onReceive(context, intent)
 
-
-        if (intent.hasExtra(WIDGET_COPY_ACTION)) {
-            val text = intent.getStringExtra(WIDGET_COPY_ACTION)
-            copy(context, text ?: "")
+        when (intent.action) {
+            WIDGET_COPY_ACTION -> {
+                val text = intent.getStringExtra(WIDGET_COPY_ACTION)
+                copy(context, text ?: "")
+            }
+            OPEN_ACTIVITY_ACTION -> context.startActivity(context.packageManager.getLaunchIntentForPackage(context.packageName))
         }
     }
 
@@ -43,13 +50,18 @@ class MainWidgetProvider : AppWidgetProvider() {
 
         val views = RemoteViews(context.packageName, R.layout.layout_main_widget_screen).apply {
             setRemoteAdapter(R.id.listView, serviceIntent)
+            setPendingIntentTemplate(
+                R.id.listView,
+                Intent(context, MainWidgetProvider::class.java).run {
+                    PendingIntent.getBroadcast(
+                        context,
+                        0,
+                        this,
+                        FLAG_UPDATE_CURRENT or FLAG_MUTABLE
+                    )
+                })
         }
 
-        val intent = Intent(context, MainWidgetProvider::class.java).run {
-            PendingIntent.getBroadcast(context, 0, this, FLAG_UPDATE_CURRENT or FLAG_MUTABLE)
-        }
-
-        views.setPendingIntentTemplate(R.id.listView, intent)
 
         appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.listView)
         appWidgetManager.updateAppWidget(appWidgetIds, views)

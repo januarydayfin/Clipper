@@ -1,3 +1,4 @@
 <resources>
 	<string name="app_name">Clipper</string>
+	<string name="open_manager">Open manager</string>
 </resources>
