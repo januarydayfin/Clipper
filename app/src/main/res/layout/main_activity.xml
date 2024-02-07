@@ -5,8 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorActivity"
-    android:clipChildren="false"
-    android:clipToPadding="false"
     android:orientation="vertical"
     android:padding="@dimen/margin_from_screen">
 
@@ -20,20 +18,17 @@
         app:layout_constraintTop_toTopOf="parent" />
 
 
-    <com.krayapp.buffercompanion.shadow.ShadowLayout
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler"
+        android:elevation="0.2dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:background="@drawable/background_round_white"
         android:layout_margin="@dimen/margin_from_screen"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@id/buttons"
         app:layout_constraintTop_toBottomOf="@id/title"
-        app:layout_constraintVertical_bias="0">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:listitem="@layout/item_list" />
-    </com.krayapp.buffercompanion.shadow.ShadowLayout>
+        app:layout_constraintVertical_bias="0"
+        tools:listitem="@layout/item_list" />
 
 
     <LinearLayout

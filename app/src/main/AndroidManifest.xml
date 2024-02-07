@@ -28,6 +28,7 @@
 			android:name=".widget.BufferRemoteService"
 			android:permission="android.permission.BIND_REMOTEVIEWS" />
 		<activity
+			android:windowSoftInputMode="adjustResize"
 			android:name="com.krayapp.buffercompanion.activity.MainActivity"
 			android:exported="true">
 

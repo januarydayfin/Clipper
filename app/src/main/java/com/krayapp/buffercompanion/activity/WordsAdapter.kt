@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.krayapp.buffercompanion.R
 import com.krayapp.buffercompanion.data.room.StringEntity
 import com.krayapp.buffercompanion.databinding.ItemListBinding
+import com.krayapp.buffercompanion.databinding.MainScreenAdapterItemBinding
 
 class WordsAdapter(private val onDelete: (String) -> Unit) :
     RecyclerView.Adapter<WordViewHolder>() {
@@ -40,7 +41,7 @@ class WordsAdapter(private val onDelete: (String) -> Unit) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WordViewHolder {
         return WordViewHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.item_list, parent, false)
+            LayoutInflater.from(parent.context).inflate(R.layout.main_screen_adapter_item, parent, false)
         )
     }
 
@@ -55,7 +56,7 @@ class WordsAdapter(private val onDelete: (String) -> Unit) :
 }
 
 class WordViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-    private val vb = ItemListBinding.bind(view)
+    private val vb = MainScreenAdapterItemBinding.bind(view)
     fun onBind(text: String, onDelete: (String) -> Unit) {
         vb.text.text = text
     }
