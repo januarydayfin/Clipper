@@ -1,8 +1,8 @@
 package com.krayapp.buffercompanion.data
 
 import android.content.Context
-import android.util.Log
 import androidx.room.Room
+import com.krayapp.buffercompanion.data.room.MIGRATION_1_2
 import com.krayapp.buffercompanion.data.room.MainDB
 import com.krayapp.buffercompanion.data.room.StringEntity
 import kotlinx.coroutines.CoroutineScope
@@ -10,12 +10,15 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class RememberedRepo(context: Context) {
-    private val database = Room.databaseBuilder(context, MainDB::class.java, "mainDatabase").build()
+    private val database =
+        Room.databaseBuilder(context, MainDB::class.java, "mainDatabase").addMigrations(
+            MIGRATION_1_2
+        ).build()
 
     private val dao = database.getDao()
     fun addText(text: String) {
         CoroutineScope(Dispatchers.IO).launch {
-            dao.insert(StringEntity(text))
+            dao.upsert(StringEntity(text, dao.getCount()))
         }
     }
 
@@ -28,6 +31,14 @@ class RememberedRepo(context: Context) {
     fun loadList(onLoadSuccess: (List<StringEntity>) -> Unit) {
         CoroutineScope(Dispatchers.IO).launch {
             onLoadSuccess(dao.getAll())
+        }
+    }
+
+    fun updateBaseIndexes(incomData: List<StringEntity>) {
+        CoroutineScope(Dispatchers.IO).launch {
+            for (entity in incomData) {
+                dao.upsert(entity)
+            }
         }
     }
 }

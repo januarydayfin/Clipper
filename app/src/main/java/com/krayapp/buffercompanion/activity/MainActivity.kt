@@ -1,5 +1,6 @@
 package com.krayapp.buffercompanion.activity
 
+import android.annotation.SuppressLint
 import android.appwidget.AppWidgetManager
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -10,7 +11,9 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.KeyEvent
+import android.view.MotionEvent
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import android.widget.Toast
@@ -29,6 +32,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var vb: MainActivityBinding
     private lateinit var repo: RememberedRepo
     private lateinit var adapter: WordsAdapter
+    private lateinit var touchHelper: RecyclerTouchControl
+
+    private var dragStarted = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         vb = MainActivityBinding.inflate(layoutInflater)
@@ -54,14 +61,31 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun initAdapter() {
+
+        adapter = WordsAdapter(onClicked = { copy(it) })
+        touchHelper = RecyclerTouchControl(adapter) { removeString(it) }
+        val helper = ItemTouchHelper(touchHelper).apply { attachToRecyclerView(vb.recycler) }
+
+        adapter.setDrag(
+            onStartDrag = {
+                dragStarted = true
+                helper.startDrag(it)
+            }
+        )
+
         vb.recycler.layoutManager = LinearLayoutManager(this)
-        adapter = WordsAdapter { copy(it) }
         vb.recycler.adapter = adapter
 
-        with(ItemTouchHelper(SwipeControl { removeString(it) })) {
-            attachToRecyclerView(vb.recycler)
+        vb.recycler.setOnTouchListener { v, event ->
+            if (event.actionMasked == MotionEvent.ACTION_UP && dragStarted) {
+                repo.updateBaseIndexes(adapter.getUpdatedIndexData())
+                dragStarted = false
+            }
+            return@setOnTouchListener false
         }
+
         repo.loadList { runOnUiThread { adapter.initData(ArrayList(it)) } }
     }
 
@@ -72,10 +96,10 @@ class MainActivity : AppCompatActivity() {
 
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2)
             Toast.makeText(
-            this,
-            "Скопировано",
-            Toast.LENGTH_SHORT
-        ).show()
+                this,
+                "Скопировано",
+                Toast.LENGTH_SHORT
+            ).show()
     }
 
     private fun removeString(text: String) {
@@ -96,6 +120,7 @@ class MainActivity : AppCompatActivity() {
         updateWidget()
         super.onStop()
     }
+
     private fun updateWidget() {
         val ids: IntArray = AppWidgetManager.getInstance(application)
             .getAppWidgetIds(ComponentName(application, MainWidgetProvider::class.java))
