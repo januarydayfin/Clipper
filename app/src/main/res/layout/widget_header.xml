@@ -2,10 +2,11 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/background_round_azure">
+    android:background="@drawable/header_widget_background">
 
     <TextView
         android:id="@+id/openApp"
+        android:textColor="@color/md_theme_onPrimary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clickable="true"
@@ -13,5 +14,5 @@
         android:paddingVertical="5dp"
         android:text="@string/open_manager"
         android:textAlignment="center"
-        android:textColor="@color/white" />
+       />
 </FrameLayout>

@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
-	android:background="?attr/colorOnPrimary"
+	android:background="@color/md_theme_surfaceContainer"
 	android:gravity="center_vertical"
 	android:orientation="horizontal"
 	android:paddingHorizontal="@dimen/toolbar_horizontal_padding"
@@ -14,38 +14,45 @@
 		android:layout_height="wrap_content"
 		android:layout_gravity="start|center_vertical"
 		android:padding="@dimen/toolbar_buttons_padding"
-		android:src="@drawable/ic_tutorial" />
+		android:src="@drawable/ic_tutorial"
+		android:visibility="gone" />
 
 	<TextView
 		style="@style/TitleTextStyle"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_marginStart="6dp"
+		android:layout_marginStart="24dp"
 		android:fontFamily="@font/roboto_medium"
 		android:text="@string/app_name" />
 
 
 	<Space
 		android:layout_width="0dp"
-		android:layout_weight="1"
-		android:layout_height="wrap_content"/>
+		android:layout_height="wrap_content"
+		android:layout_weight="1" />
+
 	<ImageView
+		android:background="?attr/selectableItemBackgroundBorderless"
+		android:clickable="true"
+		android:focusable="true"
 		android:id="@+id/refreshWidget"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_gravity="end|center_vertical"
+		android:layout_marginEnd="10dp"
 		android:padding="@dimen/toolbar_buttons_padding"
 		android:src="@drawable/refresh" />
 
 	<ImageView
+		android:background="?attr/selectableItemBackgroundBorderless"
+		android:clickable="true"
+		android:focusable="true"
 		android:id="@+id/showSettings"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_gravity="end|center_vertical"
 		android:padding="@dimen/toolbar_buttons_padding"
 		android:src="@drawable/settings" />
-
-
 
 
 </LinearLayout>
