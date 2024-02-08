@@ -118,6 +118,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStop() {
         updateWidget()
+        vb.edit.clearFocus()
         super.onStop()
     }
 
