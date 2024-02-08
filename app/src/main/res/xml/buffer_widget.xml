@@ -6,5 +6,6 @@
 	android:minHeight="40dp"
 	android:previewLayout="@layout/preview_layout"
 	android:targetCellHeight="2"
+	android:updatePeriodMillis="120000"
 	android:resizeMode="vertical|horizontal"
 	android:targetCellWidth="2" />
