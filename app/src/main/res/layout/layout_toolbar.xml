@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:background="?attr/colorOnPrimary"
+	android:gravity="center_vertical"
+	android:orientation="horizontal"
+	android:paddingHorizontal="@dimen/toolbar_horizontal_padding"
+	android:paddingVertical="@dimen/toolbar_vertical_padding">
+
+	<ImageView
+		android:id="@+id/showTutorial"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="start|center_vertical"
+		android:padding="@dimen/toolbar_buttons_padding"
+		android:src="@drawable/ic_tutorial" />
+
+	<TextView
+		style="@style/TitleTextStyle"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginStart="6dp"
+		android:fontFamily="@font/roboto_medium"
+		android:text="@string/app_name" />
+
+
+	<Space
+		android:layout_width="0dp"
+		android:layout_weight="1"
+		android:layout_height="wrap_content"/>
+	<ImageView
+		android:id="@+id/refreshWidget"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="end|center_vertical"
+		android:padding="@dimen/toolbar_buttons_padding"
+		android:src="@drawable/refresh" />
+
+	<ImageView
+		android:id="@+id/showSettings"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="end|center_vertical"
+		android:padding="@dimen/toolbar_buttons_padding"
+		android:src="@drawable/settings" />
+
+
+
+
+</LinearLayout>
