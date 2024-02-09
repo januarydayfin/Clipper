@@ -1,4 +1,12 @@
 <resources>
 	<string name="app_name">Clipper</string>
 	<string name="open_manager">Open Clipper</string>
+	<string name="enter_for_input">Нажмите Enter для ввода</string>
+	<string name="use_dynamic_colors">Использовать Dynamic Colors</string>
+	<string name="app_theme">Тема приложения</string>
+	<string name="refresh_widget">Обновить виджет</string>
+	<string name="sign_google">Вход с Google</string>
+	<string name="widget_settings">Настройки виджета</string>
+
+	<string name="settings_title">Настройки</string>
 </resources>

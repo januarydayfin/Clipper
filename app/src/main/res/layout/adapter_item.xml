@@ -1,54 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:baselineAligned="false">
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:baselineAligned="false"
+	android:orientation="horizontal">
 
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.7"
-        android:background="@drawable/recycler_background"
-        android:orientation="horizontal"
-        android:paddingVertical="16dp">
+	<LinearLayout
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_weight="0.7"
+		android:elevation="0.1dp"
+		android:background="@drawable/recycler_background"
+		android:orientation="horizontal"
+		android:paddingVertical="16dp">
 
-        <TextView
-            android:id="@+id/text"
-            style="@style/BodyLarge"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="30dp"
-            android:ellipsize="end"
-            android:maxEms="6"
-            android:maxLines="1"
-            tools:text="KittySammy" />
+		<TextView
+			android:id="@+id/text"
+			style="@style/BodyLarge"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center_vertical"
+			android:layout_marginStart="16dp"
+			android:layout_marginEnd="30dp"
+			android:ellipsize="end"
+			android:maxEms="6"
+			android:maxLines="1"
+			tools:text="KittySammy" />
 
-        <Space
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
+		<Space
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_weight="1" />
 
-        <ImageView
-            android:id="@+id/drag"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginEnd="30dp"
-            android:paddingHorizontal="4dp"
-            android:paddingVertical="9dp"
-            android:src="@drawable/drag_sandwich" />
-    </LinearLayout>
+		<ImageView
+			android:id="@+id/drag"
+			android:layout_width="30dp"
+			android:layout_height="30dp"
+			android:layout_marginEnd="30dp"
+			android:paddingHorizontal="4dp"
+			android:paddingVertical="9dp"
+			android:src="@drawable/drag_sandwich" />
+	</LinearLayout>
 
-    <include
-        android:id="@+id/item_menu"
-        layout="@layout/layout_recycler_item_menu"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:layout_weight="0.3"
-        android:visibility="gone"
-        tools:visibility="visible" />
+		<include
+			android:id="@+id/item_menu"
+			layout="@layout/layout_recycler_item_menu"
+			android:layout_width="0dp"
+			android:layout_marginEnd="-10dp"
+			android:layout_height="match_parent"
+			android:layout_gravity="center_vertical"
+			android:layout_weight="0.35"
+			android:visibility="gone"
+			tools:visibility="visible" />
 </LinearLayout>

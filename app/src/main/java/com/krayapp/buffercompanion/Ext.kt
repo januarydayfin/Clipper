@@ -28,9 +28,24 @@ fun Context.justVibrateABit() {
 fun Fragment.activity(): MainActivity {
 	return activity as MainActivity
 }
+
 fun Context.hideKeyboard(v: View) {
 	(getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(
 		v.windowToken,
 		0
 	)
+}
+
+fun View.setVisible() {
+	visibility = View.VISIBLE
+
+}
+
+fun View.setInvisible() {
+	visibility = View.INVISIBLE
+
+}
+
+fun View.setGone() {
+	visibility = View.GONE
 }

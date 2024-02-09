@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
 	android:background="?attr/colorSurfaceContainerHighest"
@@ -8,52 +10,57 @@
 	android:paddingHorizontal="@dimen/toolbar_horizontal_padding"
 	android:paddingVertical="@dimen/toolbar_vertical_padding">
 
-	<ImageView
-		android:id="@+id/showTutorial"
+	<TextView
+		android:id="@+id/appTitle"
+		style="@style/TitleLarge"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_gravity="start|center_vertical"
-		android:padding="@dimen/toolbar_buttons_padding"
-		android:src="@drawable/ic_tutorial"
-		android:visibility="gone" />
+		android:layout_marginStart="@dimen/base_screen_margin"
+		android:text="@string/app_name"
+		android:textColor="?attr/colorOnSurface"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent" />
 
 	<TextView
+		android:id="@+id/fragmentTitle"
 		style="@style/TitleLarge"
-		android:textColor="?attr/colorOnSurface"
+		tools:visibility="visible"
 		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_marginStart="24dp"
-		android:text="@string/app_name" />
-
-
-	<Space
-		android:layout_width="0dp"
-		android:layout_height="wrap_content"
-		android:layout_weight="1" />
-
-	<ImageView
-		android:background="?attr/selectableItemBackgroundBorderless"
-		android:clickable="true"
-		android:focusable="true"
-		android:id="@+id/refreshWidget"
 		android:visibility="gone"
-		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_gravity="end|center_vertical"
-		android:layout_marginEnd="10dp"
-		android:padding="@dimen/toolbar_buttons_padding"
-		android:src="@drawable/refresh" />
+		tools:text="Settings"
+		android:textColor="?attr/colorOnSurface"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent" />
 
 	<ImageView
-		android:background="?attr/selectableItemBackgroundBorderless"
-		android:clickable="true"
-		android:focusable="true"
+		android:id="@+id/back"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:padding="12dp"
+		android:src="@drawable/ic_arrow_back"
+		android:visibility="gone"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent"
+		tools:visibility="visible" />
+
+	<ImageView
 		android:id="@+id/showSettings"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_gravity="end|center_vertical"
+		android:background="?attr/selectableItemBackgroundBorderless"
+		android:clickable="true"
+		android:focusable="true"
 		android:padding="@dimen/toolbar_buttons_padding"
-		android:src="@drawable/settings" />
+		android:src="@drawable/settings"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintTop_toTopOf="parent" />
 
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

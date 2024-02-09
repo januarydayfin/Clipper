@@ -18,6 +18,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.krayapp.buffercompanion.R
 import com.krayapp.buffercompanion.activity
 import com.krayapp.buffercompanion.data.RememberedRepo
 import com.krayapp.buffercompanion.databinding.FragmentMainBinding

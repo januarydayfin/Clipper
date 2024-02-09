@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.core.view.isVisible
 import com.krayapp.buffercompanion.ClipperApp
+import com.krayapp.buffercompanion.R
 import com.krayapp.buffercompanion.activity
 import com.krayapp.buffercompanion.databinding.FragmentSettingsBinding
 import com.krayapp.buffercompanion.ui.fragments.AbsFragment
@@ -33,6 +34,15 @@ class SettingsFragment : AbsFragment() {
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 		initClick()
+		setupToolbar()
+	}
+
+
+	private fun setupToolbar() {
+		with(activity().toolbarAssistant()) {
+			setTitle(R.string.settings_title)
+			setBackClick { activity().popBackStack() }
+		}
 	}
 
 	private fun initClick() {

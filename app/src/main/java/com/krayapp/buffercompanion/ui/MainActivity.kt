@@ -6,14 +6,19 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
+import androidx.navigation.NavDestination
 import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import com.krayapp.buffercompanion.ClipperApp
+import com.krayapp.buffercompanion.Constants
+import com.krayapp.buffercompanion.Constants.Companion.MAIN_FRAG
 import com.krayapp.buffercompanion.R
 import com.krayapp.buffercompanion.activity
 import com.krayapp.buffercompanion.databinding.MainActivityBinding
+import com.krayapp.buffercompanion.ui.fragments.ToolbarAssist
 import com.krayapp.buffercompanion.widget.MainWidgetProvider
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
@@ -23,12 +28,19 @@ import kotlinx.coroutines.launch
 class MainActivity : AppCompatActivity() {
 	private lateinit var navController: NavController
 	private lateinit var vb: MainActivityBinding
+	private lateinit var toolbarAssist: ToolbarAssist
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		vb = MainActivityBinding.inflate(layoutInflater)
 		setContentView(vb.root)
+		toolbarAssist = ToolbarAssist(vb.toolbar.root)
 
 		navController = Navigation.findNavController(this, R.id.fragHost)
+
+		navController.addOnDestinationChangedListener { _, destination, _ ->
+			if (destination.label == MAIN_FRAG)
+				toolbarAssist.onMainScreen()
+		}
 
 		vb.toolbar.showSettings.setOnClickListener {
 			navigateTo(R.id.toSettings)
@@ -63,6 +75,11 @@ class MainActivity : AppCompatActivity() {
 	fun popBackStack() {
 		navController.popBackStack()
 	}
+
+	fun toolbarAssistant() : ToolbarAssist {
+		return toolbarAssist
+	}
+
 	fun updateWidget() {
 		val ids: IntArray = AppWidgetManager.getInstance(ClipperApp.getApplication())
 			.getAppWidgetIds(
