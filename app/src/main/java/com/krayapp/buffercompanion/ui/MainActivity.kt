@@ -12,16 +12,27 @@ import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import com.krayapp.buffercompanion.ClipperApp
 import com.krayapp.buffercompanion.R
+import com.krayapp.buffercompanion.activity
+import com.krayapp.buffercompanion.databinding.MainActivityBinding
 import com.krayapp.buffercompanion.widget.MainWidgetProvider
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 class MainActivity : AppCompatActivity() {
 	private lateinit var navController: NavController
+	private lateinit var vb: MainActivityBinding
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		setContentView(R.layout.main_activity)
+		vb = MainActivityBinding.inflate(layoutInflater)
+		setContentView(vb.root)
 
 		navController = Navigation.findNavController(this, R.id.fragHost)
+
+		vb.toolbar.showSettings.setOnClickListener {
+			navigateTo(R.id.toSettings)
+		}
 	}
 
 	override fun onStop() {
@@ -30,9 +41,24 @@ class MainActivity : AppCompatActivity() {
 	}
 
 	fun navigateTo(actionId: Int) {
-		navController.navigate(actionId)
+		try {
+			navController.navigate(actionId)
+		} catch (ignored: Exception) {
+		}
 	}
 
+	fun restartApp() {
+		MainScope().launch {
+			delay(500)
+			startActivity(
+				Intent(
+					this@MainActivity,
+					MainActivity::class.java
+				).apply { addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) })
+
+			Runtime.getRuntime().exit(0)
+		}
+	}
 
 	fun popBackStack() {
 		navController.popBackStack()

@@ -15,7 +15,7 @@
         android:clickable="true"
         android:focusable="true"
         android:padding="@dimen/toolbar_buttons_padding"
-        android:src="@android:drawable/ic_menu_edit" />
+        android:src="@drawable/ic_edit" />
 
     <ImageView
         android:id="@+id/remove"
@@ -25,6 +25,6 @@
         android:clickable="true"
         android:focusable="true"
         android:padding="@dimen/toolbar_buttons_padding"
-        android:src="@android:drawable/ic_delete" />
+        android:src="@drawable/ic_delete" />
 
 </LinearLayout>

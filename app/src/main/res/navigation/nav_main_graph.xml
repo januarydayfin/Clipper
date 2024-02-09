@@ -17,6 +17,6 @@
 
 	<fragment
 		android:id="@+id/settingsFragment"
-		android:name="com.krayapp.buffercompanion.ui.fragments.SettingsFragment"
+		android:name="com.krayapp.buffercompanion.ui.fragments.settings.SettingsFragment"
 		tools:layout="@layout/fragment_settings" />
 </navigation>
