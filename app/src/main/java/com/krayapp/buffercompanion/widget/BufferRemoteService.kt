@@ -10,7 +10,7 @@ import com.google.firebase.Firebase
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.analytics
 import com.krayapp.buffercompanion.R
-import com.krayapp.buffercompanion.activity.MainActivity
+import com.krayapp.buffercompanion.ui.MainActivity
 import com.krayapp.buffercompanion.data.RememberedRepo
 import com.krayapp.buffercompanion.data.room.StringEntity
 import com.krayapp.buffercompanion.widget.MainWidgetProvider.Companion.OPEN_ACTIVITY_ACTION

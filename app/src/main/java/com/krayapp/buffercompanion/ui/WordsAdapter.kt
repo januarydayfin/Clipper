@@ -1,9 +1,8 @@
-package com.krayapp.buffercompanion.activity
+package com.krayapp.buffercompanion.ui
 
 import android.annotation.SuppressLint
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:background="?attr/colorOnPrimary"
+	android:orientation="vertical"
+	android:paddingBottom="52dp">
+
+	<include
+		android:id="@+id/toolbar"
+		layout="@layout/layout_toolbar" />
+
+	<androidx.recyclerview.widget.RecyclerView
+		android:id="@+id/recycler"
+		android:layout_width="match_parent"
+		android:layout_height="0dp"
+		android:layout_marginHorizontal="26dp"
+		android:layout_marginTop="@dimen/main_recycler_top_margin"
+		android:clipChildren="false"
+		android:clipToPadding="false"
+		android:layout_marginBottom="12dp"
+		app:layout_constraintBottom_toTopOf="@+id/paste"
+		app:layout_constraintTop_toBottomOf="@id/toolbar"
+		app:layout_constraintVertical_bias="0"
+		tools:listitem="@layout/adapter_item" />
+
+	<com.google.android.material.button.MaterialButton
+		android:id="@+id/paste"
+		style="@style/ClipperElevatedButtonStyle"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginHorizontal="@dimen/main_edit_text_margins"
+		android:layout_marginBottom="@dimen/refresh_button_bottom_margin"
+		android:text="Paste from buffer"
+		app:layout_constraintBottom_toTopOf="@+id/editLayout"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_goneMarginBottom="10dp" />
+
+	<com.google.android.material.textfield.TextInputLayout
+		android:id="@+id/editLayout"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginHorizontal="@dimen/main_edit_text_margins"
+		android:hint="Enter for input"
+		android:outlineSpotShadowColor="#000000"
+		app:layout_constraintBottom_toBottomOf="parent">
+
+		<com.google.android.material.textfield.TextInputEditText
+			android:id="@+id/edit"
+			android:imeOptions="actionDone"
+			android:inputType="text"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center_vertical" />
+	</com.google.android.material.textfield.TextInputLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

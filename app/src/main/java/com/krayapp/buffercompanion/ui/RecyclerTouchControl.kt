@@ -1,4 +1,4 @@
-package com.krayapp.buffercompanion.activity
+package com.krayapp.buffercompanion.ui
 
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView

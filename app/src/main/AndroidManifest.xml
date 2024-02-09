@@ -3,7 +3,7 @@
 	xmlns:tools="http://schemas.android.com/tools">
 
 	<application
-		android:name=".BufferApp"
+		android:name=".ClipperApp"
 		android:allowBackup="true"
 		android:dataExtractionRules="@xml/data_extraction_rules"
 		android:fullBackupContent="@xml/backup_rules"
@@ -29,7 +29,7 @@
 			android:permission="android.permission.BIND_REMOTEVIEWS" />
 		<activity
 			android:windowSoftInputMode="adjustResize"
-			android:name="com.krayapp.buffercompanion.activity.MainActivity"
+			android:name="com.krayapp.buffercompanion.ui.MainActivity"
 			android:exported="true">
 
 			<intent-filter>
