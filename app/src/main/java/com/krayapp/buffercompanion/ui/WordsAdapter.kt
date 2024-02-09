@@ -1,24 +1,27 @@
 package com.krayapp.buffercompanion.ui
 
 import android.annotation.SuppressLint
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.krayapp.buffercompanion.R
 import com.krayapp.buffercompanion.data.room.StringEntity
 import com.krayapp.buffercompanion.databinding.AdapterItemBinding
+import com.krayapp.buffercompanion.justVibrateABit
 import java.util.Collections
 
 
 class WordsAdapter(
     private val onClicked: (String) -> Unit,
-
+    private var onRemoveClicked: (String) -> Unit,
+    private var onEditClicked: (String) -> Unit
 ) :
     RecyclerView.Adapter<WordViewHolder>() {
     private val data = ArrayList<StringEntity>()
     private var onStartDrag: ((RecyclerView.ViewHolder) -> Unit)? = null
+
     fun addWord(text: String) {
         if (!data.contains(StringEntity(text))) {
             data.add(StringEntity(text))
@@ -26,7 +29,7 @@ class WordsAdapter(
         }
     }
 
-    fun deleteWord(text: String) {
+    private fun deleteWord(text: String) {
         var index = -1
         for (i in 0 until data.size) {
             if (text == data[i].text) {
@@ -36,7 +39,7 @@ class WordsAdapter(
         }
         if (index != -1) {
             data.removeAt(index)
-            notifyDataSetChanged()
+            notifyItemRemoved(index)
         }
     }
 
@@ -56,16 +59,18 @@ class WordsAdapter(
 
     fun initData(data: ArrayList<StringEntity>) {
         this.data.addAll(data)
-        for (str in data)
-            Log.d("TESTET", String.format("%s", str.position));
-
-        notifyDataSetChanged()
+        notifyItemRangeInserted(0, data.size)
     }
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WordViewHolder {
         return WordViewHolder(
             LayoutInflater.from(parent.context).inflate(R.layout.adapter_item, parent, false)
         )
+    }
+
+    fun resetMenus() {
+        notifyItemRangeChanged(0, data.size)
     }
 
     override fun getItemCount(): Int {
@@ -90,7 +95,13 @@ class WordsAdapter(
             holder.onBind(
                 text = data[position].text,
                 onClicked = onClicked,
-                onStartDrag = onStartDrag)
+                onStartDrag = onStartDrag,
+                onRemove = {
+                    deleteWord(it)
+                    onRemoveClicked(it)
+                },
+                onEdit = { onEditClicked(it) }
+            )
         }
     }
 }
@@ -98,11 +109,14 @@ class WordsAdapter(
 class WordViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     private val vb = AdapterItemBinding.bind(view)
     private var originText = ""
+
     @SuppressLint("ClickableViewAccessibility")
     fun onBind(
         text: String,
         onClicked: (String) -> Unit,
         onStartDrag: ((RecyclerView.ViewHolder) -> Unit)? = null,
+        onRemove: (String) -> Unit,
+        onEdit: (String) -> Unit
     ) {
         originText = text
         vb.text.text = text
@@ -113,9 +127,17 @@ class WordViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
             return@setOnLongClickListener true
         }
+        vb.itemMenu.root.isVisible = false
+
+        vb.itemMenu.remove.setOnClickListener { onRemove(originText) }
+        vb.itemMenu.edit.setOnClickListener { onEdit(originText) }
     }
 
-    fun getText(): String {
-        return vb.text.text.toString()
+    fun showMenu(show: Boolean) {
+        if (vb.itemMenu.root.isVisible != show) {
+            if (show)
+                vb.root.context.justVibrateABit()
+            vb.itemMenu.root.isVisible = show
+        }
     }
 }

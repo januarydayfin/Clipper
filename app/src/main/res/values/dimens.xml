@@ -9,4 +9,6 @@
     <dimen name="main_edit_text_margins">16dp</dimen>
 
     <dimen name="refresh_button_bottom_margin">20dp</dimen>
+
+    <dimen name="widget_round_corner">14dp</dimen>
 </resources>

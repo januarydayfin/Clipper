@@ -3,5 +3,5 @@
 	<solid android:color="@color/md_theme_surface"/>
 
 	<corners
-		android:radius="16dp" />
+		android:radius="@dimen/widget_round_corner" />
 </shape>

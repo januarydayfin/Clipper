@@ -58,8 +58,12 @@ class MainFragment : Fragment() {
 
 	@SuppressLint("ClickableViewAccessibility")
 	private fun initAdapter() {
-		adapter = WordsAdapter(onClicked = { copy(it) })
-		touchHelper = RecyclerTouchControl(adapter) { removeString(it) }
+		adapter = WordsAdapter(
+			onClicked = { copy(it) },
+			onRemoveClicked = { removeString(it) },
+			onEditClicked = {}
+		)
+		touchHelper = RecyclerTouchControl(adapter)
 		val helper = ItemTouchHelper(touchHelper).apply { attachToRecyclerView(vb.recycler) }
 
 		adapter.setDrag(
@@ -77,7 +81,8 @@ class MainFragment : Fragment() {
 			if (event.actionMasked == MotionEvent.ACTION_UP && dragStarted) {
 				repo.updateBaseIndexes(adapter.getUpdatedIndexData())
 				dragStarted = false
-			}
+			} else if (event.actionMasked == MotionEvent.ACTION_UP)
+				touchHelper.onActionUp()
 			return@setOnTouchListener false
 		}
 
@@ -87,7 +92,7 @@ class MainFragment : Fragment() {
 
 	private fun initClick() {
 		vb.paste.setOnClickListener { pasteFromClip() }
-		vb.toolbar.refreshWidget.setOnClickListener { activity().updateWidget() }
+		vb.toolbar.refreshWidget.setOnClickListener { adapter.resetMenus() }
 		vb.edit.setOnEditorActionListener(object : TextView.OnEditorActionListener {
 			override fun onEditorAction(v: TextView?, actionId: Int, event: KeyEvent?): Boolean {
 				if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -124,10 +129,6 @@ class MainFragment : Fragment() {
 	private fun removeString(text: String) {
 		CoroutineScope(Dispatchers.IO).launch {
 			repo.remove(text)
-		}
-
-		MainScope().launch {
-			adapter.deleteWord(text)
 		}
 	}
 

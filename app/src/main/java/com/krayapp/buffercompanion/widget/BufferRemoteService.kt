@@ -100,7 +100,7 @@ class ViewsFactory(private val context: Context, private val intent: Intent?) : 
                 }
             }
 
-            remoteView.setOnClickFillInIntent(R.id.itemRoot, intent)
+            remoteView.setOnClickFillInIntent(R.id.widgetItemRoot, intent)
             return remoteView
 
         }
