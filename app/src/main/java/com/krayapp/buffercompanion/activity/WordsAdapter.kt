@@ -114,13 +114,6 @@ class WordViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
             return@setOnLongClickListener true
         }
-//        vb.drag.setOnTouchListener { _, event ->
-//            if (event.actionMasked == MotionEvent.ACTION_DOWN) {
-//
-//            }
-//
-//            return@setOnTouchListener false
-//        }
     }
 
     fun getText(): String {
