@@ -14,16 +14,15 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.krayapp.buffercompanion.R
+import com.krayapp.buffercompanion.activity
 import com.krayapp.buffercompanion.data.RememberedRepo
 import com.krayapp.buffercompanion.databinding.FragmentMainBinding
 import com.krayapp.buffercompanion.hideKeyboard
-import com.krayapp.buffercompanion.ui.MainActivity
 import com.krayapp.buffercompanion.ui.RecyclerTouchControl
 import com.krayapp.buffercompanion.ui.RecyclerViewSpacer
 import com.krayapp.buffercompanion.ui.WordsAdapter
@@ -57,9 +56,6 @@ class MainFragment : Fragment() {
 		initAdapter()
 	}
 
-	private fun activity() : MainActivity {
-		return activity as MainActivity
-	}
 	@SuppressLint("ClickableViewAccessibility")
 	private fun initAdapter() {
 		adapter = WordsAdapter(onClicked = { copy(it) })
@@ -109,7 +105,7 @@ class MainFragment : Fragment() {
 		})
 
 		vb.toolbar.showSettings.setOnClickListener {
-			activity().navigateTo(R.id.toSettings)
+			this.activity().navigateTo(R.id.toSettings)
 		}
 	}
 	private fun copy(text: String) {
