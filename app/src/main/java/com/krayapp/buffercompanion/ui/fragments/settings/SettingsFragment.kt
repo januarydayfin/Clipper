@@ -14,13 +14,8 @@ import com.krayapp.buffercompanion.ui.fragments.AbsFragment
 
 class SettingsFragment : AbsFragment() {
 	private lateinit var vb: FragmentSettingsBinding
-	private val backDispatcher by lazy {
-		object : OnBackPressedCallback(true) {
-			override fun handleOnBackPressed() {
-				this@SettingsFragment.activity().popBackStack()
-			}
-		}
-	}
+
+
 	override fun onCreateView(
 		inflater: LayoutInflater,
 		container: ViewGroup?,
@@ -34,15 +29,10 @@ class SettingsFragment : AbsFragment() {
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 		initClick()
-		setupToolbar()
 	}
 
-
-	private fun setupToolbar() {
-		with(activity().toolbarAssistant()) {
-			setTitle(R.string.settings_title)
-			setBackClick { activity().popBackStack() }
-		}
+	override fun getTitleRes(): Int {
+		return R.string.settings_title
 	}
 
 	private fun initClick() {
@@ -52,15 +42,8 @@ class SettingsFragment : AbsFragment() {
 			ClipperApp.getPrefs().setDynamicColors(isChecked)
 			activity().restartApp()
 		}
+
+		vb.appTheme.setOnClickListener { activity().navigateTo(R.id.toAppTheme) }
 	}
 
-	override fun onResume() {
-		super.onResume()
-		activity().onBackPressedDispatcher.addCallback(backDispatcher)
-	}
-
-	override fun onStop() {
-		backDispatcher.remove()
-		super.onStop()
-	}
 }

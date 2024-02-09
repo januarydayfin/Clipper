@@ -15,9 +15,11 @@ import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.transition.TransitionInflater
 import com.krayapp.buffercompanion.R
 import com.krayapp.buffercompanion.activity
 import com.krayapp.buffercompanion.data.RememberedRepo
@@ -32,7 +34,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 
-class MainFragment : AbsFragment() {
+class MainFragment : Fragment() {
 	private lateinit var vb : FragmentMainBinding
 
 	private lateinit var repo: RememberedRepo
@@ -49,6 +51,12 @@ class MainFragment : AbsFragment() {
 		}
 	}
 
+	override fun onCreate(savedInstanceState: Bundle?) {
+		val inflater = TransitionInflater.from(requireContext())
+		enterTransition = inflater.inflateTransition(R.transition.slide_right)
+		super.onCreate(savedInstanceState)
+	}
+
 	override fun onCreateView(
 		inflater: LayoutInflater,
 		container: ViewGroup?,
@@ -60,6 +68,7 @@ class MainFragment : AbsFragment() {
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
+		view.setBackgroundColor(requireContext().getColor(R.color.md_theme_surface))
 		repo = RememberedRepo(requireContext())
 		initClick()
 		initAdapter()

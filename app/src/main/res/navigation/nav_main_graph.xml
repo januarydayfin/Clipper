@@ -20,5 +20,14 @@
 		android:id="@+id/settingsFragment"
 		android:label="settings"
 		android:name="com.krayapp.buffercompanion.ui.fragments.settings.SettingsFragment"
-		tools:layout="@layout/fragment_settings" />
+		tools:layout="@layout/fragment_settings" >
+
+		<action android:id="@+id/toAppTheme"
+			app:destination="@id/appTheme"/>
+	</fragment>
+
+	<fragment android:id="@+id/appTheme"
+		android:label="appTheme"
+		android:name="com.krayapp.buffercompanion.ui.fragments.settings.AppThemeSettingsFragment"
+		tools:layout="@layout/fragment_app_theme_settings"/>
 </navigation>

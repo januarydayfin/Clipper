@@ -9,4 +9,8 @@
 	<string name="widget_settings">Настройки виджета</string>
 
 	<string name="settings_title">Настройки</string>
+
+	<string name="light_theme">Светлая тема</string>
+	<string name="system_theme">Системная тема</string>
+	<string name="dark_theme">Темная тема</string>
 </resources>
