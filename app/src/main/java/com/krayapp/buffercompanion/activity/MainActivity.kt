@@ -11,15 +11,17 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.krayapp.buffercompanion.data.RememberedRepo
 import com.krayapp.buffercompanion.databinding.MainActivityBinding
 import com.krayapp.buffercompanion.widget.MainWidgetProvider
@@ -44,7 +46,7 @@ class MainActivity : AppCompatActivity() {
         initAdapter()
 
         vb.paste.setOnClickListener { pasteFromClip() }
-        vb.update.setOnClickListener { updateWidget() }
+        vb.toolbar.refreshWidget.setOnClickListener { updateWidget() }
         vb.edit.setOnEditorActionListener(object : TextView.OnEditorActionListener {
             override fun onEditorAction(v: TextView?, actionId: Int, event: KeyEvent?): Boolean {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -52,18 +54,25 @@ class MainActivity : AppCompatActivity() {
                     if (text.isNotEmpty()) {
                         repo.addText(text)
                         addStringToAdapter(text)
-                        vb.edit.text.clear()
+                        vb.edit.text?.clear()
+                        hideKeyboard()
                     }
                     return true
                 }
                 return false
             }
         })
+
+    }
+
+    private fun hideKeyboard() {
+        val inputManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+
+        inputManager.hideSoftInputFromWindow(vb.root.windowToken, 0)
     }
 
     @SuppressLint("ClickableViewAccessibility")
     private fun initAdapter() {
-
         adapter = WordsAdapter(onClicked = { copy(it) })
         touchHelper = RecyclerTouchControl(adapter) { removeString(it) }
         val helper = ItemTouchHelper(touchHelper).apply { attachToRecyclerView(vb.recycler) }
@@ -78,7 +87,8 @@ class MainActivity : AppCompatActivity() {
         vb.recycler.layoutManager = LinearLayoutManager(this)
         vb.recycler.adapter = adapter
 
-        vb.recycler.setOnTouchListener { v, event ->
+		vb.recycler.addItemDecoration(RecyclerViewSpacer(12, RecyclerView.VERTICAL))
+        vb.recycler.setOnTouchListener { _, event ->
             if (event.actionMasked == MotionEvent.ACTION_UP && dragStarted) {
                 repo.updateBaseIndexes(adapter.getUpdatedIndexData())
                 dragStarted = false

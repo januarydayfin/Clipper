@@ -1,7 +1,8 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<?xml version="1.0" encoding="utf-8"?>
 
-	<style name="AppTheme" parent="Theme.Material3.Light.NoActionBar">
-		<item name="android:windowLightStatusBar">true</item>
+<resources>
+	<style name="AppTheme" parent="Theme.Material3.Dark.NoActionBar">
+		<item name="android:windowLightStatusBar">false</item>
 		<item name="android:statusBarColor">@color/md_theme_surfaceContainer</item>
 		<item name="android:navigationBarColor">?attr/colorOnPrimary</item>
 
@@ -51,39 +52,5 @@
 		<item name="colorSurfaceContainer">@color/md_theme_surfaceContainer</item>
 		<item name="colorSurfaceContainerHigh">@color/md_theme_surfaceContainerHigh</item>
 		<item name="colorSurfaceContainerHighest">@color/md_theme_surfaceContainerHighest</item>
-	</style>
-
-	<style name="RobotoRegular">
-		<item name="fontFamily">@font/roboto</item>
-	</style>
-
-	<style name="RobotoMedium">
-		<item name="fontFamily">@font/roboto</item>
-	</style>
-
-
-	<style name="TitleTextStyle" parent="RobotoRegular">
-		<item name="android:textColor">?attr/colorOnSurface</item>
-		<item name="android:textSize">22sp</item>
-	</style>
-
-	<style name="ElevatedTextStyle">
-		<item name="fontFamily">@font/roboto_medium</item>
-		<item name="android:textSize">14sp</item>
-		<item name="android:textColor">?attr/colorPrimary</item>
-	</style>
-
-	<style name="RecyclerItemTextStyle" parent="RobotoRegular">
-		<item name="android:textColor">?attr/colorOnSurface</item>
-		<item name="android:textSize">16sp</item>
-	</style>
-
-	<style name="ClipperElevatedButtonStyle" parent="Widget.Material3.Button.ElevatedButton">
-		<item name="backgroundTint">?attr/colorSurface</item>
-		<item name="android:textAppearance">@style/ElevatedTextStyle</item>
-	</style>
-
-	<style name="WidgetHeaderTextStyle" parent="RobotoRegular">
-		<item name="android:textColor">?attr/colorOnPrimary</item>
 	</style>
 </resources>

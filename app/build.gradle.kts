@@ -14,8 +14,8 @@ android {
 		applicationId = "com.krayapp.buffercompanion"
 		minSdk = 28
 		targetSdk = 34
-		versionCode = 5
-		versionName = "0.5a"
+		versionCode = 6
+		versionName = "0.06a"
 
 		testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 	}
@@ -43,7 +43,6 @@ android {
 }
 
 dependencies {
-
 	val room_version = "2.6.1"
 
 	implementation("androidx.room:room-runtime:$room_version")

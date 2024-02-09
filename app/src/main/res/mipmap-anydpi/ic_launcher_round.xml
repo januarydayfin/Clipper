@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
-    <background android:drawable="@drawable/azure_circle" />
-    <foreground>
-        <inset
-            android:drawable="@drawable/copy"
-            android:inset="30%" />
-    </foreground>
-    <monochrome>
-        <inset
-            android:drawable="@drawable/copy"
-            android:inset="30%" />
-    </monochrome>
+	<background android:drawable="@drawable/app_icon_background_circle" />
+	<foreground>
+		<inset
+			android:drawable="@drawable/app_icon"
+			android:inset="30%" />
+	</foreground>
+	<monochrome>
+		<inset
+			android:drawable="@drawable/app_icon"
+			android:inset="30%" />
+	</monochrome>
 </adaptive-icon>

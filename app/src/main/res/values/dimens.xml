@@ -1,115 +1,12 @@
 <resources>
-    <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="logo_height">140dp</dimen>
+    <dimen name="toolbar_vertical_padding">18dp</dimen>
+    <dimen name="toolbar_horizontal_padding">4dp</dimen>
+    <dimen name="toolbar_buttons_padding">14dp</dimen>
 
-    <dimen name="login_dialog_height">250dp</dimen>
-    <dimen name="login_dialog_width">300dp</dimen>
+    <dimen name="main_recycler_top_margin">24dp</dimen>
+    <dimen name="main_recycler_horizontal_margin">26dp</dimen>
+    <dimen name="recycler_item_corners">8dp</dimen>
+    <dimen name="main_edit_text_margins">16dp</dimen>
 
-    <dimen name="pin_dot_diameter">18dp</dimen>
-
-    <dimen name="chat_card_radius">15dp</dimen>
-    <dimen name="custom_switch_size">21dp</dimen>
-    <dimen name="padding_page">24dp</dimen>
-    <dimen name="padding_page_iot_families">20dp</dimen>
-    <dimen name="info_icon_size">20dp</dimen>
-    <dimen name="seek_thumb_size">20dp</dimen>
-    <dimen name="info_icon_size2">28dp</dimen>
-    <dimen name="margin_from_screen">18dp</dimen>
-    <dimen name="slide_top_margin">8dp</dimen>
-    <dimen name="margin_from_top">12dp</dimen>
-    <dimen name="wizard_button_bot_margin">25dp</dimen>
-    <dimen name="padding_big">16dp</dimen>
-    <dimen name="padding_medium_big">12dp</dimen>
-    <dimen name="padding_player_button">12dp</dimen>
-    <dimen name="tab_indicator_height">36dp</dimen>
-    <dimen name="padding_medium">8dp</dimen>
-    <dimen name="padding_small">5dp</dimen>
-    <dimen name="padding_micro">2dp</dimen>
-    <dimen name="chart_height">230dp</dimen>
-    <dimen name="view_shadow_size">2dp</dimen>
-    <dimen name="round_radius_big">16dp</dimen>
-    <dimen name="home_button_padding">3dp</dimen>
-    <dimen name="round_radius_ultra_big">20dp</dimen>
-    <dimen name="rounded_circle">100dp</dimen>
-    <dimen name="round_radius_large">25dp</dimen>
-    <dimen name="round_radius">12dp</dimen>
-    <dimen name="auth_logo_size">50dp</dimen>
-    <dimen name="round_radius_medium">10dp</dimen>
-    <dimen name="round_radius_small">6dp</dimen>
-    <dimen name="switch_padding">32dp</dimen>
-
-    <dimen name="device_height">64dp</dimen>
-    <dimen name="device_icon_height">39dp</dimen>
-    <dimen name="guard_disarming_height">45dp</dimen>
-    <dimen name="icon_medium_size">42dp</dimen>
-    <dimen name="radio_button_height">46dp</dimen>
-    <dimen name="device_item_height">167dp</dimen>
-    <dimen name="devices_icon_height">57dp</dimen>
-
-    <dimen name="service_image_padding">27dp</dimen>
-    <dimen name="guard_button_size">114dp</dimen>
-    <dimen name="guard_button_background_size">80dp</dimen>
-
-    <dimen name="service_button_padding">30dp</dimen>
-    <dimen name="service_button_size">124dp</dimen>
-    <dimen name="service_button_fab_size">102dp</dimen>
-    <dimen name="service_button_background_size">90dp</dimen>
-
-    <dimen name="story_preview_width">95dp</dimen>
-    <dimen name="story_preview_height">90dp</dimen>
-    <dimen name="story_preview_corner_radius">10dp</dimen>
-    <dimen name="story_preview_padding_end">12dp</dimen>
-
-    <dimen name="complete_button_size">100dp</dimen>
-    <dimen name="icon_event_size">54dp</dimen>
-    <dimen name="icon_device_size">56dp</dimen>
-    <dimen name="color_thumb_size">68dp</dimen>
-    <dimen name="icon_service_small_size">60dp</dimen>
-
-    <dimen name="slider_view_height">200dp</dimen>
-    <dimen name="wifi_device_image_height">176dp</dimen>
-    <dimen name="wifi_device_indicator_size">25dp</dimen>
-    <dimen name="wifi_device_gradient_radius">12dp</dimen>
-    <dimen name="wifi_device_padding">26dp</dimen>
-    <dimen name="qr_scanner_size">100dp</dimen>
-
-    <dimen name="custom_toolbar_height">56dp</dimen>
-
-    <dimen name="default_vertical_spacing">18dp</dimen>
-
-    <dimen name="text_size_small">13sp</dimen>
-    <dimen name="text_size_medium">15sp</dimen>
-    <dimen name="text_size_title">20sp</dimen>
-
-    <dimen name="device_name_title_start_margin">10dp</dimen>
-    <dimen name="device_name_title_top_margin">14dp</dimen>
-
-
-    <dimen name="min_chat_width">100dp</dimen>
-    <dimen name="hint_alpha" format="float">0.5px</dimen>
-    <dimen name="no_hint_value" format="float">1px</dimen>
-
-    <dimen name="wifi_adding_badge_size">14dp</dimen>
-    <dimen name="wifi_adding_checkpoint_size">28dp</dimen>
-    <dimen name="wifi_adding_progressbar_outer_size">200dp</dimen>
-    <dimen name="wifi_adding_progressbar_inner_size">130dp</dimen>
-    <dimen name="wifi_adding_text_margin">20dp</dimen>
-
-    <dimen name="popup_arrow_size">16dp</dimen>
-    <dimen name="device_alarm_icon_size">24dp</dimen>
-    <dimen name="error_size">140dp</dimen>
-    <dimen name="about_platform_progressbar_size">24dp</dimen>
-    <dimen name="go_to_web_service_button_height">60dp</dimen>
-    <dimen name="margin_top_step_fragment">34dp</dimen>
-    <dimen name="report_summary_height">180dp</dimen>
-    <dimen name="popup_width">170dp</dimen>
-    <dimen name="popup_height">100dp</dimen>
-    <dimen name="progressbar_height">8dp</dimen>
-    <dimen name="mark_radius">7dp</dimen>
-
-    <dimen name="button_margin">12dp</dimen>
-
-    <dimen name="script_scrollable_padding_bottom">16dp</dimen>
-    <dimen name="submit_button_padding">18dp</dimen>
-
+    <dimen name="refresh_button_bottom_margin">20dp</dimen>
 </resources>

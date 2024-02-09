@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.krayapp.buffercompanion.R
 import com.krayapp.buffercompanion.data.room.StringEntity
-import com.krayapp.buffercompanion.databinding.MainScreenAdapterItemBinding
+import com.krayapp.buffercompanion.databinding.AdapterItemBinding
 import java.util.Collections
 
 
@@ -65,7 +65,7 @@ class WordsAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WordViewHolder {
         return WordViewHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.main_screen_adapter_item, parent, false)
+            LayoutInflater.from(parent.context).inflate(R.layout.adapter_item, parent, false)
         )
     }
 
@@ -97,7 +97,7 @@ class WordsAdapter(
 }
 
 class WordViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-    private val vb = MainScreenAdapterItemBinding.bind(view)
+    private val vb = AdapterItemBinding.bind(view)
     private var originText = ""
     @SuppressLint("ClickableViewAccessibility")
     fun onBind(
@@ -108,13 +108,11 @@ class WordViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         originText = text
         vb.text.text = text
         vb.root.setOnClickListener { onClicked(originText) }
-        vb.drag.setOnTouchListener { _, event ->
-            if (event.actionMasked == MotionEvent.ACTION_DOWN) {
-                if (onStartDrag != null)
-                    onStartDrag(this)
-            }
+        vb.drag.setOnLongClickListener {
+            if (onStartDrag != null)
+                onStartDrag(this)
 
-            return@setOnTouchListener false
+            return@setOnLongClickListener true
         }
     }
 
