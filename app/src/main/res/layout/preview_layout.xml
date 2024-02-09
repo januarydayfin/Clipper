@@ -2,31 +2,15 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?attr/colorSurface"
+    android:background="@color/md_theme_surface"
     android:orientation="vertical">
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/header_widget_background">
-
-        <TextView
-            android:id="@+id/openApp"
-            style="@style/WidgetHeaderTextStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:focusable="true"
-            android:paddingVertical="5dp"
-            android:text="@string/open_manager"
-            android:textAlignment="center"
-            />
-    </FrameLayout>
+   <include layout="@layout/widget_header"/>
 
 	<LinearLayout
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:background="?attr/colorSurface"
+		android:background="@color/md_theme_surface"
 		android:orientation="horizontal"
 		android:paddingVertical="20dp">
 
@@ -39,12 +23,12 @@
 			android:ellipsize="end"
 			android:maxLines="2"
 			android:textAlignment="center"
-			android:textColor="?attr/colorOnSurface" />
+			android:textColor="@color/md_theme_onSurface" />
 	</LinearLayout>
 	<LinearLayout
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:background="?attr/colorSurface"
+		android:background="@color/md_theme_surface"
 		android:orientation="horizontal"
 		android:paddingVertical="20dp">
 
@@ -56,12 +40,12 @@
 			android:ellipsize="end"
 			android:maxLines="2"
 			android:textAlignment="center"
-			android:textColor="?attr/colorOnSurface" />
+			android:textColor="@color/md_theme_onSurface" />
 	</LinearLayout>
 	<LinearLayout
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:background="?attr/colorSurface"
+		android:background="@color/md_theme_surface"
 		android:orientation="horizontal"
 		android:paddingVertical="20dp">
 
@@ -73,6 +57,6 @@
 			android:ellipsize="end"
 			android:maxLines="2"
 			android:textAlignment="center"
-			android:textColor="?attr/colorOnSurface" />
+			android:textColor="@color/md_theme_onSurface" />
 	</LinearLayout>
 </LinearLayout>
