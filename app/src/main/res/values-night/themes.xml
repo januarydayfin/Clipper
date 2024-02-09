@@ -3,8 +3,8 @@
 <resources>
 	<style name="AppTheme" parent="Theme.Material3.Dark.NoActionBar">
 		<item name="android:windowLightStatusBar">false</item>
-		<item name="android:statusBarColor">@color/md_theme_surfaceContainer</item>
-		<item name="android:navigationBarColor">?attr/colorOnPrimary</item>
+		<item name="android:statusBarColor">?attr/colorSurfaceContainerHighest</item>
+		<item name="android:navigationBarColor">?attr/colorSurfaceContainerHighest</item>
 
 		<item name="colorPrimary">@color/md_theme_primary</item>
 		<item name="colorOnPrimary">@color/md_theme_onPrimary</item>

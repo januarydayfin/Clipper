@@ -28,7 +28,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         android:paddingTop="16dp"
         android:paddingBottom="30dp"
-        android:background="?attr/colorSurfaceContainerHigh"
+        android:background="?attr/colorSurfaceContainerHighest"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
