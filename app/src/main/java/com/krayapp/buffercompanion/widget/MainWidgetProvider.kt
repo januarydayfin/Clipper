@@ -46,7 +46,7 @@ class MainWidgetProvider : AppWidgetProvider() {
     ) {
         val serviceIntent = Intent(context, BufferRemoteService::class.java)
 
-        val views = RemoteViews(context.packageName, R.layout.layout_main_widget_screen).apply {
+        val views = RemoteViews(context.packageName, R.layout.layout_widget).apply {
             setRemoteAdapter(R.id.listView, serviceIntent)
             setPendingIntentTemplate(
                 R.id.listView,

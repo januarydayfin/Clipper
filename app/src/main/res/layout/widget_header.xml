@@ -6,7 +6,7 @@
 
     <TextView
         android:id="@+id/openApp"
-        android:textColor="@color/md_theme_onPrimary"
+        android:textColor="@color/md_theme_onSecondary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clickable="true"

@@ -53,37 +53,94 @@
 		<item name="colorSurfaceContainerHighest">@color/md_theme_surfaceContainerHighest</item>
 	</style>
 
-	<style name="RobotoRegular">
+
+	<!--	TEXT STYLES    -->
+	<style name="Roboto">
 		<item name="fontFamily">@font/roboto</item>
 	</style>
 
 	<style name="RobotoMedium">
-		<item name="fontFamily">@font/roboto</item>
-	</style>
-
-
-	<style name="TitleTextStyle" parent="RobotoRegular">
-		<item name="android:textColor">?attr/colorOnSurface</item>
-		<item name="android:textSize">22sp</item>
-	</style>
-
-	<style name="ElevatedTextStyle">
 		<item name="fontFamily">@font/roboto_medium</item>
-		<item name="android:textSize">14sp</item>
-		<item name="android:textColor">?attr/colorPrimary</item>
 	</style>
 
-	<style name="RecyclerItemTextStyle" parent="RobotoRegular">
-		<item name="android:textColor">?attr/colorOnSurface</item>
+	<style name="HeadlineLarge" parent="Roboto">
+		<item name="android:textSize">32sp</item>
+		<item name="android:lineHeight">40sp</item>
+		<item name="android:letterSpacing">0</item>
+	</style>
+
+	<style name="HeadlineMedium" parent="Roboto">
+		<item name="android:textSize">28sp</item>
+		<item name="android:lineHeight">36sp</item>
+		<item name="android:letterSpacing">0</item>
+	</style>
+
+	<style name="HeadlineSmall" parent="Roboto">
+		<item name="android:textSize">24sp</item>
+		<item name="android:lineHeight">32sp</item>
+		<item name="android:letterSpacing">0</item>
+	</style>
+
+	<style name="TitleLarge" parent="Roboto">
+		<item name="android:textSize">22sp</item>
+		<item name="android:lineHeight">28sp</item>
+		<item name="android:letterSpacing">0</item>
+	</style>
+
+	<style name="TitleMedium" parent="RobotoMedium">
 		<item name="android:textSize">16sp</item>
+		<item name="android:lineHeight">24sp</item>
+		<item name="android:letterSpacing">0.15</item>
 	</style>
 
-	<style name="ClipperElevatedButtonStyle" parent="Widget.Material3.Button.ElevatedButton">
-		<item name="backgroundTint">?attr/colorSurface</item>
-		<item name="android:textAppearance">@style/ElevatedTextStyle</item>
+	<style name="TitleSmall" parent="RobotoMedium">
+		<item name="android:textSize">14sp</item>
+		<item name="android:lineHeight">20sp</item>
+		<item name="android:letterSpacing">0.1</item>
 	</style>
 
-	<style name="WidgetHeaderTextStyle" parent="RobotoRegular">
-		<item name="android:textColor">?attr/colorOnPrimary</item>
+
+	<style name="LabelLarge" parent="RobotoMedium">
+		<item name="android:textSize">14sp</item>
+		<item name="android:lineHeight">20sp</item>
+		<item name="android:letterSpacing">0.1</item>
+	</style>
+
+	<style name="LabelMedium" parent="RobotoMedium">
+		<item name="android:textSize">12sp</item>
+		<item name="android:lineHeight">26sp</item>
+		<item name="android:letterSpacing">0.5</item>
+	</style>
+
+	<style name="LabelSmall" parent="RobotoMedium">
+		<item name="android:textSize">11sp</item>
+		<item name="android:lineHeight">16sp</item>
+		<item name="android:letterSpacing">0.5</item>
+	</style>
+
+
+	<style name="BodyLarge" parent="Roboto">
+		<item name="android:textSize">16sp</item>
+		<item name="android:lineHeight">24sp</item>
+		<item name="android:letterSpacing">0.2</item>
+	</style>
+
+
+	<style name="BodyMedium" parent="Roboto">
+		<item name="android:textSize">14sp</item>
+		<item name="android:lineHeight">20sp</item>
+		<item name="android:letterSpacing">0.25</item>
+	</style>
+
+
+	<style name="BodySmall" parent="Roboto">
+		<item name="android:textSize">12sp</item>
+		<item name="android:lineHeight">16sp</item>
+		<item name="android:letterSpacing">0.4</item>
+	</style>
+
+
+	<style name="BaseActionContainer">
+		<item name="android:background">@drawable/background_base_card</item>
 	</style>
 </resources>

@@ -112,10 +112,21 @@ class MainFragment : AbsFragment() {
 
 
 	private fun initClick() {
-		vb.editLayout.setEndIconOnClickListener { pasteFromClip() }
+		vb.editLayout.setEndIconOnClickListener {
+			val text = vb.edit.text.toString()
+			if (text.isNotEmpty()) {
+				repo.addText(text)
+				addStringToAdapter(text)
+				vb.edit.text?.clear()
+				vb.recycler.scrollToPosition(wordsAdapter.itemCount - 1)
+			} else
+				pasteFromClip()
+		}
+
 		vb.edit.setOnClickListener {
 
 		}
+
 		vb.edit.setOnEditorActionListener(object : TextView.OnEditorActionListener {
 			override fun onEditorAction(v: TextView?, actionId: Int, event: KeyEvent?): Boolean {
 				if (actionId == EditorInfo.IME_ACTION_DONE) {
