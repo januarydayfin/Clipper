@@ -4,7 +4,7 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
-	android:background="?attr/colorSurfaceContainerHighest"
+	android:background="?attr/toolbarNavColor"
 	android:gravity="center_vertical"
 	android:orientation="horizontal"
 	android:paddingHorizontal="@dimen/toolbar_horizontal_padding"

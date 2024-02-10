@@ -10,7 +10,7 @@ import com.krayapp.buffercompanion.R
 import com.krayapp.buffercompanion.data.room.StringEntity
 import com.krayapp.buffercompanion.databinding.AdapterItemBinding
 import com.krayapp.buffercompanion.justVibrateABit
-import com.krayapp.buffercompanion.ui.fragments.interfaces.OnMenusWatcher
+import com.krayapp.buffercompanion.ui.fragments.interfaces.ListEditWatcher
 import java.util.Collections
 
 
@@ -22,10 +22,10 @@ class WordsAdapter(
     RecyclerView.Adapter<WordViewHolder>() {
     private val data = ArrayList<StringEntity>()
     private var onStartDrag: ((RecyclerView.ViewHolder) -> Unit)? = null
-
-    private lateinit var menusWatcher: OnMenusWatcher
+    private lateinit var listWatcher: ListEditWatcher
 
     private var openedMenuCount = 0
+    private var editionMode = false
 
 
     //PRIVATE----->
@@ -55,7 +55,9 @@ class WordsAdapter(
             holder.onBind(
                 text = data[position].text,
                 onClicked = onCopyClicked,
+                editionFlag = editionMode,
                 onStartDrag = onStartDrag,
+                onEditionModeOn = {},
                 onRemove = {
                     deleteWord(it)
                     onRemoveClicked(it)
@@ -63,12 +65,12 @@ class WordsAdapter(
                 onEdit = { onEditClicked(it) },
                 onMenuOpened = {
                     openedMenuCount++
-                    menusWatcher.onMenusOpened()
+                    listWatcher.onMenusOpened()
                 },
                 onMenuClosed = {
                     openedMenuCount--
                     if (openedMenuCount <= 0)
-                        menusWatcher.onMenusAllClosed()
+                        listWatcher.onMenusAllClosed()
                 }
             )
         }
@@ -95,8 +97,8 @@ class WordsAdapter(
     }
 
 
-    fun attachMenusWatcher(watcher: OnMenusWatcher) {
-        this.menusWatcher = watcher
+    fun attachMenusWatcher(watcher: ListEditWatcher) {
+        this.listWatcher = watcher
     }
 
     fun getUpdatedIndexData(): ArrayList<StringEntity> {
@@ -115,7 +117,7 @@ class WordsAdapter(
     fun resetMenus() {
         notifyItemRangeChanged(0, data.size)
         openedMenuCount = 0
-        menusWatcher.onMenusAllClosed()
+        listWatcher.onMenusAllClosed()
     }
 
     fun onItemMove(fromPos: Int, toPos: Int) {
@@ -135,6 +137,8 @@ class WordsAdapter(
 class WordViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     private val vb = AdapterItemBinding.bind(view)
     private var originText = ""
+    private var editionFlag = false
+
 
     private lateinit var onMenuOpened: (Any) -> Unit
     private lateinit var onMenuClosed: (Any) -> Unit
@@ -146,8 +150,10 @@ class WordViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     @SuppressLint("ClickableViewAccessibility")
     fun onBind(
         text: String,
+        editionFlag : Boolean,
         onClicked: (String) -> Unit,
         onStartDrag: ((RecyclerView.ViewHolder) -> Unit)? = null,
+        onEditionModeOn: (String) -> Unit,
         onRemove: (String) -> Unit,
         onEdit: (String) -> Unit,
         onMenuOpened: (Any) -> Unit,
@@ -166,6 +172,9 @@ class WordViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     }
 
     private fun renderViews() {
+        vb.drag.isVisible = !editionFlag
+        vb.checkBox.isVisible = editionFlag
+
         vb.text.text = originText
         vb.itemMenu.root.isVisible = false
     }

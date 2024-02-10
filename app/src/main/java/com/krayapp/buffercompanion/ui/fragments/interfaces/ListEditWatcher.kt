@@ -1,6 +1,6 @@
 package com.krayapp.buffercompanion.ui.fragments.interfaces
 
-interface OnMenusWatcher {
+interface ListEditWatcher {
     fun onMenusOpened()
 
     fun onMenusClosed() {}

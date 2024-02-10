@@ -24,11 +24,10 @@ import com.krayapp.buffercompanion.R
 import com.krayapp.buffercompanion.activity
 import com.krayapp.buffercompanion.data.RememberedRepo
 import com.krayapp.buffercompanion.databinding.FragmentMainBinding
-import com.krayapp.buffercompanion.hideKeyboard
 import com.krayapp.buffercompanion.ui.RecyclerTouchControl
 import com.krayapp.buffercompanion.ui.RecyclerViewSpacer
 import com.krayapp.buffercompanion.ui.WordsAdapter
-import com.krayapp.buffercompanion.ui.fragments.interfaces.OnMenusWatcher
+import com.krayapp.buffercompanion.ui.fragments.interfaces.ListEditWatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
@@ -91,7 +90,7 @@ class MainFragment : Fragment() {
 					helper.startDrag(it)
 				})
 
-			attachMenusWatcher(object : OnMenusWatcher {
+			attachMenusWatcher(object : ListEditWatcher {
 				override fun onMenusOpened() {
 					activity().onBackPressedDispatcher.addCallback(backDispatcher)
 				}

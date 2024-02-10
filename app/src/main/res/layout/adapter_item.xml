@@ -10,26 +10,26 @@
 		android:layout_width="0dp"
 		android:layout_height="wrap_content"
 		android:layout_weight="0.7"
-		android:background="@drawable/recycler_background"
+		android:background="@drawable/background_base_card"
 		android:elevation="0.1dp"
 		android:orientation="horizontal"
 		android:paddingVertical="16dp">
 
-		<LinearLayout
+		<FrameLayout
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
-			android:background="?attr/selectableItemBackgroundBorderless"
-			android:orientation="horizontal">
+			android:background="?attr/selectableItemBackgroundBorderless">
 
 			<TextView
 				android:id="@+id/text"
 				style="@style/BodyLarge"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:layout_gravity="center_vertical"
+				android:layout_gravity="start|center_vertical"
 				android:layout_marginStart="16dp"
 				android:layout_marginEnd="30dp"
 				android:ellipsize="end"
+
 				android:maxEms="6"
 				android:maxLines="1"
 				tools:text="KittySammy" />
@@ -43,11 +43,20 @@
 				android:id="@+id/drag"
 				android:layout_width="30dp"
 				android:layout_height="30dp"
+				android:layout_gravity="end|center_vertical"
 				android:layout_marginEnd="30dp"
 				android:paddingHorizontal="4dp"
 				android:paddingVertical="9dp"
 				android:src="@drawable/drag_sandwich" />
-		</LinearLayout>
+
+			<CheckBox
+				android:id="@+id/checkBox"
+				android:visibility="gone"
+				android:layout_marginEnd="30dp"
+				android:layout_gravity="end|center_vertical"
+				android:layout_width="30dp"
+				android:layout_height="30dp"/>
+		</FrameLayout>
 
 	</LinearLayout>
 
