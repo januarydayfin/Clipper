@@ -6,6 +6,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -23,6 +24,7 @@ import androidx.transition.TransitionInflater
 import com.krayapp.buffercompanion.R
 import com.krayapp.buffercompanion.activity
 import com.krayapp.buffercompanion.data.RememberedRepo
+import com.krayapp.buffercompanion.data.room.StringEntity
 import com.krayapp.buffercompanion.databinding.FragmentMainBinding
 import com.krayapp.buffercompanion.ui.RecyclerTouchControl
 import com.krayapp.buffercompanion.ui.RecyclerViewSpacer
@@ -45,7 +47,7 @@ class MainFragment : Fragment() {
 	private val backDispatcher by lazy {
 		object : OnBackPressedCallback(true) {
 			override fun handleOnBackPressed() {
-				wordsAdapter.resetMenus()
+				wordsAdapter.resetEdition()
 			}
 		}
 	}
@@ -75,11 +77,7 @@ class MainFragment : Fragment() {
 
 	@SuppressLint("ClickableViewAccessibility")
 	private fun initAdapter() {
-		wordsAdapter = WordsAdapter(
-			onCopyClicked = { copy(it) },
-			onRemoveClicked = { removeString(it) },
-			onEditClicked = {}
-		)
+		wordsAdapter = WordsAdapter(getListWatcher())
 		touchHelper = RecyclerTouchControl(wordsAdapter)
 		val helper = ItemTouchHelper(touchHelper).apply { attachToRecyclerView(vb.recycler) }
 
@@ -90,15 +88,6 @@ class MainFragment : Fragment() {
 					helper.startDrag(it)
 				})
 
-			attachMenusWatcher(object : ListEditWatcher {
-				override fun onMenusOpened() {
-					activity().onBackPressedDispatcher.addCallback(backDispatcher)
-				}
-
-				override fun onMenusAllClosed() {
-					backDispatcher.remove()
-				}
-			})
 		}
 
 
@@ -120,6 +109,38 @@ class MainFragment : Fragment() {
 	}
 
 
+	private fun getListWatcher(): ListEditWatcher {
+		return object : ListEditWatcher {
+			override fun onEditionStart() {
+				activity().onBackPressedDispatcher.addCallback(backDispatcher)
+			}
+
+			override fun onEditionReset() {
+				backDispatcher.remove()
+				activity().toolbarAssistant().onMainScreen()
+			}
+
+			override fun onCopyClicked(entity: StringEntity) {
+				copy(entity.text)
+			}
+
+			override fun onRemoveClicked(entity: StringEntity) {
+				removeString(entity)
+			}
+
+			override fun onEditClicked(entity: StringEntity) {
+
+			}
+
+			override fun onCheckRemoveStart() {
+				activity().toolbarAssistant()
+					.onCheckRemoveStarted({ wordsAdapter.checkAllRemove() }, onDelete = {
+						repo.removeList(wordsAdapter.getCheckedList())
+						wordsAdapter.removeChecked()
+					})
+			}
+		}
+	}
 	private fun initClick() {
 		vb.editLayout.setEndIconOnClickListener {
 			val text = vb.edit.text.toString()
@@ -164,12 +185,12 @@ class MainFragment : Fragment() {
 		if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2)
 			Toast.makeText(
 				requireContext(),
-				"Скопировано",
+				R.string.copied,
 				Toast.LENGTH_SHORT
 			).show()
 	}
 
-	private fun removeString(text: String) {
+	private fun removeString(text: StringEntity) {
 		CoroutineScope(Dispatchers.IO).launch {
 			repo.remove(text)
 		}

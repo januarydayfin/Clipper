@@ -13,4 +13,9 @@
 	<string name="light_theme">Светлая тема</string>
 	<string name="system_theme">Системная тема</string>
 	<string name="dark_theme">Темная тема</string>
+
+	<string name="copied">Скопировано</string>
+
+	<string name="check_all">Выделить все</string>
+	<string name="delete">Удалить</string>
 </resources>

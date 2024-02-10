@@ -15,7 +15,9 @@ class RecyclerTouchControl(
         viewHolder: RecyclerView.ViewHolder
     ): Int {
         val dragFlags = ItemTouchHelper.UP or ItemTouchHelper.DOWN
-        val swipeFlags = ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
+
+        val swipeFlags =
+            if (adapter.inEditionMode) 0 else ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
         return makeMovementFlags(dragFlags, swipeFlags)
     }
 

@@ -22,9 +22,17 @@ class RememberedRepo(context: Context) {
         }
     }
 
-    fun remove(text: String) {
+    fun remove(text: StringEntity) {
         CoroutineScope(Dispatchers.IO).launch {
-            dao.delete(StringEntity(text))
+            dao.delete(text)
+        }
+    }
+
+    fun removeList(list : List<StringEntity>) {
+        CoroutineScope(Dispatchers.IO).launch {
+            for (item in list) {
+                dao.delete(item)
+            }
         }
     }
 

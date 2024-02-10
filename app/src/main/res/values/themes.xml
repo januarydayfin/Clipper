@@ -136,4 +136,5 @@
 		<item name="android:focusable">true</item>
 		<item name="android:background">@drawable/background_base_card</item>
 	</style>
+
 </resources>

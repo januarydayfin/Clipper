@@ -25,16 +25,16 @@
 	<TextView
 		android:id="@+id/fragmentTitle"
 		style="@style/TitleLarge"
-		tools:visibility="visible"
 		android:layout_width="wrap_content"
-		android:visibility="gone"
 		android:layout_height="wrap_content"
-		tools:text="Settings"
 		android:textColor="?attr/colorOnSurface"
+		android:visibility="gone"
 		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toTopOf="parent" />
+		app:layout_constraintTop_toTopOf="parent"
+		tools:text="Settings"
+		tools:visibility="visible" />
 
 	<ImageView
 		android:id="@+id/back"
@@ -62,5 +62,32 @@
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintTop_toTopOf="parent" />
 
+	<Button
+		android:id="@+id/checkAll"
+		style="@style/Widget.Material3.Button.TextButton"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginEnd="@dimen/toolbar_buttons_padding"
+		android:text="@string/check_all"
+		android:visibility="gone"
+		tools:visibility="visible"
+
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toStartOf="@+id/delete"
+		app:layout_constraintTop_toTopOf="parent" />
+
+
+	<Button
+		android:id="@+id/delete"
+		style="@style/Widget.Material3.Button.TextButton"
+		android:textColor="?attr/colorError"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="@string/delete"
+		android:visibility="gone"
+		tools:visibility="visible"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

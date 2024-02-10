@@ -7,6 +7,7 @@ import android.os.Vibrator
 import android.util.DisplayMetrics
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.CheckBox
 import androidx.fragment.app.Fragment
 import com.krayapp.buffercompanion.ui.MainActivity
 import kotlin.math.roundToInt
@@ -43,9 +44,12 @@ fun View.setVisible() {
 
 fun View.setInvisible() {
 	visibility = View.INVISIBLE
-
 }
 
 fun View.setGone() {
 	visibility = View.GONE
+}
+
+fun CheckBox.switchState(){
+	isChecked = !isChecked
 }

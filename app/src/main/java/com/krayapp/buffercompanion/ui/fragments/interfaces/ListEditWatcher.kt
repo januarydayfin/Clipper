@@ -1,8 +1,12 @@
 package com.krayapp.buffercompanion.ui.fragments.interfaces
 
-interface ListEditWatcher {
-    fun onMenusOpened()
+import com.krayapp.buffercompanion.data.room.StringEntity
 
-    fun onMenusClosed() {}
-    fun onMenusAllClosed()
+interface ListEditWatcher {
+    fun onEditionStart()
+    fun onEditionReset()
+    fun onCopyClicked(entity: StringEntity)
+    fun onRemoveClicked(entity: StringEntity)
+    fun onEditClicked(entity: StringEntity)
+    fun onCheckRemoveStart()
 }
