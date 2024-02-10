@@ -1,26 +1,24 @@
 package com.krayapp.buffercompanion
 
 import android.app.Application
-import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
 import com.google.android.material.color.DynamicColors
-import com.krayapp.buffercompanion.ui.fragments.settings.SettingsPrefs
 
 class ClipperApp: Application() {
 
     companion object {
         private var instance : Application? = null
-        private lateinit var globalPrefs : SettingsPrefs
+        private lateinit var globalPrefs : GlobalPrefs
         fun getApplication(): Application {
             return instance!!
         }
-        fun getPrefs(): SettingsPrefs {
+        fun getPrefs(): GlobalPrefs {
             return globalPrefs
         }
     }
     override fun onCreate() {
         instance = this
-        globalPrefs = SettingsPrefs()
+        globalPrefs = GlobalPrefs()
 
         if (globalPrefs.isDynamicColors())
             DynamicColors.applyToActivitiesIfAvailable(this)

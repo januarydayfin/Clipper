@@ -27,13 +27,8 @@ class WordsAdapter(
 
     private var openedMenuCount = 0
 
-    fun addWord(text: String) {
-        if (!data.contains(StringEntity(text))) {
-            data.add(StringEntity(text))
-            notifyItemInserted(data.size)
-        }
-    }
 
+    //PRIVATE----->
     private fun deleteWord(text: String) {
         var index = -1
         for (i in 0 until data.size) {
@@ -45,6 +40,51 @@ class WordsAdapter(
         if (index != -1) {
             data.removeAt(index)
             notifyItemRemoved(index)
+        }
+    }
+
+    //ADAPTER IMPL----->
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WordViewHolder {
+        return WordViewHolder(
+            LayoutInflater.from(parent.context).inflate(R.layout.adapter_item, parent, false)
+        )
+    }
+
+    override fun onBindViewHolder(holder: WordViewHolder, position: Int) {
+        if (position < data.size) {
+            holder.onBind(
+                text = data[position].text,
+                onClicked = onCopyClicked,
+                onStartDrag = onStartDrag,
+                onRemove = {
+                    deleteWord(it)
+                    onRemoveClicked(it)
+                },
+                onEdit = { onEditClicked(it) },
+                onMenuOpened = {
+                    openedMenuCount++
+                    menusWatcher.onMenusOpened()
+                },
+                onMenuClosed = {
+                    openedMenuCount--
+                    if (openedMenuCount <= 0)
+                        menusWatcher.onMenusAllClosed()
+                }
+            )
+        }
+    }
+
+    override fun getItemCount(): Int {
+        return data.size
+    }
+
+
+    //PUBLIC----->
+
+    fun addWord(text: String) {
+        if (!data.contains(StringEntity(text))) {
+            data.add(StringEntity(text))
+            notifyItemInserted(data.size)
         }
     }
 
@@ -72,20 +112,10 @@ class WordsAdapter(
     }
 
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WordViewHolder {
-        return WordViewHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.adapter_item, parent, false)
-        )
-    }
-
     fun resetMenus() {
         notifyItemRangeChanged(0, data.size)
         openedMenuCount = 0
         menusWatcher.onMenusAllClosed()
-    }
-
-    override fun getItemCount(): Int {
-        return data.size
     }
 
     fun onItemMove(fromPos: Int, toPos: Int) {
@@ -100,30 +130,6 @@ class WordsAdapter(
         }
         notifyItemMoved(fromPos, toPos)
     }
-
-    override fun onBindViewHolder(holder: WordViewHolder, position: Int) {
-        if (position < data.size) {
-            holder.onBind(
-                text = data[position].text,
-                onClicked = onCopyClicked,
-                onStartDrag = onStartDrag,
-                onRemove = {
-                    deleteWord(it)
-                    onRemoveClicked(it)
-                },
-                onEdit = { onEditClicked(it) },
-                onMenuOpened = {
-                    openedMenuCount++
-                    menusWatcher.onMenusOpened()
-                },
-                onMenuClosed = {
-                    openedMenuCount--
-                    if (openedMenuCount <= 0)
-                        menusWatcher.onMenusAllClosed()
-                }
-            )
-        }
-    }
 }
 
 class WordViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -132,6 +138,10 @@ class WordViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
     private lateinit var onMenuOpened: (Any) -> Unit
     private lateinit var onMenuClosed: (Any) -> Unit
+    private lateinit var onClicked: (String) -> Unit
+    private var onStartDrag: ((RecyclerView.ViewHolder) -> Unit)? = null
+    private lateinit var onRemove: (String) -> Unit
+    private lateinit var onEdit: (String) -> Unit
 
     @SuppressLint("ClickableViewAccessibility")
     fun onBind(
@@ -145,17 +155,29 @@ class WordViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     ) {
         this.onMenuOpened = onMenuOpened
         this.onMenuClosed = onMenuClosed
+        this.onClicked = onClicked
+        this.onStartDrag = onStartDrag
+        this.onRemove = onRemove
+        this.onEdit = onEdit
         originText = text
-        vb.text.text = text
+
+        renderViews()
+        setClick()
+    }
+
+    private fun renderViews() {
+        vb.text.text = originText
+        vb.itemMenu.root.isVisible = false
+    }
+
+    private fun setClick() {
         vb.root.setOnClickListener { onClicked(originText) }
         vb.drag.setOnLongClickListener {
             if (onStartDrag != null)
-                onStartDrag(this)
+                onStartDrag!!(this)
 
             return@setOnLongClickListener true
         }
-        vb.itemMenu.root.isVisible = false
-
         vb.itemMenu.remove.setOnClickListener { onRemove(originText) }
         vb.itemMenu.edit.setOnClickListener { onEdit(originText) }
     }

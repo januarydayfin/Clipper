@@ -6,17 +6,12 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
-import androidx.navigation.NavDestination
 import androidx.navigation.Navigation
-import androidx.navigation.findNavController
 import com.krayapp.buffercompanion.ClipperApp
-import com.krayapp.buffercompanion.Constants
 import com.krayapp.buffercompanion.Constants.Companion.MAIN_FRAG
 import com.krayapp.buffercompanion.R
-import com.krayapp.buffercompanion.activity
 import com.krayapp.buffercompanion.databinding.MainActivityBinding
 import com.krayapp.buffercompanion.ui.fragments.ToolbarAssist
 import com.krayapp.buffercompanion.widget.MainWidgetProvider
@@ -49,14 +44,13 @@ class MainActivity : AppCompatActivity() {
 
 	override fun onStop() {
 		super.onStop()
-		updateWidget()
+		refreshWidget()
 	}
 
 	fun navigateTo(actionId: Int) {
 		try {
 			navController.navigate(actionId)
-		} catch (ignored: Exception) {
-		}
+		} catch (ignored: Exception) { }
 	}
 
 	fun restartApp() {
@@ -80,7 +74,7 @@ class MainActivity : AppCompatActivity() {
 		return toolbarAssist
 	}
 
-	fun updateWidget() {
+	fun refreshWidget() {
 		val ids: IntArray = AppWidgetManager.getInstance(ClipperApp.getApplication())
 			.getAppWidgetIds(
 				ComponentName(
@@ -97,6 +91,6 @@ class MainActivity : AppCompatActivity() {
 
 		Handler(Looper.myLooper()!!).postDelayed({
 			sendBroadcast(intent)
-		}, 3000)
+		}, 3000) //delay чтобы БД успела обновиться
 	}
 }

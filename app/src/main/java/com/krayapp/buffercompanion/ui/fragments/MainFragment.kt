@@ -35,7 +35,7 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 
 class MainFragment : Fragment() {
-	private lateinit var vb : FragmentMainBinding
+	private lateinit var vb: FragmentMainBinding
 
 	private lateinit var repo: RememberedRepo
 	private lateinit var wordsAdapter: WordsAdapter
@@ -155,8 +155,10 @@ class MainFragment : Fragment() {
 
 
 	}
+
 	private fun copy(text: String) {
-		val manager = requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+		val manager =
+			requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
 		val clip = ClipData.newPlainText("label", text)
 		manager.setPrimaryClip(clip)
 
@@ -185,7 +187,8 @@ class MainFragment : Fragment() {
 
 
 	private fun pasteFromClip() {
-		val manager = requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+		val manager =
+			requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
 
 		val textFromClip = manager.primaryClip?.getItemAt(0)?.text.toString()
 

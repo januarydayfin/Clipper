@@ -28,19 +28,6 @@ abstract class AbsFragment : Fragment() {
         view.setBackgroundColor(requireContext().getColor(R.color.md_theme_surface))
     }
 
-
-    override fun onStart() {
-        super.onStart()
-        setupToolbar()
-    }
-
-    private fun setupToolbar() {
-        with(activity().toolbarAssistant()) {
-            setTitle(getTitleRes())
-            setBackClick { activity().popBackStack() }
-        }
-    }
-
     override fun onResume() {
         super.onResume()
         activity().onBackPressedDispatcher.addCallback(backDispatcher)
@@ -49,6 +36,26 @@ abstract class AbsFragment : Fragment() {
     override fun onStop() {
         backDispatcher.remove()
         super.onStop()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        setupToolbar()
+    }
+
+
+    private fun setupToolbar() {
+        with(activity().toolbarAssistant()) {
+            setTitle(getTitleRes())
+            setBackClick { backAction() }
+        }
+    }
+
+    /**
+     * Можем переопределить в дочернем фрагменте, чтобы поменять поведение
+     */
+    protected fun backAction() {
+        activity().popBackStack()
     }
 
     abstract fun getTitleRes() : Int

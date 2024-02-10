@@ -4,8 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.OnBackPressedCallback
-import androidx.core.view.isVisible
 import com.krayapp.buffercompanion.ClipperApp
 import com.krayapp.buffercompanion.R
 import com.krayapp.buffercompanion.activity
@@ -38,11 +36,12 @@ class SettingsFragment : AbsFragment() {
 	private fun initClick() {
 		vb.dynamicColorsSwitch.isChecked = ClipperApp.getPrefs().isDynamicColors()
 
-		vb.dynamicColorsSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
+		vb.dynamicColorsSwitch.setOnCheckedChangeListener { _, isChecked ->
 			ClipperApp.getPrefs().setDynamicColors(isChecked)
 			activity().restartApp()
 		}
 
+		vb.refreshWidget.setOnClickListener { activity().refreshWidget() }
 		vb.appTheme.setOnClickListener { activity().navigateTo(R.id.toAppTheme) }
 	}
 

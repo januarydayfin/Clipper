@@ -7,9 +7,8 @@
 	android:paddingTop="@dimen/base_top_margin">
 
 
-	<FrameLayout
+	<com.krayapp.buffercompanion.views.RippleCard
 		android:id="@+id/signGoogle"
-		style="@style/BaseActionContainer"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:orientation="horizontal">
@@ -29,14 +28,14 @@
 			android:layout_gravity="end|center_vertical"
 			android:layout_marginEnd="@dimen/base_screen_margin"
 			android:src="@drawable/ic_google" />
-	</FrameLayout>
+	</com.krayapp.buffercompanion.views.RippleCard>
 
-	<FrameLayout
+
+	<com.krayapp.buffercompanion.views.RippleCard
 		android:id="@+id/appTheme"
-		android:layout_marginTop="12dp"
-		style="@style/BaseActionContainer"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
+		android:layout_marginTop="12dp"
 		android:orientation="horizontal">
 
 		<TextView
@@ -54,15 +53,16 @@
 			android:layout_gravity="end|center_vertical"
 			android:layout_marginEnd="@dimen/base_screen_margin"
 			android:src="@drawable/ic_arrow" />
-	</FrameLayout>
 
-	<FrameLayout
+	</com.krayapp.buffercompanion.views.RippleCard>
+
+	<com.krayapp.buffercompanion.views.RippleCard
 		android:id="@+id/widgetSettings"
-		android:layout_marginTop="12dp"
-		style="@style/BaseActionContainer"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
+		android:layout_marginTop="12dp"
 		android:orientation="horizontal">
+
 
 		<TextView
 			style="@style/BodyLarge"
@@ -79,12 +79,11 @@
 			android:layout_gravity="end|center_vertical"
 			android:layout_marginEnd="@dimen/base_screen_margin"
 			android:src="@drawable/ic_arrow" />
-	</FrameLayout>
+	</com.krayapp.buffercompanion.views.RippleCard>
 
 
-	<FrameLayout
+	<com.krayapp.buffercompanion.views.RippleCard
 		android:id="@+id/refreshWidget"
-		style="@style/BaseActionContainer"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_marginTop="12dp"
@@ -105,7 +104,8 @@
 			android:layout_gravity="end|center_vertical"
 			android:layout_marginEnd="@dimen/base_screen_margin"
 			android:src="@drawable/refresh" />
-	</FrameLayout>
+	</com.krayapp.buffercompanion.views.RippleCard>
+
 
 	<FrameLayout
 		style="@style/BaseActionContainer"
@@ -118,10 +118,20 @@
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:padding="@dimen/main_edit_text_margins"
-			android:text="Use Dynamic Colors"
+			android:text="@string/use_dynamic_colors"
 			android:textAppearance="@style/BodyLarge"
 			android:textColor="?attr/colorOnSurface" />
 	</FrameLayout>
 
+
+	<com.krayapp.buffercompanion.views.RippleCard
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content">
+
+		<ImageView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:tag="image" />
+	</com.krayapp.buffercompanion.views.RippleCard>
 
 </LinearLayout>

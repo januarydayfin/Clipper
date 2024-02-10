@@ -1,10 +1,10 @@
-package com.krayapp.buffercompanion.ui.fragments.settings
+package com.krayapp.buffercompanion
 
 import android.content.Context
 import androidx.appcompat.app.AppCompatDelegate
 import com.krayapp.buffercompanion.ClipperApp
 
-class SettingsPrefs {
+class GlobalPrefs {
 	private val PREFS_NAME = "mainSettings"
 
 	private val KEY_DYNAMIC_COLORS = "KEY_DYNAMIC_COLORS"

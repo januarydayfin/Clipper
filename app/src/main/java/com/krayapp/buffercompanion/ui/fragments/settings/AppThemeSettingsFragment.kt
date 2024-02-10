@@ -39,31 +39,14 @@ class AppThemeSettingsFragment : AbsFragment() {
 
 
 	private fun checkTheme() {
-		when (currentMode) {
-			MODE_NIGHT_NO -> {
-				vb.lightRadio.isChecked = true
-				vb.darkRadio.isChecked = false
-				vb.systemRadio.isChecked = false
-			}
-
-			MODE_NIGHT_YES -> {
-				vb.darkRadio.isChecked = true
-				vb.lightRadio.isChecked = false
-				vb.systemRadio.isChecked = false
-
-			}
-
-			MODE_NIGHT_FOLLOW_SYSTEM -> {
-				vb.lightRadio.isChecked = false
-				vb.darkRadio.isChecked = false
-				vb.systemRadio.isChecked = true
-			}
-		}
+		vb.systemRadio.isChecked = currentMode == MODE_NIGHT_FOLLOW_SYSTEM
+		vb.lightRadio.isChecked = currentMode == MODE_NIGHT_NO
+		vb.darkRadio.isChecked = currentMode == MODE_NIGHT_YES
 	}
 
 	private fun initClick() {
 		vb.lightTheme.setOnClickListener { setMode(MODE_NIGHT_NO) }
-		vb.darkTHeme.setOnClickListener { setMode(MODE_NIGHT_YES) }
+		vb.darkTheme.setOnClickListener { setMode(MODE_NIGHT_YES) }
 		vb.systemTheme.setOnClickListener { setMode(MODE_NIGHT_FOLLOW_SYSTEM) }
 	}
 
