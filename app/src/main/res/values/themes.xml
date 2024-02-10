@@ -18,6 +18,7 @@
 		<item name="colorOnSecondaryContainer">@color/md_theme_onSecondaryContainer</item>
 		<item name="colorTertiary">@color/md_theme_tertiary</item>
 		<item name="colorOnTertiary">@color/md_theme_onTertiary</item>
+		<item name="bottomSheetStyle">@style/Widget.Material3.BottomSheet.Modal</item>
 		<item name="colorTertiaryContainer">@color/md_theme_tertiaryContainer</item>
 		<item name="colorOnTertiaryContainer">@color/md_theme_onTertiaryContainer</item>
 		<item name="colorError">@color/md_theme_error</item>
@@ -131,6 +132,13 @@
 	</style>
 
 
+	<style name="ViewDragStyle">
+		<item name="android:layout_width">32dp</item>
+		<item name="android:layout_height">4dp</item>
+		<item name="android:layout_gravity">center_horizontal</item>
+		<item name="android:layout_margin">10dp</item>
+		<item name="android:background">@drawable/drag_drawable</item>
+	</style>
 	<style name="BaseActionContainer">
 		<item name="android:clickable">true</item>
 		<item name="android:focusable">true</item>

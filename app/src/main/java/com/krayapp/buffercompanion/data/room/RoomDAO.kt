@@ -19,4 +19,7 @@ interface RoomDAO {
 
     @Delete
     fun delete(string: StringEntity)
+
+    @Query("DELETE FROM buffered WHERE text = :key")
+    fun delete(key: String)
 }

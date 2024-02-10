@@ -23,26 +23,31 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.TransitionInflater
 import com.krayapp.buffercompanion.R
 import com.krayapp.buffercompanion.activity
-import com.krayapp.buffercompanion.data.RememberedRepo
+import com.krayapp.buffercompanion.addTextWatcher
+import com.krayapp.buffercompanion.data.MainRepo
 import com.krayapp.buffercompanion.data.room.StringEntity
 import com.krayapp.buffercompanion.databinding.FragmentMainBinding
 import com.krayapp.buffercompanion.ui.RecyclerTouchControl
 import com.krayapp.buffercompanion.ui.RecyclerViewSpacer
 import com.krayapp.buffercompanion.ui.WordsAdapter
+import com.krayapp.buffercompanion.ui.botsheets.EditTextBottomSheet
 import com.krayapp.buffercompanion.ui.fragments.interfaces.ListEditWatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class MainFragment : Fragment() {
 	private lateinit var vb: FragmentMainBinding
 
-	private lateinit var repo: RememberedRepo
+	private lateinit var repo: MainRepo
 	private lateinit var wordsAdapter: WordsAdapter
 	private lateinit var touchHelper: RecyclerTouchControl
 
 	private var dragStarted = false
+
+	private val dataSet = ArrayList<StringEntity>()
 
 	private val backDispatcher by lazy {
 		object : OnBackPressedCallback(true) {
@@ -70,9 +75,26 @@ class MainFragment : Fragment() {
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 		view.setBackgroundColor(requireContext().getColor(R.color.md_theme_surface))
-		repo = RememberedRepo(requireContext())
+		repo = MainRepo(requireContext())
 		initClick()
 		initAdapter()
+		initTextWatcher()
+	}
+
+	private fun initTextWatcher() {
+		vb.edit.addTextWatcher {
+			for (item in dataSet) {
+				if (it == item.text) {
+					vb.editLayout.isErrorEnabled = true
+					vb.editLayout.error = context?.getString(R.string.already_exist)
+					break
+				} else {
+					vb.editLayout.isErrorEnabled = false
+
+					vb.editLayout.error = null
+				}
+			}
+		}
 	}
 
 	@SuppressLint("ClickableViewAccessibility")
@@ -105,7 +127,12 @@ class MainFragment : Fragment() {
 			}
 		}
 
-		repo.loadList { MainScope().launch { wordsAdapter.initData(ArrayList(it)) } }
+		reloadRepo {
+			MainScope().launch {
+				wordsAdapter.initData(dataSet)
+			}
+		}
+
 	}
 
 
@@ -129,51 +156,68 @@ class MainFragment : Fragment() {
 			}
 
 			override fun onEditClicked(entity: StringEntity) {
-
+				EditTextBottomSheet(entity) { oldKey, newEntity ->
+					wordsAdapter.updateWord(oldKey, newEntity)
+					repo.replace(oldKey, newEntity)
+					reloadRepo()
+				}.show(childFragmentManager, "")
 			}
 
 			override fun onCheckRemoveStart() {
 				activity().toolbarAssistant()
 					.onCheckRemoveStarted({ wordsAdapter.checkAllRemove() }, onDelete = {
 						repo.removeList(wordsAdapter.getCheckedList())
+						reloadRepo()
 						wordsAdapter.removeChecked()
 					})
 			}
 		}
 	}
+
+	private fun reloadRepo(onLoaded: ((List<StringEntity>) -> Unit)? = null) {
+		CoroutineScope(Dispatchers.IO).launch {
+			if (onLoaded == null) //Нужно моментально получить данные, если есть колбек, т.к это инициализация
+				delay(1000)
+			repo.loadList {
+				dataSet.apply {
+					clear()
+					addAll(it)
+				}
+				if (onLoaded != null)
+					onLoaded(dataSet)
+			}
+		}
+	}
+
 	private fun initClick() {
 		vb.editLayout.setEndIconOnClickListener {
 			val text = vb.edit.text.toString()
-			if (text.isNotEmpty()) {
-				repo.addText(text)
-				addStringToAdapter(text)
-				vb.edit.text?.clear()
-				vb.recycler.scrollToPosition(wordsAdapter.itemCount - 1)
+			if (text.isNotEmpty() && vb.editLayout.error == null) {
+				createNewText(text)
 			} else
 				pasteFromClip()
-		}
-
-		vb.edit.setOnClickListener {
-
 		}
 
 		vb.edit.setOnEditorActionListener(object : TextView.OnEditorActionListener {
 			override fun onEditorAction(v: TextView?, actionId: Int, event: KeyEvent?): Boolean {
 				if (actionId == EditorInfo.IME_ACTION_DONE) {
 					val text = vb.edit.text.toString().trim()
-					if (text.isNotEmpty()) {
-						repo.addText(text)
-						addStringToAdapter(text)
-						vb.edit.text?.clear()
-						vb.recycler.scrollToPosition(wordsAdapter.itemCount - 1)
+					if (text.isNotEmpty() && vb.editLayout.error == null) {
+						createNewText(text)
 					}
 					return true
 				}
 				return false
 			}
 		})
+	}
 
-
+	private fun createNewText(text: String) {
+		repo.addText(text)
+		reloadRepo()
+		addStringToAdapter(text)
+		vb.edit.text?.clear()
+		vb.recycler.scrollToPosition(wordsAdapter.itemCount - 1)
 	}
 
 	private fun copy(text: String) {
@@ -193,6 +237,7 @@ class MainFragment : Fragment() {
 	private fun removeString(text: StringEntity) {
 		CoroutineScope(Dispatchers.IO).launch {
 			repo.remove(text)
+			reloadRepo()
 		}
 	}
 
@@ -215,6 +260,7 @@ class MainFragment : Fragment() {
 		if (textFromClip.isNotEmpty() && textFromClip != "null") {
 			repo.addText(textFromClip)
 			addStringToAdapter(textFromClip)
+			reloadRepo()
 		}
 	}
 }

@@ -18,4 +18,9 @@
 
 	<string name="check_all">Выделить все</string>
 	<string name="delete">Удалить</string>
+
+	<string name="already_exist">Уже существует</string>
+	<string name="text_editing">Редактирование текста</string>
+	<string name="save">Сохранить</string>
+	<string name="cancel">Отмена</string>
 </resources>

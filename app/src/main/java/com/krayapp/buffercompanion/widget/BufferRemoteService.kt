@@ -11,7 +11,7 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.analytics
 import com.krayapp.buffercompanion.R
 import com.krayapp.buffercompanion.ui.MainActivity
-import com.krayapp.buffercompanion.data.RememberedRepo
+import com.krayapp.buffercompanion.data.MainRepo
 import com.krayapp.buffercompanion.data.room.StringEntity
 import com.krayapp.buffercompanion.widget.MainWidgetProvider.Companion.OPEN_ACTIVITY_ACTION
 import com.krayapp.buffercompanion.widget.MainWidgetProvider.Companion.WIDGET_COPY_ACTION
@@ -24,7 +24,7 @@ class BufferRemoteService : RemoteViewsService() {
 }
 
 class ViewsFactory(private val context: Context, private val intent: Intent?) : RemoteViewsFactory {
-    private val repo = RememberedRepo(context)
+    private val repo = MainRepo(context)
 
     private val WIDGET_ADAPTER_FAIL = "WIDGET_ADAPTER_FAIL"
     private val WIDGET_INTENT_FAIL = "WIDGET_INTENT_FAIL"

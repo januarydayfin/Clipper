@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "buffered")
 data class StringEntity(
-    @PrimaryKey val text: String,
+    @PrimaryKey var text: String,
     var position: Int? = 0
 ){
     override fun equals(other: Any?): Boolean {

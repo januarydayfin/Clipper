@@ -57,31 +57,7 @@ class WordsAdapter(private val watcher: ListEditWatcher) : RecyclerView.Adapter<
 		}
 	}
 
-	fun checkAllRemove() {
-		if (removeList.size == data.size)
-			removeList.clear()
-		else {
-			removeList.clear()
-			removeList.addAll(data)
-		}
-		notifyItemRangeChanged(0, data.size)
-	}
 
-	fun removeChecked() {
-		data.removeAll(removeList.toSet())
-
-		CoroutineScope(Dispatchers.IO).launch {
-			delay(3000)
-			removeList.clear()
-		}
-		watcher.onEditionReset()
-		inEditionMode = false
-		notifyDataSetChanged()
-	}
-
-	fun getCheckedList() : List<StringEntity> {
-		return removeList
-	}
 	//ADAPTER IMPL----->
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WordViewHolder {
 		return WordViewHolder(
@@ -134,6 +110,46 @@ class WordsAdapter(private val watcher: ListEditWatcher) : RecyclerView.Adapter<
 			data.add(StringEntity(text))
 			notifyItemInserted(data.size)
 		}
+	}
+
+	fun updateWord(oldKey: String, new: StringEntity) {
+		var index = 0
+		for (i in 0 until data.size) {
+			val item = data[i]
+			if (item.text == oldKey) {
+				item.text = new.text
+				index = i
+				break
+			}
+		}
+		watcher.onEditionReset()
+		notifyItemChanged(index)
+	}
+
+	fun checkAllRemove() {
+		if (removeList.size == data.size)
+			removeList.clear()
+		else {
+			removeList.clear()
+			removeList.addAll(data)
+		}
+		notifyItemRangeChanged(0, data.size)
+	}
+
+	fun removeChecked() {
+		data.removeAll(removeList.toSet())
+
+		CoroutineScope(Dispatchers.IO).launch {
+			delay(3000)
+			removeList.clear()
+		}
+		watcher.onEditionReset()
+		inEditionMode = false
+		notifyDataSetChanged()
+	}
+
+	fun getCheckedList() : List<StringEntity> {
+		return removeList
 	}
 
 	fun setDrag(

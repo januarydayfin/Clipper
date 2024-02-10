@@ -9,7 +9,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class RememberedRepo(context: Context) {
+class MainRepo(context: Context) {
     private val database =
         Room.databaseBuilder(context, MainDB::class.java, "mainDatabase").addMigrations(
             MIGRATION_1_2
@@ -36,6 +36,12 @@ class RememberedRepo(context: Context) {
         }
     }
 
+    fun replace(oldKey: String, new: StringEntity) {
+        CoroutineScope(Dispatchers.IO).launch {
+            dao.delete(oldKey)
+            dao.upsert(new)
+        }
+    }
     fun loadList(onLoadSuccess: (List<StringEntity>) -> Unit) {
         CoroutineScope(Dispatchers.IO).launch {
             onLoadSuccess(dao.getAll())
