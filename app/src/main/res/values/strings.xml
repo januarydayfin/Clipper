@@ -8,6 +8,7 @@
 	<string name="sign_google">Вход с Google</string>
 	<string name="widget_settings">Настройки виджета</string>
 
+	<string name="empty_hint">Пока здесь пусто\n\nНачните вводить текст или вставьте его из буффера</string>
 	<string name="settings_title">Настройки</string>
 
 	<string name="light_theme">Светлая тема</string>

@@ -9,4 +9,5 @@ interface ListEditWatcher {
     fun onRemoveClicked(entity: StringEntity)
     fun onEditClicked(entity: StringEntity)
     fun onCheckRemoveStart()
+    fun onAdapterHasData(hasData: Boolean)
 }

@@ -27,6 +27,8 @@ import com.krayapp.buffercompanion.addTextWatcher
 import com.krayapp.buffercompanion.data.MainRepo
 import com.krayapp.buffercompanion.data.room.StringEntity
 import com.krayapp.buffercompanion.databinding.FragmentMainBinding
+import com.krayapp.buffercompanion.setGone
+import com.krayapp.buffercompanion.setVisible
 import com.krayapp.buffercompanion.ui.RecyclerTouchControl
 import com.krayapp.buffercompanion.ui.RecyclerViewSpacer
 import com.krayapp.buffercompanion.ui.WordsAdapter
@@ -128,6 +130,8 @@ class MainFragment : Fragment() {
 		}
 
 		reloadRepo {
+			if (dataSet.isNotEmpty())
+				vb.emptyHint.setGone()
 			MainScope().launch {
 				wordsAdapter.initData(dataSet)
 			}
@@ -170,6 +174,16 @@ class MainFragment : Fragment() {
 						reloadRepo()
 						wordsAdapter.removeChecked()
 					})
+			}
+
+			override fun onAdapterHasData(hasData: Boolean) {
+				if (hasData) {
+					vb.recycler.setVisible()
+					vb.emptyHint.setGone()
+				} else {
+					vb.recycler.setGone()
+					vb.emptyHint.setVisible()
+				}
 			}
 		}
 	}

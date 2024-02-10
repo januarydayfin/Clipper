@@ -14,7 +14,6 @@
 		android:layout_marginHorizontal="5dp"
 		android:ellipsize="end"
 		android:maxLines="2"
-		android:textAlignment="center"
 		tools:text = "text"
 		android:textColor="@color/md_theme_onSurface" />
 </LinearLayout>

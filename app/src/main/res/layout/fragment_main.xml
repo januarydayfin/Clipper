@@ -16,11 +16,25 @@
 		android:paddingHorizontal="26dp"
 		android:paddingTop="@dimen/base_top_margin"
 		android:paddingBottom="12dp"
+		android:visibility="gone"
 		app:layout_constraintBottom_toTopOf="@id/textContainer"
 		app:layout_constraintTop_toTopOf="parent"
 		app:layout_constraintVertical_bias="0"
 		tools:listitem="@layout/adapter_item" />
 
+
+	<TextView
+		android:id="@+id/empty_hint"
+		style="@style/HeadlineSmall"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginHorizontal="@dimen/base_screen_margin"
+		android:text="@string/empty_hint"
+		android:textAlignment="center"
+		android:textColor="?attr/colorOnSurface"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintTop_toTopOf="parent"
+		app:layout_constraintVertical_bias="0.3" />
 
 	<FrameLayout
 		android:id="@+id/textContainer"

@@ -42,6 +42,7 @@ class WordsAdapter(private val watcher: ListEditWatcher) : RecyclerView.Adapter<
 		if (index != -1) {
 			data.removeAt(index)
 			notifyItemRemoved(index)
+			watcher.onAdapterHasData(data.isNotEmpty())
 		}
 	}
 
@@ -108,6 +109,7 @@ class WordsAdapter(private val watcher: ListEditWatcher) : RecyclerView.Adapter<
 	fun addWord(text: String) {
 		if (!data.contains(StringEntity(text))) {
 			data.add(StringEntity(text))
+			watcher.onAdapterHasData(data.isNotEmpty())
 			notifyItemInserted(data.size)
 		}
 	}
@@ -139,6 +141,7 @@ class WordsAdapter(private val watcher: ListEditWatcher) : RecyclerView.Adapter<
 	fun removeChecked() {
 		data.removeAll(removeList.toSet())
 
+		watcher.onAdapterHasData(data.isNotEmpty())
 		CoroutineScope(Dispatchers.IO).launch {
 			delay(3000)
 			removeList.clear()
@@ -166,6 +169,7 @@ class WordsAdapter(private val watcher: ListEditWatcher) : RecyclerView.Adapter<
 
 	fun initData(data: ArrayList<StringEntity>) {
 		this.data.addAll(data)
+		watcher.onAdapterHasData(data.isNotEmpty())
 		notifyItemRangeInserted(0, data.size)
 	}
 
