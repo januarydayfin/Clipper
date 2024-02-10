@@ -4,7 +4,7 @@
     <dimen name="toolbar_buttons_padding">14dp</dimen>
 
     <dimen name="base_top_margin">24dp</dimen>
-    <dimen name="base_screen_margin">26dp</dimen>
+    <dimen name="base_screen_margin">24dp</dimen>
     <dimen name="recycler_item_corners">8dp</dimen>
     <dimen name="main_edit_text_margins">16dp</dimen>
 

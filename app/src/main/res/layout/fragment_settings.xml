@@ -9,6 +9,7 @@
 
 	<com.krayapp.buffercompanion.views.RippleCard
 		android:id="@+id/signGoogle"
+		android:visibility="gone"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:orientation="horizontal">
@@ -35,7 +36,6 @@
 		android:id="@+id/appTheme"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:layout_marginTop="12dp"
 		android:orientation="horizontal">
 
 		<TextView
@@ -58,6 +58,7 @@
 
 	<com.krayapp.buffercompanion.views.RippleCard
 		android:id="@+id/widgetSettings"
+		android:visibility="gone"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_marginTop="12dp"
