@@ -9,10 +9,10 @@
 
 	<com.krayapp.buffercompanion.views.RippleCard
 		android:id="@+id/signGoogle"
-		android:visibility="gone"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:orientation="horizontal">
+		android:orientation="horizontal"
+		android:visibility="gone">
 
 		<TextView
 			style="@style/BodyLarge"
@@ -58,11 +58,11 @@
 
 	<com.krayapp.buffercompanion.views.RippleCard
 		android:id="@+id/widgetSettings"
-		android:visibility="gone"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_marginTop="12dp"
-		android:orientation="horizontal">
+		android:orientation="horizontal"
+		android:visibility="gone">
 
 
 		<TextView
@@ -121,7 +121,8 @@
 			android:padding="@dimen/main_edit_text_margins"
 			android:text="@string/use_dynamic_colors"
 			android:textAppearance="@style/BodyLarge"
-			android:textColor="?attr/colorOnSurface" />
+			android:textColor="?attr/colorOnSurface"
+			android:visibility="gone" />
 	</FrameLayout>
 
 
@@ -135,4 +136,17 @@
 			android:tag="image" />
 	</com.krayapp.buffercompanion.views.RippleCard>
 
+
+	<Space
+		android:layout_width="wrap_content"
+		android:layout_height="0dp"
+		android:layout_weight="1" />
+
+	<TextView
+		style="@style/BodySmall"
+		android:id="@+id/version"
+		android:textAlignment="center"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginBottom="@dimen/base_screen_margin" />
 </LinearLayout>

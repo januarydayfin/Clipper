@@ -1,2 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+	<string name="app_name">Clipper</string>
+	<string name="open_manager">Open Clipper</string>
+
+	<string name="enter_for_input">Press Enter to enter</string>
+	<string name="use_dynamic_colors">Use Dynamic Colors</string>
+	<string name="app_theme">App theme</string>
+	<string name="refresh_widget">Refresh widget</string>
+	<string name="sign_google">Sign in with Google</string>
+	<string name="widget_settings">Widget settings</string>
+
+	<string name="empty_hint">This place is empty for now\n\nStart entering text or paste it from the buffer</string>
+	<string name="settings_title">Settings</string>
+
+	<string name="light_theme">Light theme</string>
+	<string name="system_theme">System theme</string>
+	<string name="dark_theme">Dark theme</string>
+
+	<string name="copied">Copied</string>
+
+	<string name="check_all">Select all</string>
+	<string name="delete">Delete</string>
+
+	<string name="already_exist">Already exists</string>
+	<string name="text_editing">Text editing</string>
+	<string name="save">Save</string>
+	<string name="cancel">Cancel</string>
+</resources>
