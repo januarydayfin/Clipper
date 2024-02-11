@@ -40,6 +40,10 @@ class ViewsFactory(private val context: Context, private val intent: Intent?) : 
         repo.loadList {
             dataList.clear()
             dataList.add(StringEntity(context.packageName))
+
+            if (it.isEmpty())
+                dataList.add(StringEntity.emptyEntity())
+
             dataList.addAll(it)
         }
     }
@@ -62,27 +66,21 @@ class ViewsFactory(private val context: Context, private val intent: Intent?) : 
                 }
 
                 appView.setOnClickFillInIntent(
-                    R.id.openApp,
-                    intent
+                    R.id.openApp, intent
                 )
                 return appView
             }
             val remoteView = RemoteViews(context.packageName, R.layout.item_list_widget).apply {
                 try {
                     setCharSequence(
-                        R.id.text,
-                        "setText",
-                        dataList[position].text
+                        R.id.text, "setText", dataList[position].text
                     )
                 } catch (e: Exception) {
-                    analytic.logEvent(
-                        FirebaseAnalytics.Event.SELECT_ITEM,
+                    analytic.logEvent(FirebaseAnalytics.Event.SELECT_ITEM,
                         Bundle().apply { putString(WIDGET_ADAPTER_FAIL, e.localizedMessage) })
 
                     setCharSequence(
-                        R.id.text,
-                        "setText",
-                        ""
+                        R.id.text, "setText", ""
                     )
                 }
 
@@ -93,14 +91,16 @@ class ViewsFactory(private val context: Context, private val intent: Intent?) : 
                 try {
                     putExtra(WIDGET_COPY_ACTION, dataList[position].text)
                 } catch (e: Exception) {
-                    analytic.logEvent(
-                        FirebaseAnalytics.Event.SELECT_ITEM,
+                    analytic.logEvent(FirebaseAnalytics.Event.SELECT_ITEM,
                         Bundle().apply { putString(WIDGET_INTENT_FAIL, e.localizedMessage) })
                     putExtra(WIDGET_COPY_ACTION, "")
                 }
             }
 
-            remoteView.setOnClickFillInIntent(R.id.widgetItemRoot, intent)
+            if (dataList[position].text.isEmpty())
+                remoteView.setOnClickFillInIntent(R.id.widgetItemRoot, Intent())
+            else
+                remoteView.setOnClickFillInIntent(R.id.widgetItemRoot, intent)
             return remoteView
 
         }
