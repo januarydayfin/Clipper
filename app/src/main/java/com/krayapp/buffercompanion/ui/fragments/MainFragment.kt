@@ -240,12 +240,11 @@ class MainFragment : Fragment() {
 		val clip = ClipData.newPlainText("label", text)
 		manager.setPrimaryClip(clip)
 
-		if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2)
-			Toast.makeText(
-				requireContext(),
-				R.string.copied,
-				Toast.LENGTH_SHORT
-			).show()
+		Toast.makeText(
+			requireContext(),
+			R.string.copied,
+			Toast.LENGTH_SHORT
+		).show()
 	}
 
 	private fun removeString(text: StringEntity) {
