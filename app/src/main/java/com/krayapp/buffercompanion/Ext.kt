@@ -7,11 +7,13 @@ import android.os.Vibrator
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.DisplayMetrics
+import android.view.KeyEvent
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.CheckBox
 import android.widget.EditText
-import androidx.core.widget.addTextChangedListener
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.krayapp.buffercompanion.ui.MainActivity
 import kotlin.math.roundToInt
@@ -72,5 +74,16 @@ fun EditText.addTextWatcher(onChanged: (String) -> Unit) {
 			onChanged(s.toString().trim())
 		}
 
+	})
+}
+fun EditText.onImeDone(onDone: (String) -> Unit) {
+	setOnEditorActionListener(object : TextView.OnEditorActionListener {
+		override fun onEditorAction(v: TextView, actionId: Int, event: KeyEvent?): Boolean {
+			if (actionId == EditorInfo.IME_ACTION_DONE) {
+				onDone(v.text.toString())
+				return true
+			}
+			return false
+		}
 	})
 }

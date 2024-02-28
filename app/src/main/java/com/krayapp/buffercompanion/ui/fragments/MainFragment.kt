@@ -4,16 +4,11 @@ import android.annotation.SuppressLint
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
-import android.os.Build
 import android.os.Bundle
-import android.util.Log
-import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
@@ -22,12 +17,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.TransitionInflater
 import com.krayapp.buffercompanion.R
-import com.krayapp.buffercompanion.activity
 import com.krayapp.buffercompanion.addTextWatcher
 import com.krayapp.buffercompanion.data.MainRepo
 import com.krayapp.buffercompanion.data.room.StringEntity
 import com.krayapp.buffercompanion.databinding.FragmentMainBinding
+import com.krayapp.buffercompanion.onImeDone
 import com.krayapp.buffercompanion.setGone
+import com.krayapp.buffercompanion.activity
 import com.krayapp.buffercompanion.setVisible
 import com.krayapp.buffercompanion.ui.RecyclerTouchControl
 import com.krayapp.buffercompanion.ui.RecyclerViewSpacer
@@ -85,6 +81,8 @@ class MainFragment : Fragment() {
 
 	private fun initTextWatcher() {
 		vb.edit.addTextWatcher {
+			vb.editLayout.endIconDrawable =
+				requireContext().getDrawable(if (it.length != 0) R.drawable.ic_input else R.drawable.ic_paste)
 			for (item in dataSet) {
 				if (it == item.text) {
 					vb.editLayout.isErrorEnabled = true
@@ -212,18 +210,12 @@ class MainFragment : Fragment() {
 				pasteFromClip()
 		}
 
-		vb.edit.setOnEditorActionListener(object : TextView.OnEditorActionListener {
-			override fun onEditorAction(v: TextView?, actionId: Int, event: KeyEvent?): Boolean {
-				if (actionId == EditorInfo.IME_ACTION_DONE) {
-					val text = vb.edit.text.toString().trim()
-					if (text.isNotEmpty() && vb.editLayout.error == null) {
-						createNewText(text)
-					}
-					return true
-				}
-				return false
+		vb.edit.onImeDone {
+			val text = vb.edit.text.toString().trim()
+			if (text.isNotEmpty() && vb.editLayout.error == null) {
+				createNewText(text)
 			}
-		})
+		}
 	}
 
 	private fun createNewText(text: String) {
