@@ -1,7 +1,6 @@
 package com.krayapp.buffercompanion
 
 import android.content.Context
-import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.text.Editable
@@ -10,7 +9,6 @@ import android.util.DisplayMetrics
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.TextView
@@ -24,23 +22,12 @@ fun Context.dp(value: Int): Int {
 }
 
 fun Context.justVibrateABit() {
-	val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-	if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-		vibrator.vibrate(VibrationEffect.createOneShot(1, VibrationEffect.DEFAULT_AMPLITUDE))
-	} else {
-		vibrator.vibrate(1)
-	}
+	@Suppress("DEPRECATION") val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+	vibrator.vibrate(VibrationEffect.createOneShot(1, VibrationEffect.DEFAULT_AMPLITUDE))
 }
 
 fun Fragment.activity(): MainActivity {
 	return activity as MainActivity
-}
-
-fun Context.hideKeyboard(v: View) {
-	(getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(
-		v.windowToken,
-		0
-	)
 }
 
 fun View.setVisible() {

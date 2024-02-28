@@ -79,10 +79,11 @@ class MainFragment : Fragment() {
 		initTextWatcher()
 	}
 
+	@SuppressLint("UseCompatLoadingForDrawables")
 	private fun initTextWatcher() {
 		vb.edit.addTextWatcher {
 			vb.editLayout.endIconDrawable =
-				requireContext().getDrawable(if (it.length != 0) R.drawable.ic_input else R.drawable.ic_paste)
+				requireContext().getDrawable(if (it.isNotEmpty()) R.drawable.ic_input else R.drawable.ic_paste)
 			for (item in dataSet) {
 				if (it == item.text) {
 					vb.editLayout.isErrorEnabled = true
