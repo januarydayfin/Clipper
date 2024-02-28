@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <attr name="toolbarNavColor" format="color|reference"/>
-    <attr name="cardBackgroundColor" format="color|reference"/>
+    <attr name="toolbarNavColor" format="color|reference" />
+    <attr name="cardBackgroundColor" format="color|reference" />
+    <attr name="bottomSheetBottomColor" format="color|reference" />
 </resources>

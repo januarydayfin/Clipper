@@ -5,6 +5,7 @@
 
 		<item name="toolbarNavColor">?attr/colorSurfaceContainerHighest</item>
 		<item name="cardBackgroundColor">?attr/colorSurfaceContainerHigh</item>
+		<item name="bottomSheetBottomColor">?attr/colorSurfaceContainerLow</item>
 
 		<item name="android:statusBarColor">?attr/toolbarNavColor</item>
 		<item name="android:navigationBarColor">?attr/toolbarNavColor</item>

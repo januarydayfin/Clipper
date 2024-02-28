@@ -1,13 +1,12 @@
 package com.krayapp.buffercompanion.ui.botsheets
 
+import android.graphics.Color
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.color.MaterialColors
 import com.krayapp.buffercompanion.R
 import com.krayapp.buffercompanion.addTextWatcher
 import com.krayapp.buffercompanion.data.MainRepo
@@ -62,8 +61,8 @@ class EditTextBottomSheet(
 		}
 	}
 	private fun colorNavBar() {
-		dialog?.window?.navigationBarColor =
-			requireContext().getColor(R.color.md_theme_surfaceContainerLow)
+		val color = MaterialColors.getColor(requireContext(), R.attr.bottomSheetBottomColor, Color.BLACK)
+		dialog?.window?.navigationBarColor = color
 	}
 
 
