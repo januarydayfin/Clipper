@@ -9,14 +9,21 @@ import android.util.DisplayMetrics
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.krayapp.buffercompanion.ui.MainActivity
 import kotlin.math.roundToInt
 
 fun Context.dp(value: Int): Int {
+	val displayMetrics = resources.displayMetrics
+	return (value * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT)).roundToInt()
+}
+
+fun View.dp(value: Int): Int {
 	val displayMetrics = resources.displayMetrics
 	return (value * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT)).roundToInt()
 }
@@ -73,4 +80,27 @@ fun EditText.onImeDone(onDone: (String) -> Unit) {
 			return false
 		}
 	})
+}
+
+fun View.hideKeyboard() {
+	(context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(
+		windowToken,
+		0
+	)
+}
+
+fun getSimpleFragmentAdapter(
+	fragList: List<Fragment>,
+	parent: Fragment
+): FragmentStateAdapter {
+	return object : FragmentStateAdapter(parent) {
+
+		override fun getItemCount(): Int {
+			return fragList.size
+		}
+
+		override fun createFragment(position: Int): Fragment {
+			return fragList[position]
+		}
+	}
 }

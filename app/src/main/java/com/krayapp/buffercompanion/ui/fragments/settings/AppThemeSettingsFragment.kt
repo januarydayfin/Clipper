@@ -15,7 +15,8 @@ import com.krayapp.buffercompanion.databinding.FragmentAppThemeSettingsBinding
 import com.krayapp.buffercompanion.ui.fragments.AbsFragment
 
 class AppThemeSettingsFragment : AbsFragment() {
-	private lateinit var vb: FragmentAppThemeSettingsBinding
+	private var vb: FragmentAppThemeSettingsBinding? = null
+		get() = field!!
 
 	private var currentMode: Int = getDefaultNightMode()
 	override fun onCreateView(
@@ -24,7 +25,7 @@ class AppThemeSettingsFragment : AbsFragment() {
 		savedInstanceState: Bundle?
 	): View {
 		vb = FragmentAppThemeSettingsBinding.inflate(inflater)
-		return vb.root
+		return vb!!.root
 	}
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -39,15 +40,15 @@ class AppThemeSettingsFragment : AbsFragment() {
 
 
 	private fun checkTheme() {
-		vb.systemRadio.isChecked = currentMode == MODE_NIGHT_FOLLOW_SYSTEM
-		vb.lightRadio.isChecked = currentMode == MODE_NIGHT_NO
-		vb.darkRadio.isChecked = currentMode == MODE_NIGHT_YES
+		vb!!.systemRadio.isChecked = currentMode == MODE_NIGHT_FOLLOW_SYSTEM
+		vb!!.lightRadio.isChecked = currentMode == MODE_NIGHT_NO
+		vb!!.darkRadio.isChecked = currentMode == MODE_NIGHT_YES
 	}
 
 	private fun initClick() {
-		vb.lightTheme.setOnClickListener { setMode(MODE_NIGHT_NO) }
-		vb.darkTheme.setOnClickListener { setMode(MODE_NIGHT_YES) }
-		vb.systemTheme.setOnClickListener { setMode(MODE_NIGHT_FOLLOW_SYSTEM) }
+		vb!!.lightTheme.setOnClickListener { setMode(MODE_NIGHT_NO) }
+		vb!!.darkTheme.setOnClickListener { setMode(MODE_NIGHT_YES) }
+		vb!!.systemTheme.setOnClickListener { setMode(MODE_NIGHT_FOLLOW_SYSTEM) }
 	}
 
 	private fun setMode(mode: Int) {
@@ -57,4 +58,8 @@ class AppThemeSettingsFragment : AbsFragment() {
 		ClipperApp.getPrefs().setThemeMode(mode)
 	}
 
+	override fun onDestroyView() {
+		super.onDestroyView()
+		vb = null
+	}
 }

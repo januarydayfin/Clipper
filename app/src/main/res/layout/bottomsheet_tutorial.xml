@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingHorizontal="@dimen/base_screen_margin"
+    android:background="@drawable/bottomsheet_background"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <View style="@style/ViewDragStyle" />
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_marginVertical="20dp" />
+
+    <com.krayapp.buffercompanion.views.DotsView
+        android:id="@+id/dots"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="23dp"
+        app:indicator_margin="8"
+        app:indicator_size="10" />
+
+    <Button
+        android:id="@+id/next"
+        android:layout_marginBottom="16dp"
+        style="@style/Widget.Material3.Button.TonalButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/next" />
+</LinearLayout>

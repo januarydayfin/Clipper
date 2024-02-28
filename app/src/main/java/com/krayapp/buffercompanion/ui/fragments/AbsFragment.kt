@@ -16,7 +16,6 @@ abstract class AbsFragment : Fragment() {
             }
         }
     }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         val inflater = TransitionInflater.from(requireContext())
         enterTransition = inflater.inflateTransition(R.transition.slide_right)
@@ -54,9 +53,8 @@ abstract class AbsFragment : Fragment() {
     /**
      * Можем переопределить в дочернем фрагменте, чтобы поменять поведение
      */
-    protected fun backAction() {
+    private fun backAction() {
         activity().popBackStack()
     }
-
     abstract fun getTitleRes() : Int
 }

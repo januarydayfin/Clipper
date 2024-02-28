@@ -1,4 +1,4 @@
-package com.krayapp.buffercompanion.ui.botsheets
+package com.krayapp.buffercompanion.ui.fragments
 
 import android.graphics.Color
 import android.os.Bundle

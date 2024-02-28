@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.TransitionInflater
+import com.krayapp.buffercompanion.ClipperApp
 import com.krayapp.buffercompanion.R
 import com.krayapp.buffercompanion.addTextWatcher
 import com.krayapp.buffercompanion.data.MainRepo
@@ -28,8 +29,8 @@ import com.krayapp.buffercompanion.setVisible
 import com.krayapp.buffercompanion.ui.RecyclerTouchControl
 import com.krayapp.buffercompanion.ui.RecyclerViewSpacer
 import com.krayapp.buffercompanion.ui.WordsAdapter
-import com.krayapp.buffercompanion.ui.botsheets.EditTextBottomSheet
 import com.krayapp.buffercompanion.ui.fragments.interfaces.ListEditWatcher
+import com.krayapp.buffercompanion.ui.tutorial.BottomSheetTutorial
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
@@ -37,8 +38,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class MainFragment : Fragment() {
-	private lateinit var vb: FragmentMainBinding
-
+	private var vb: FragmentMainBinding? = null
 	private lateinit var repo: MainRepo
 	private lateinit var wordsAdapter: WordsAdapter
 	private lateinit var touchHelper: RecyclerTouchControl
@@ -67,7 +67,7 @@ class MainFragment : Fragment() {
 		savedInstanceState: Bundle?
 	): View {
 		vb = FragmentMainBinding.inflate(inflater)
-		return vb.root
+		return vb!!.root
 	}
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -77,22 +77,25 @@ class MainFragment : Fragment() {
 		initClick()
 		initAdapter()
 		initTextWatcher()
+
+		if (!ClipperApp.getPrefs().isTutorialShown())
+			BottomSheetTutorial().show(childFragmentManager, "")
 	}
 
 	@SuppressLint("UseCompatLoadingForDrawables")
 	private fun initTextWatcher() {
-		vb.edit.addTextWatcher {
-			vb.editLayout.endIconDrawable =
+		vb!!.edit.addTextWatcher {
+			vb!!.editLayout.endIconDrawable =
 				requireContext().getDrawable(if (it.isNotEmpty()) R.drawable.ic_input else R.drawable.ic_paste)
 			for (item in dataSet) {
 				if (it == item.text) {
-					vb.editLayout.isErrorEnabled = true
-					vb.editLayout.error = context?.getString(R.string.already_exist)
+					vb!!.editLayout.isErrorEnabled = true
+					vb!!.editLayout.error = context?.getString(R.string.already_exist)
 					break
 				} else {
-					vb.editLayout.isErrorEnabled = false
+					vb!!.editLayout.isErrorEnabled = false
 
-					vb.editLayout.error = null
+					vb!!.editLayout.error = null
 				}
 			}
 		}
@@ -102,7 +105,7 @@ class MainFragment : Fragment() {
 	private fun initAdapter() {
 		wordsAdapter = WordsAdapter(getListWatcher())
 		touchHelper = RecyclerTouchControl(wordsAdapter)
-		val helper = ItemTouchHelper(touchHelper).apply { attachToRecyclerView(vb.recycler) }
+		val helper = ItemTouchHelper(touchHelper).apply { attachToRecyclerView(vb!!.recycler) }
 
 		with(wordsAdapter) {
 			setDrag(
@@ -114,7 +117,7 @@ class MainFragment : Fragment() {
 		}
 
 
-		with(vb.recycler) {
+		with(vb!!.recycler) {
 			layoutManager = LinearLayoutManager(requireContext())
 			adapter = wordsAdapter
 			addItemDecoration(RecyclerViewSpacer(12, RecyclerView.VERTICAL))
@@ -130,7 +133,7 @@ class MainFragment : Fragment() {
 
 		reloadRepo {
 			if (dataSet.isNotEmpty())
-				vb.emptyHint.setGone()
+				vb!!.emptyHint.setGone()
 			MainScope().launch {
 				wordsAdapter.initData(dataSet)
 			}
@@ -177,11 +180,11 @@ class MainFragment : Fragment() {
 
 			override fun onAdapterHasData(hasData: Boolean) {
 				if (hasData) {
-					vb.recycler.setVisible()
-					vb.emptyHint.setGone()
+					vb!!.recycler.setVisible()
+					vb!!.emptyHint.setGone()
 				} else {
-					vb.recycler.setGone()
-					vb.emptyHint.setVisible()
+					vb!!.recycler.setGone()
+					vb!!.emptyHint.setVisible()
 				}
 			}
 		}
@@ -203,17 +206,17 @@ class MainFragment : Fragment() {
 	}
 
 	private fun initClick() {
-		vb.editLayout.setEndIconOnClickListener {
-			val text = vb.edit.text.toString()
-			if (text.isNotEmpty() && vb.editLayout.error == null) {
+		vb!!.editLayout.setEndIconOnClickListener {
+			val text = vb!!.edit.text.toString()
+			if (text.isNotEmpty() && vb!!.editLayout.error == null) {
 				createNewText(text)
 			} else
 				pasteFromClip()
 		}
 
-		vb.edit.onImeDone {
-			val text = vb.edit.text.toString().trim()
-			if (text.isNotEmpty() && vb.editLayout.error == null) {
+		vb!!.edit.onImeDone {
+			val text = vb!!.edit.text.toString().trim()
+			if (text.isNotEmpty() && vb!!.editLayout.error == null) {
 				createNewText(text)
 			}
 		}
@@ -223,8 +226,8 @@ class MainFragment : Fragment() {
 		repo.addText(text)
 		reloadRepo()
 		addStringToAdapter(text)
-		vb.edit.text?.clear()
-		vb.recycler.scrollToPosition(wordsAdapter.itemCount - 1)
+		vb!!.edit.text?.clear()
+		vb!!.recycler.scrollToPosition(wordsAdapter.itemCount - 1)
 	}
 
 	private fun copy(text: String) {
@@ -252,7 +255,7 @@ class MainFragment : Fragment() {
 	}
 
 	override fun onStop() {
-		vb.edit.clearFocus()
+		vb!!.edit.clearFocus()
 		super.onStop()
 	}
 
@@ -268,5 +271,10 @@ class MainFragment : Fragment() {
 			addStringToAdapter(textFromClip)
 			reloadRepo()
 		}
+	}
+
+	override fun onDestroyView() {
+		super.onDestroyView()
+		vb = null
 	}
 }

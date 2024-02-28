@@ -136,6 +136,30 @@
 			android:tag="image" />
 	</com.krayapp.buffercompanion.views.RippleCard>
 
+	<com.krayapp.buffercompanion.views.RippleCard
+		android:id="@+id/showTutor"
+		android:layout_marginTop="12dp"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal">
+
+		<TextView
+			style="@style/BodyLarge"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="start|center_vertical"
+			android:padding="@dimen/main_edit_text_margins"
+			android:text="@string/tutorial"
+			android:textColor="?attr/colorOnSurface" />
+
+		<ImageView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="end|center_vertical"
+			android:layout_marginEnd="@dimen/base_screen_margin"
+			android:src="@drawable/ic_arrow" />
+
+	</com.krayapp.buffercompanion.views.RippleCard>
 
 	<Space
 		android:layout_width="wrap_content"

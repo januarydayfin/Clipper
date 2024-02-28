@@ -2,13 +2,13 @@ package com.krayapp.buffercompanion
 
 import android.content.Context
 import androidx.appcompat.app.AppCompatDelegate
-import com.krayapp.buffercompanion.ClipperApp
 
 class GlobalPrefs {
 	private val PREFS_NAME = "mainSettings"
 
 	private val KEY_DYNAMIC_COLORS = "KEY_DYNAMIC_COLORS"
 	private val KEY_THEME_MODE = "KEY_THEME_MODE"
+	private val TUTORIAL_SHOWN = "TUTORIAL_SHOWN"
 	private val prefs =
 		ClipperApp.getApplication().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
@@ -23,6 +23,14 @@ class GlobalPrefs {
 
 	fun setThemeMode(mode: Int) {
 		prefs.edit().putInt(KEY_THEME_MODE, mode).apply()
+	}
+
+	fun isTutorialShown(): Boolean {
+		return prefs.getBoolean(TUTORIAL_SHOWN, false)
+	}
+
+	fun onTutorFinished() {
+		prefs.edit().putBoolean(TUTORIAL_SHOWN, true).apply()
 	}
 
 	fun getTheme(): Int {

@@ -3,4 +3,10 @@
     <attr name="toolbarNavColor" format="color|reference" />
     <attr name="cardBackgroundColor" format="color|reference" />
     <attr name="bottomSheetBottomColor" format="color|reference" />
+
+
+    <declare-styleable name="DotsView">
+        <attr name="indicator_size" format="integer" />
+        <attr name="indicator_margin" format="integer" />
+    </declare-styleable>
 </resources>

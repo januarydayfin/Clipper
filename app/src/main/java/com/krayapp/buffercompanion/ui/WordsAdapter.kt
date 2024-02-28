@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 import java.util.Collections
 
 
-class WordsAdapter(private val watcher: ListEditWatcher) : RecyclerView.Adapter<WordViewHolder>() {
+class WordsAdapter(private val watcher: ListEditWatcher, val tutorMode : Boolean = false) : RecyclerView.Adapter<WordViewHolder>() {
 	private val data = ArrayList<StringEntity>()
 	private val removeList = ArrayList<StringEntity>()
 
@@ -32,17 +32,19 @@ class WordsAdapter(private val watcher: ListEditWatcher) : RecyclerView.Adapter<
 
 	//PRIVATE----->
 	private fun deleteWord(item: StringEntity) {
-		var index = -1
-		for (i in 0 until data.size) {
-			if (item == data[i]) {
-				index = i
-				break
+		if (!tutorMode) {
+			var index = -1
+			for (i in 0 until data.size) {
+				if (item == data[i]) {
+					index = i
+					break
+				}
 			}
-		}
-		if (index != -1) {
-			data.removeAt(index)
-			notifyItemRemoved(index)
-			watcher.onAdapterHasData(data.isNotEmpty())
+			if (index != -1) {
+				data.removeAt(index)
+				notifyItemRemoved(index)
+				watcher.onAdapterHasData(data.isNotEmpty())
+			}
 		}
 	}
 

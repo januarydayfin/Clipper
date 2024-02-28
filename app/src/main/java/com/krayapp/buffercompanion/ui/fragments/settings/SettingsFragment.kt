@@ -12,10 +12,10 @@ import com.krayapp.buffercompanion.activity
 import com.krayapp.buffercompanion.databinding.FragmentSettingsBinding
 import com.krayapp.buffercompanion.setVisible
 import com.krayapp.buffercompanion.ui.fragments.AbsFragment
+import com.krayapp.buffercompanion.ui.tutorial.BottomSheetTutorial
 
 class SettingsFragment : AbsFragment() {
-	private lateinit var vb: FragmentSettingsBinding
-
+	private var vb: FragmentSettingsBinding? = null
 
 	override fun onCreateView(
 		inflater: LayoutInflater,
@@ -23,16 +23,16 @@ class SettingsFragment : AbsFragment() {
 		savedInstanceState: Bundle?
 	): View {
 		vb = FragmentSettingsBinding.inflate(inflater)
-		return vb.root
+		return vb!!.root
 	}
 
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 
-		vb.version.text = getAppVersion()
+		vb!!.version.text = getAppVersion()
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
-			vb.dynamicColorsSwitch.setVisible()
+			vb!!.dynamicColorsSwitch.setVisible()
 
 		initClick()
 	}
@@ -56,15 +56,20 @@ class SettingsFragment : AbsFragment() {
 	}
 
 	private fun initClick() {
-		vb.dynamicColorsSwitch.isChecked = ClipperApp.getPrefs().isDynamicColors()
+		vb!!.dynamicColorsSwitch.isChecked = ClipperApp.getPrefs().isDynamicColors()
 
-		vb.dynamicColorsSwitch.setOnCheckedChangeListener { _, isChecked ->
+		vb!!.dynamicColorsSwitch.setOnCheckedChangeListener { _, isChecked ->
 			ClipperApp.getPrefs().setDynamicColors(isChecked)
 			activity().restartApp()
 		}
 
-		vb.refreshWidget.setOnClickListener { activity().refreshWidget() }
-		vb.appTheme.setOnClickListener { activity().navigateTo(R.id.toAppTheme) }
+		vb!!.refreshWidget.setOnClickListener { activity().refreshWidget() }
+		vb!!.appTheme.setOnClickListener { activity().navigateTo(R.id.toAppTheme) }
+		vb!!.showTutor.setOnClickListener { BottomSheetTutorial().show(childFragmentManager, "")}
 	}
 
+	override fun onDestroyView() {
+		super.onDestroyView()
+		vb = null
+	}
 }
