@@ -12,6 +12,7 @@ import com.google.android.material.color.MaterialColors
 import com.krayapp.buffercompanion.ClipperApp
 import com.krayapp.buffercompanion.R
 import com.krayapp.buffercompanion.databinding.BottomsheetTutorialBinding
+import com.krayapp.buffercompanion.expand
 import com.krayapp.buffercompanion.getSimpleFragmentAdapter
 
 class BottomSheetTutorial : BottomSheetDialogFragment() {
@@ -32,7 +33,7 @@ class BottomSheetTutorial : BottomSheetDialogFragment() {
         adapter = getSimpleFragmentAdapter(getFragList(), this)
         colorNavBar()
         initPager()
-
+        expand()
         vb!!.next.setOnClickListener {
             val current = vb!!.viewpager.currentItem
             val size = vb!!.viewpager.adapter!!.itemCount

@@ -26,7 +26,7 @@
 	<string name="text_editing">Редактирование текста</string>
 	<string name="save">Сохранить</string>
 	<string name="cancel">Отмена</string>
-
+	<string name="empty">Пусто</string>
 	<string name="tutor_create_title">Создание текста</string>
 	<string name="tutor_create_desc">Введите текст или нажмите кнопку, чтобы вставить его из буфера обмена</string>
 

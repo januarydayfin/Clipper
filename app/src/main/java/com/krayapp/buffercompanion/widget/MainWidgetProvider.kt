@@ -13,6 +13,7 @@ import android.os.Handler
 import android.os.Looper
 import android.widget.RemoteViews
 import com.krayapp.buffercompanion.R
+import com.krayapp.buffercompanion.ui.MainActivity
 
 class MainWidgetProvider : AppWidgetProvider() {
     companion object {
@@ -45,20 +46,23 @@ class MainWidgetProvider : AppWidgetProvider() {
         appWidgetIds: IntArray
     ) {
         val serviceIntent = Intent(context, BufferRemoteService::class.java)
-
-        val views = RemoteViews(context.packageName, R.layout.layout_widget).apply {
-            setRemoteAdapter(R.id.listView, serviceIntent)
-            setPendingIntentTemplate(
-                R.id.listView,
-                Intent(context, MainWidgetProvider::class.java).run {
-                    PendingIntent.getBroadcast(
-                        context,
-                        0,
-                        this,
-                        FLAG_UPDATE_CURRENT or FLAG_MUTABLE
-                    )
-                })
-        }
+        val appIntent = PendingIntent.getActivity(context,0,Intent(context, MainActivity::class.java),
+            FLAG_MUTABLE
+        )
+        val views = RemoteViews(context.packageName, R.layout.layout_widget)
+        views.setOnClickPendingIntent(R.id.openApp, appIntent)
+        views.setRemoteAdapter(R.id.listView, serviceIntent)
+        views.setEmptyView(R.id.listView, R.id.emptyView)
+        views.setPendingIntentTemplate(
+            R.id.listView,
+            Intent(context, MainWidgetProvider::class.java).run {
+                PendingIntent.getBroadcast(
+                    context,
+                    0,
+                    this,
+                    FLAG_UPDATE_CURRENT or FLAG_MUTABLE
+                )
+            })
 
 
         Handler(Looper.myLooper()!!).postDelayed({

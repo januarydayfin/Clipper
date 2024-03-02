@@ -12,6 +12,7 @@ import com.krayapp.buffercompanion.addTextWatcher
 import com.krayapp.buffercompanion.data.MainRepo
 import com.krayapp.buffercompanion.data.room.StringEntity
 import com.krayapp.buffercompanion.databinding.BottomsheetEditTextBinding
+import com.krayapp.buffercompanion.expand
 
 
 class EditTextBottomSheet(
@@ -34,6 +35,7 @@ class EditTextBottomSheet(
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 
+		expand()
 		MainRepo(vb.root.context).loadList { dataSet.addAll(it) }
 		colorNavBar()
 		initEditText()

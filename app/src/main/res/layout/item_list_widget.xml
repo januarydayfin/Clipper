@@ -14,6 +14,7 @@
 		android:layout_marginHorizontal="@dimen/base_screen_margin"
 		android:ellipsize="end"
 		android:maxLines="2"
+		android:text="@string/empty"
 		tools:text = "text"
 		android:textColor="@color/md_theme_onSurface" />
 </LinearLayout>

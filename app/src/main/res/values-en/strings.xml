@@ -28,7 +28,7 @@
 	<string name="text_editing">Text editing</string>
 	<string name="save">Save</string>
 	<string name="cancel">Cancel</string>
-
+	<string name="empty">Empty</string>
 	<string name="tutor_create_title">Creating text</string>
 	<string name="tutor_create_desc">Enter text or click the button to paste it from the clipboard</string>
 

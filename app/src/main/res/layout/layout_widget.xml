@@ -6,8 +6,30 @@
     android:background="@drawable/widget_item_background"
     android:orientation="vertical">
 
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/header_widget_background">
+
+        <TextView
+            android:id="@+id/openApp"
+            android:textColor="@color/md_theme_onSecondary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            android:paddingVertical="5dp"
+            android:text="@string/open_manager"
+            android:textAlignment="center"
+            />
+    </FrameLayout>
+
     <ListView
         android:id="@+id/listView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
+    <include
+        android:id="@+id/emptyView"
+        layout="@layout/item_list_widget" />
 </LinearLayout>

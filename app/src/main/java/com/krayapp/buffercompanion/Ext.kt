@@ -15,6 +15,9 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.krayapp.buffercompanion.ui.MainActivity
 import kotlin.math.roundToInt
 
@@ -103,4 +106,9 @@ fun getSimpleFragmentAdapter(
 			return fragList[position]
 		}
 	}
+}
+
+fun BottomSheetDialogFragment.expand() {
+	val sheet = dialog as BottomSheetDialog
+	sheet.behavior.state = BottomSheetBehavior.STATE_EXPANDED
 }
