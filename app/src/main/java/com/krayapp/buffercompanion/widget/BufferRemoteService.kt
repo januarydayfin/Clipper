@@ -6,9 +6,6 @@ import android.os.Bundle
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import android.widget.RemoteViewsService.RemoteViewsFactory
-import com.google.firebase.Firebase
-import com.google.firebase.analytics.FirebaseAnalytics
-import com.google.firebase.analytics.analytics
 import com.krayapp.buffercompanion.R
 import com.krayapp.buffercompanion.data.MainRepo
 import com.krayapp.buffercompanion.data.room.StringEntity
@@ -25,7 +22,6 @@ class ViewsFactory(private val context: Context, private val intent: Intent?) : 
 
     private val WIDGET_ADAPTER_FAIL = "WIDGET_ADAPTER_FAIL"
     private val WIDGET_INTENT_FAIL = "WIDGET_INTENT_FAIL"
-    private val analytic: FirebaseAnalytics = Firebase.analytics
 
     private val dataList = ArrayList<StringEntity>()
 
@@ -54,9 +50,6 @@ class ViewsFactory(private val context: Context, private val intent: Intent?) : 
                         R.id.text, "setText", dataList[position].text
                     )
                 } catch (e: Exception) {
-                    analytic.logEvent(FirebaseAnalytics.Event.SELECT_ITEM,
-                        Bundle().apply { putString(WIDGET_ADAPTER_FAIL, e.localizedMessage) })
-
                     setCharSequence(
                         R.id.text, "setText", ""
                     )
@@ -69,8 +62,6 @@ class ViewsFactory(private val context: Context, private val intent: Intent?) : 
                 try {
                     putExtra(WIDGET_COPY_ACTION, dataList[position].text)
                 } catch (e: Exception) {
-                    analytic.logEvent(FirebaseAnalytics.Event.SELECT_ITEM,
-                        Bundle().apply { putString(WIDGET_INTENT_FAIL, e.localizedMessage) })
                     putExtra(WIDGET_COPY_ACTION, "")
                 }
             }
