@@ -2,7 +2,6 @@ package com.krayapp.buffercompanion.widget
 
 import android.content.Context
 import android.content.Intent
-import android.os.Bundle
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import android.widget.RemoteViewsService.RemoteViewsFactory
@@ -13,15 +12,12 @@ import com.krayapp.buffercompanion.widget.MainWidgetProvider.Companion.WIDGET_CO
 
 class BufferRemoteService : RemoteViewsService() {
     override fun onGetViewFactory(intent: Intent?): RemoteViewsFactory {
-        return ViewsFactory(applicationContext, intent)
+        return ViewsFactory(applicationContext)
     }
 }
 
-class ViewsFactory(private val context: Context, private val intent: Intent?) : RemoteViewsFactory {
+class ViewsFactory(private val context: Context) : RemoteViewsFactory {
     private val repo = MainRepo(context)
-
-    private val WIDGET_ADAPTER_FAIL = "WIDGET_ADAPTER_FAIL"
-    private val WIDGET_INTENT_FAIL = "WIDGET_INTENT_FAIL"
 
     private val dataList = ArrayList<StringEntity>()
 
@@ -43,38 +39,30 @@ class ViewsFactory(private val context: Context, private val intent: Intent?) : 
     }
 
     override fun getViewAt(position: Int): RemoteViews {
-        if (position < dataList.size) {
-            val remoteView = RemoteViews(context.packageName, R.layout.item_list_widget).apply {
-                try {
-                    setCharSequence(
-                        R.id.text, "setText", dataList[position].text
-                    )
-                } catch (e: Exception) {
-                    setCharSequence(
-                        R.id.text, "setText", ""
-                    )
-                }
+        if (count == 0)
+            return RemoteViews(context.packageName, R.layout.item_list_widget)
 
+        if (position > count)
+            onDataSetChanged()
+
+        val remoteView = RemoteViews(context.packageName, R.layout.item_list_widget)
+        runCatching { remoteView.setCharSequence(R.id.text, "setText", dataList[position].text) }
+
+
+        val intent = Intent(context, MainWidgetProvider::class.java).apply {
+            action = WIDGET_COPY_ACTION
+            try {
+                putExtra(WIDGET_COPY_ACTION, dataList[position].text)
+            } catch (e: Exception) {
+                putExtra(WIDGET_COPY_ACTION, "")
             }
-
-            val intent = Intent(context, MainWidgetProvider::class.java).apply {
-                action = WIDGET_COPY_ACTION
-                try {
-                    putExtra(WIDGET_COPY_ACTION, dataList[position].text)
-                } catch (e: Exception) {
-                    putExtra(WIDGET_COPY_ACTION, "")
-                }
-            }
-
-            if (dataList[position].text == context.getString(R.string.empty))
-                remoteView.setOnClickFillInIntent(R.id.widgetItemRoot, Intent())
-            else
-                remoteView.setOnClickFillInIntent(R.id.widgetItemRoot, intent)
-            return remoteView
-
         }
 
-        return RemoteViews(context.packageName, R.layout.item_list_widget)
+        if (dataList[position].text == context.getString(R.string.empty))
+            remoteView.setOnClickFillInIntent(R.id.widgetItemRoot, Intent())
+        else
+            remoteView.setOnClickFillInIntent(R.id.widgetItemRoot, intent)
+        return remoteView
     }
 
     override fun getLoadingView(): RemoteViews {
@@ -86,7 +74,7 @@ class ViewsFactory(private val context: Context, private val intent: Intent?) : 
     }
 
     override fun getItemId(position: Int): Long {
-        return 0L
+        return dataList[position].hashCode().toLong()
     }
 
     override fun hasStableIds(): Boolean {
