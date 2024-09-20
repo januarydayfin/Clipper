@@ -9,6 +9,7 @@ import com.krayapp.buffercompanion.R
 import com.krayapp.buffercompanion.data.MainRepo
 import com.krayapp.buffercompanion.data.room.StringEntity
 import com.krayapp.buffercompanion.widget.MainWidgetProvider.Companion.WIDGET_COPY_ACTION
+import kotlin.random.Random
 
 class BufferRemoteService : RemoteViewsService() {
     override fun onGetViewFactory(intent: Intent?): RemoteViewsFactory {
@@ -42,8 +43,10 @@ class ViewsFactory(private val context: Context) : RemoteViewsFactory {
         if (count == 0)
             return RemoteViews(context.packageName, R.layout.item_list_widget)
 
-        if (position > count)
+        if (position >= count) {
             onDataSetChanged()
+            return RemoteViews(context.packageName, R.layout.item_list_widget)
+        }
 
         val remoteView = RemoteViews(context.packageName, R.layout.item_list_widget)
         runCatching { remoteView.setCharSequence(R.id.text, "setText", dataList[position].text) }
@@ -74,7 +77,12 @@ class ViewsFactory(private val context: Context) : RemoteViewsFactory {
     }
 
     override fun getItemId(position: Int): Long {
-        return dataList[position].hashCode().toLong()
+        runCatching {
+            dataList[position].hashCode().toLong()
+        }.onSuccess {
+            return it
+        }
+        return Random.nextLong()
     }
 
     override fun hasStableIds(): Boolean {
