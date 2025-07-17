@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.krayapp.buffercompanion.R
-import com.krayapp.buffercompanion.data.room.StringEntity
+import com.krayapp.buffercompanion.data.room.clipper.StringEntity
 import com.krayapp.buffercompanion.databinding.AdapterItemBinding
 import com.krayapp.buffercompanion.justVibrateABit
 import com.krayapp.buffercompanion.switchState
@@ -214,16 +214,16 @@ class WordViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
 	@SuppressLint("ClickableViewAccessibility")
 	fun onBind(
-		item: StringEntity,
-		editionFlag: Boolean,
-		itemInRemoveList: Boolean,
-		onCopy: (StringEntity) -> Unit,
-		onStartDrag: ((RecyclerView.ViewHolder) -> Unit)? = null,
-		onEditionModeOn: (StringEntity) -> Unit,
-		onRemove: (StringEntity) -> Unit,
-		onEdit: (StringEntity) -> Unit,
-		onMenuOpened: (Any) -> Unit,
-		onMenuClosed: (Any) -> Unit
+        item: StringEntity,
+        editionFlag: Boolean,
+        itemInRemoveList: Boolean,
+        onCopy: (StringEntity) -> Unit,
+        onStartDrag: ((RecyclerView.ViewHolder) -> Unit)? = null,
+        onEditionModeOn: (StringEntity) -> Unit,
+        onRemove: (StringEntity) -> Unit,
+        onEdit: (StringEntity) -> Unit,
+        onMenuOpened: (Any) -> Unit,
+        onMenuClosed: (Any) -> Unit
 	) {
 		currentItem = item
 		this.editionFlag = editionFlag

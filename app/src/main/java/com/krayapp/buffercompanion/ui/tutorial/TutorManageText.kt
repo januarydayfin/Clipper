@@ -13,13 +13,12 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.krayapp.buffercompanion.R
-import com.krayapp.buffercompanion.data.room.StringEntity
+import com.krayapp.buffercompanion.data.room.clipper.StringEntity
 import com.krayapp.buffercompanion.databinding.TutorialManageFragmentBinding
 import com.krayapp.buffercompanion.ui.RecyclerTouchControl
 import com.krayapp.buffercompanion.ui.RecyclerViewSpacer
 import com.krayapp.buffercompanion.ui.WordsAdapter
 import com.krayapp.buffercompanion.ui.fragments.interfaces.ListEditWatcher
-import java.util.Collections
 
 class TutorManageText : Fragment() {
     private var vb: TutorialManageFragmentBinding? = null

@@ -1,6 +1,6 @@
 package com.krayapp.buffercompanion.ui.fragments.interfaces
 
-import com.krayapp.buffercompanion.data.room.StringEntity
+import com.krayapp.buffercompanion.data.room.clipper.StringEntity
 
 interface ListEditWatcher {
     fun onEditionStart()

@@ -23,7 +23,7 @@ import com.krayapp.buffercompanion.R
 import com.krayapp.buffercompanion.activity
 import com.krayapp.buffercompanion.addTextWatcher
 import com.krayapp.buffercompanion.data.MainRepo
-import com.krayapp.buffercompanion.data.room.StringEntity
+import com.krayapp.buffercompanion.data.room.clipper.StringEntity
 import com.krayapp.buffercompanion.databinding.FragmentMainBinding
 import com.krayapp.buffercompanion.onImeDone
 import com.krayapp.buffercompanion.setGone

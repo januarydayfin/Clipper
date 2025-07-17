@@ -1,4 +1,4 @@
-package com.krayapp.buffercompanion.data.room
+package com.krayapp.buffercompanion.data.room.clipper
 
 import androidx.room.Database
 import androidx.room.RoomDatabase

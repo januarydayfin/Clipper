@@ -7,7 +7,7 @@ import android.widget.RemoteViewsService
 import android.widget.RemoteViewsService.RemoteViewsFactory
 import com.krayapp.buffercompanion.R
 import com.krayapp.buffercompanion.data.MainRepo
-import com.krayapp.buffercompanion.data.room.StringEntity
+import com.krayapp.buffercompanion.data.room.clipper.StringEntity
 import com.krayapp.buffercompanion.widget.MainWidgetProvider.Companion.WIDGET_COPY_ACTION
 import kotlin.random.Random
 

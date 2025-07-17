@@ -2,9 +2,9 @@ package com.krayapp.buffercompanion.data
 
 import android.content.Context
 import androidx.room.Room
-import com.krayapp.buffercompanion.data.room.MIGRATION_1_2
-import com.krayapp.buffercompanion.data.room.MainDB
-import com.krayapp.buffercompanion.data.room.StringEntity
+import com.krayapp.buffercompanion.data.room.clipper.MIGRATION_1_2
+import com.krayapp.buffercompanion.data.room.clipper.MainDB
+import com.krayapp.buffercompanion.data.room.clipper.StringEntity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

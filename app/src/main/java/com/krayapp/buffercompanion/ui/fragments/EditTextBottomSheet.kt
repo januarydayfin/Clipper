@@ -10,7 +10,7 @@ import com.google.android.material.color.MaterialColors
 import com.krayapp.buffercompanion.R
 import com.krayapp.buffercompanion.addTextWatcher
 import com.krayapp.buffercompanion.data.MainRepo
-import com.krayapp.buffercompanion.data.room.StringEntity
+import com.krayapp.buffercompanion.data.room.clipper.StringEntity
 import com.krayapp.buffercompanion.databinding.BottomsheetEditTextBinding
 import com.krayapp.buffercompanion.expand
 
