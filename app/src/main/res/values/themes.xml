@@ -140,6 +140,7 @@
 		<item name="android:layout_margin">10dp</item>
 		<item name="android:background">@drawable/drag_drawable</item>
 	</style>
+
 	<style name="BaseActionContainer">
 		<item name="android:clickable">true</item>
 		<item name="android:focusable">true</item>
