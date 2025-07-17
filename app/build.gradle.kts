@@ -59,6 +59,7 @@ dependencies {
 	implementation(platform("com.google.firebase:firebase-bom:33.16.0"))
 	implementation("androidx.appcompat:appcompat:1.7.1")
 	implementation("androidx.recyclerview:recyclerview:1.4.0")
+	implementation("com.github.skydoves:colorpickerview:2.3.0")
 	implementation("com.google.android.material:material:1.14.0-alpha02")
 	testImplementation("junit:junit:4.13.2")
 	androidTestImplementation("androidx.test.ext:junit:1.2.1")

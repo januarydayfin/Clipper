@@ -1,8 +1,7 @@
-package com.krayapp.buffercompanion.ui.fragments
+package com.krayapp.buffercompanion.ui
 
 import android.view.View
 import androidx.annotation.StringRes
-import androidx.core.view.isVisible
 import com.krayapp.buffercompanion.databinding.LayoutToolbarBinding
 import com.krayapp.buffercompanion.setGone
 import com.krayapp.buffercompanion.setInvisible

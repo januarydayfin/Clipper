@@ -1,20 +1,16 @@
 package com.krayapp.buffercompanion.bargenCore.generator
 
-import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Color
 import androidx.core.graphics.createBitmap
-import com.google.android.material.color.MaterialColors
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.MultiFormatWriter
-import com.krayapp.buffercompanion.R
 import com.krayapp.buffercompanion.bargenCore.BarGenerator
 import com.krayapp.buffercompanion.bargenCore.BitmapCache
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class BarcodeGenerator(private val context: Context) : BarGenerator {
-
+object BarcodeGenerator : BarGenerator {
     override suspend fun generate(
         content: String,
         type: BarcodeFormat,
@@ -36,11 +32,7 @@ class BarcodeGenerator(private val context: Context) : BarGenerator {
             if (cachedBitmap != null)
                 return@withContext cachedBitmap
 
-            val backgroundColor = MaterialColors.getColor(
-                context,
-                R.attr.bottomSheetBottomColor,
-                Color.BLACK
-            )
+            val backgroundColor = Color.WHITE
 
             val bitMatrix = runCatching {
                 MultiFormatWriter().encode(

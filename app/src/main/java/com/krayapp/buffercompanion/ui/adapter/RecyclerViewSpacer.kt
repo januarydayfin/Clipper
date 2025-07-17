@@ -1,4 +1,4 @@
-package com.krayapp.buffercompanion.ui
+package com.krayapp.buffercompanion.ui.adapter
 
 import android.graphics.Rect
 import android.view.View

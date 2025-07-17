@@ -2,61 +2,36 @@ package com.krayapp.buffercompanion.ui.fragments
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.TransitionInflater
 import com.gun0912.tedpermission.normal.TedPermission
-import com.krayapp.buffercompanion.ClipperApp
 import com.krayapp.buffercompanion.R
-import com.krayapp.buffercompanion.activity
-import com.krayapp.buffercompanion.addTextWatcher
-import com.krayapp.buffercompanion.data.MainRepo
-import com.krayapp.buffercompanion.data.room.clipper.StringEntity
 import com.krayapp.buffercompanion.databinding.FragmentMainBinding
-import com.krayapp.buffercompanion.onImeDone
-import com.krayapp.buffercompanion.setGone
-import com.krayapp.buffercompanion.setVisible
-import com.krayapp.buffercompanion.ui.RecyclerTouchControl
-import com.krayapp.buffercompanion.ui.RecyclerViewSpacer
-import com.krayapp.buffercompanion.ui.WordsAdapter
-import com.krayapp.buffercompanion.ui.fragments.interfaces.ListEditWatcher
-import com.krayapp.buffercompanion.ui.tutorial.BottomSheetTutorial
+import com.krayapp.buffercompanion.ui.adapter.BarcodeAdapter
+import com.krayapp.buffercompanion.ui.bottomsheets.CreateBarcodeBottomsheet
+import com.krayapp.buffercompanion.ui.dialogs.ScanDialog
 import com.krayapp.buffercompanion.utils.addPermissionListener
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 class MainFragment : Fragment() {
     private var vb: FragmentMainBinding? = null
-    private lateinit var repo: MainRepo
-    private lateinit var wordsAdapter: WordsAdapter
-    private lateinit var touchHelper: RecyclerTouchControl
 
-    private var dragStarted = false
+    private var barcodeAdapter : BarcodeAdapter? = null
 
-    private val dataSet = ArrayList<StringEntity>()
-
-    private val backDispatcher by lazy {
+    private val backDispatcher =
         object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                wordsAdapter.resetEdition()
+                barcodeAdapter?.selectionModeOff()
+                this.remove()
             }
         }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val inflater = TransitionInflater.from(requireContext())
@@ -68,80 +43,29 @@ class MainFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
+    ): View? {
         vb = FragmentMainBinding.inflate(inflater)
-        return vb!!.root
+        return vb?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         view.setBackgroundColor(requireContext().getColor(R.color.md_theme_surface))
-        repo = MainRepo(requireContext())
+
         initClick()
         initAdapter()
-        initTextWatcher()
-
-        if (!ClipperApp.getPrefs().isTutorialShown())
-            BottomSheetTutorial().show(childFragmentManager, "")
     }
 
-    @SuppressLint("UseCompatLoadingForDrawables")
-    private fun initTextWatcher() {
-        vb!!.edit.addTextWatcher {
-            vb!!.editLayout.endIconDrawable =
-                requireContext().getDrawable(if (it.isNotEmpty()) R.drawable.ic_input else R.drawable.ic_paste)
-            for (item in dataSet) {
-                if (it == item.text) {
-                    vb!!.editLayout.isErrorEnabled = true
-                    vb!!.editLayout.error = context?.getString(R.string.already_exist)
-                    break
-                } else {
-                    vb!!.editLayout.isErrorEnabled = false
 
-                    vb!!.editLayout.error = null
-                }
-            }
-        }
-    }
-
-    @SuppressLint("ClickableViewAccessibility")
     private fun initAdapter() {
-        wordsAdapter = WordsAdapter(getListWatcher())
-        touchHelper = RecyclerTouchControl(wordsAdapter)
-        val helper = ItemTouchHelper(touchHelper).apply { attachToRecyclerView(vb!!.recycler) }
-
-        with(wordsAdapter) {
-            setDrag(
-                onStartDrag = {
-                    dragStarted = true
-                    helper.startDrag(it)
-                })
-
+        barcodeAdapter = BarcodeAdapter {
+            activity?.onBackPressedDispatcher?.addCallback(backDispatcher)
         }
-
 
         with(vb!!.recycler) {
             layoutManager = LinearLayoutManager(requireContext())
-            adapter = wordsAdapter
-            addItemDecoration(RecyclerViewSpacer(12, RecyclerView.VERTICAL))
-            setOnTouchListener { _, event ->
-                if (event.actionMasked == MotionEvent.ACTION_UP && dragStarted) {
-                    repo.updateBaseIndexes(wordsAdapter.getUpdatedIndexData())
-                    dragStarted = false
-                } else if (event.actionMasked == MotionEvent.ACTION_UP)
-                    touchHelper.onActionUp()
-                return@setOnTouchListener false
-            }
+            adapter = barcodeAdapter
         }
-
-        reloadRepo {
-            if (dataSet.isNotEmpty())
-                vb!!.emptyHint.setGone()
-            MainScope().launch {
-                wordsAdapter.initData(dataSet)
-            }
-        }
-
     }
 
     private fun startScannerDialog() {
@@ -149,7 +73,7 @@ class MainFragment : Fragment() {
             .create()
             .addPermissionListener(onGranted = {
                 ScanDialog {
-					//todo запись в бд и обновление списка
+                    //todo запись в бд и обновление списка
                 }.show(childFragmentManager, "")
             }, onDenied = { _ ->
             })
@@ -161,85 +85,9 @@ class MainFragment : Fragment() {
         CreateBarcodeBottomsheet().show(childFragmentManager, "")
     }
 
-    private fun getListWatcher(): ListEditWatcher {
-        return object : ListEditWatcher {
-            override fun onEditionStart() {
-                activity().onBackPressedDispatcher.addCallback(backDispatcher)
-            }
-
-            override fun onEditionReset() {
-                backDispatcher.remove()
-                activity().toolbarAssistant().onMainScreen()
-            }
-
-            override fun onCopyClicked(entity: StringEntity) {
-                copy(entity.text)
-            }
-
-            override fun onRemoveClicked(entity: StringEntity) {
-                removeString(entity)
-            }
-
-            override fun onEditClicked(entity: StringEntity) {
-                EditTextBottomSheet(entity) { oldKey, newEntity ->
-                    wordsAdapter.updateWord(oldKey, newEntity)
-                    repo.replace(oldKey, newEntity)
-                    reloadRepo()
-                }.show(childFragmentManager, "")
-            }
-
-            override fun onCheckRemoveStart() {
-                activity().toolbarAssistant()
-                    .onCheckRemoveStarted({ wordsAdapter.checkAllRemove() }, onDelete = {
-                        repo.removeList(wordsAdapter.getCheckedList())
-                        reloadRepo()
-                        wordsAdapter.removeChecked()
-                    })
-            }
-
-            override fun onAdapterHasData(hasData: Boolean) {
-                if (hasData) {
-                    vb!!.recycler.setVisible()
-                    vb!!.emptyHint.setGone()
-                } else {
-                    vb!!.recycler.setGone()
-                    vb!!.emptyHint.setVisible()
-                }
-            }
-        }
-    }
-
-    private fun reloadRepo(onLoaded: ((List<StringEntity>) -> Unit)? = null) {
-        CoroutineScope(Dispatchers.IO).launch {
-            if (onLoaded == null) //Нужно моментально получить данные, если есть колбек, т.к это инициализация
-                delay(1000)
-            repo.loadList {
-                dataSet.apply {
-                    clear()
-                    addAll(it)
-                }
-                if (onLoaded != null)
-                    onLoaded(dataSet)
-            }
-        }
-    }
 
     private fun initClick() {
         vb?.run {
-            editLayout.setEndIconOnClickListener {
-                val text = vb!!.edit.text.toString()
-                if (text.isNotEmpty() && vb!!.editLayout.error == null) {
-                    createNewText(text)
-                } else
-                    pasteFromClip()
-            }
-            edit.onImeDone {
-                val text = vb!!.edit.text.toString().trim()
-                if (text.isNotEmpty() && vb!!.editLayout.error == null) {
-                    createNewText(text)
-                }
-            }
-
             startScanner.setOnClickListener {
                 startScannerDialog()
             }
@@ -249,44 +97,6 @@ class MainFragment : Fragment() {
         }
     }
 
-    private fun createNewText(text: String) {
-        repo.addText(text)
-        reloadRepo()
-        addStringToAdapter(text)
-        vb!!.edit.text?.clear()
-        vb!!.recycler.scrollToPosition(wordsAdapter.itemCount - 1)
-    }
-
-    private fun copy(text: String) {
-        val manager =
-            requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        val clip = ClipData.newPlainText("label", text)
-        manager.setPrimaryClip(clip)
-
-        Toast.makeText(
-            requireContext(),
-            R.string.copied,
-            Toast.LENGTH_SHORT
-        ).show()
-    }
-
-    private fun removeString(text: StringEntity) {
-        CoroutineScope(Dispatchers.IO).launch {
-            repo.remove(text)
-            reloadRepo()
-        }
-    }
-
-    private fun addStringToAdapter(text: String) {
-        wordsAdapter.addWord(text)
-    }
-
-    override fun onStop() {
-        vb!!.edit.clearFocus()
-        super.onStop()
-    }
-
-
     private fun pasteFromClip() {
         val manager =
             requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
@@ -294,10 +104,9 @@ class MainFragment : Fragment() {
         val textFromClip = manager.primaryClip?.getItemAt(0)?.text.toString()
 
         if (textFromClip.isNotEmpty() && textFromClip != "null") {
-            repo.addText(textFromClip)
-            addStringToAdapter(textFromClip)
-            reloadRepo()
+            //todo идем создавать qr код из текста
         }
+
     }
 
     override fun onDestroyView() {

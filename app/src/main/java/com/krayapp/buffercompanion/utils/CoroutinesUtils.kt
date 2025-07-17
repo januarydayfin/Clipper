@@ -7,7 +7,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 
-suspend fun <T> withIO(block: () -> T): T {
+suspend fun <T> withIO(block: suspend () -> T): T {
     return withContext(Dispatchers.IO) {
         block()
     }

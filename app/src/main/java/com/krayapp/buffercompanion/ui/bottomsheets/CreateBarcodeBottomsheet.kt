@@ -1,4 +1,4 @@
-package com.krayapp.buffercompanion.ui.fragments
+package com.krayapp.buffercompanion.ui.bottomsheets
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -29,7 +29,7 @@ class CreateBarcodeBottomsheet : BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         vb?.let { vb ->
-            bitmapGenerator = BarcodeGenerator(vb.root.context)
+            bitmapGenerator = BarcodeGenerator
             vb.edit.addTextWatcher { generatePreview(it, vb.preview) }
             vb.preview.layoutParams =
                 LayoutParams(context.displayWidth(), context.displayWidth() / 2)

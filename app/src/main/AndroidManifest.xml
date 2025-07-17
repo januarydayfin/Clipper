@@ -22,20 +22,6 @@
 		android:supportsRtl="true"
 		android:theme="@style/AppTheme"
 		tools:targetApi="31">
-		<receiver
-			android:name=".widget.MainWidgetProvider"
-			android:exported="false">
-			<intent-filter>
-				<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-			</intent-filter>
-			<meta-data
-				android:name="android.appwidget.provider"
-				android:resource="@xml/buffer_widget" />
-		</receiver>
-
-		<service
-			android:name=".widget.BufferRemoteService"
-			android:permission="android.permission.BIND_REMOTEVIEWS" />
 		<activity
 			android:windowSoftInputMode="adjustResize"
 			android:name="com.krayapp.buffercompanion.ui.MainActivity"

@@ -1,4 +1,4 @@
-package com.krayapp.buffercompanion.ui.fragments
+package com.krayapp.buffercompanion.ui.dialogs
 
 import android.content.DialogInterface
 import android.os.Bundle

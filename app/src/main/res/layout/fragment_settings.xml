@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:orientation="vertical"
 	android:paddingHorizontal="@dimen/base_screen_margin"
 	android:paddingTop="@dimen/base_top_margin">
@@ -106,7 +107,6 @@
 			android:layout_marginEnd="@dimen/base_screen_margin"
 			android:src="@drawable/refresh" />
 	</com.krayapp.buffercompanion.views.RippleCard>
-
 
 	<FrameLayout
 		style="@style/BaseActionContainer"

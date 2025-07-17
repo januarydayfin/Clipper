@@ -7,6 +7,6 @@ import androidx.room.PrimaryKey
 class TagEntity(
     @PrimaryKey val id: String,
     val name: String,
-    val color: Int,
-    val textLight: Boolean,
+    val backgroundColor: Int,
+    val textColor: Int,
 )
