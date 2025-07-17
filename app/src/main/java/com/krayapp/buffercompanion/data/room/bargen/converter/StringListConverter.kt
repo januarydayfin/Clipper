@@ -10,5 +10,6 @@ class StringListConverter {
         Json.decodeFromString(json)
 
 
+    @TypeConverter
     fun toJson(list: List<String>): String = Json.encodeToString(list)
 }
