@@ -1,4 +1,4 @@
-package com.krayman.toolbox
+package com.krayapp.buffercompanion.utils
 
 import android.os.Build
 import androidx.fragment.app.Fragment

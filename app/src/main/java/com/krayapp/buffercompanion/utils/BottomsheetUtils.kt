@@ -1,4 +1,4 @@
-package com.krayman.toolbox
+package com.krayapp.buffercompanion.utils
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog

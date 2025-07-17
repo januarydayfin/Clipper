@@ -1,4 +1,4 @@
-package com.krayman.toolbox
+package com.krayapp.buffercompanion.utils
 
 import android.annotation.SuppressLint
 import android.content.Context

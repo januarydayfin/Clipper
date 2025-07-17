@@ -1,4 +1,4 @@
-package com.krayman.toolbox
+package com.krayapp.buffercompanion.utils
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

@@ -1,4 +1,4 @@
-package com.krayman.toolbox
+package com.krayapp.buffercompanion.utils
 
 import kotlin.reflect.full.memberProperties
 

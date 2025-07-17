@@ -1,4 +1,4 @@
-package com.krayman.toolbox
+package com.krayapp.buffercompanion.utils
 
 inline fun <E: Any, T: Collection<E>> T?.withNotNullOrEmpty(func: T.() -> Unit) {
     if (!this.isNullOrEmpty()) {

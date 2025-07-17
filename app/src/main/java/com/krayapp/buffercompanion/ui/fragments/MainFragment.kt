@@ -20,13 +20,13 @@ import androidx.transition.TransitionInflater
 import com.gun0912.tedpermission.normal.TedPermission
 import com.krayapp.buffercompanion.ClipperApp
 import com.krayapp.buffercompanion.R
+import com.krayapp.buffercompanion.activity
 import com.krayapp.buffercompanion.addTextWatcher
 import com.krayapp.buffercompanion.data.MainRepo
 import com.krayapp.buffercompanion.data.room.StringEntity
 import com.krayapp.buffercompanion.databinding.FragmentMainBinding
 import com.krayapp.buffercompanion.onImeDone
 import com.krayapp.buffercompanion.setGone
-import com.krayapp.buffercompanion.activity
 import com.krayapp.buffercompanion.setVisible
 import com.krayapp.buffercompanion.ui.RecyclerTouchControl
 import com.krayapp.buffercompanion.ui.RecyclerViewSpacer
@@ -34,7 +34,6 @@ import com.krayapp.buffercompanion.ui.WordsAdapter
 import com.krayapp.buffercompanion.ui.fragments.interfaces.ListEditWatcher
 import com.krayapp.buffercompanion.ui.tutorial.BottomSheetTutorial
 import com.krayapp.buffercompanion.utils.addPermissionListener
-import com.krayman.toolbox.runOnUi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
@@ -158,6 +157,10 @@ class MainFragment : Fragment() {
             .check()
     }
 
+    private fun startCreatingCustomBarcode() {
+        CreateBarcodeBottomsheet().show(childFragmentManager, "")
+    }
+
     private fun getListWatcher(): ListEditWatcher {
         return object : ListEditWatcher {
             override fun onEditionStart() {
@@ -239,6 +242,9 @@ class MainFragment : Fragment() {
 
             startScanner.setOnClickListener {
                 startScannerDialog()
+            }
+            createCustom.setOnClickListener {
+                startCreatingCustomBarcode()
             }
         }
     }

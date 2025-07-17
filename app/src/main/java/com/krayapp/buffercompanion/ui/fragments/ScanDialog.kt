@@ -11,8 +11,8 @@ import com.journeyapps.barcodescanner.Size
 import com.krayapp.buffercompanion.bargenCore.BarReader
 import com.krayapp.buffercompanion.bargenCore.reader.BargenReaderImpl
 import com.krayapp.buffercompanion.databinding.DialogScannerLayoutBinding
-import com.krayman.toolbox.displayWidth
-import com.krayman.toolbox.rectangleParams
+import com.krayapp.buffercompanion.utils.displayWidth
+import com.krayapp.buffercompanion.utils.rectangleParams
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -33,6 +33,7 @@ class ScanDialog(private val onScanned: (String) -> Unit) : DialogFragment() {
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
         reader.pauseScan()
+        binding = null
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
