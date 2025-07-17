@@ -49,6 +49,12 @@ dependencies {
 	annotationProcessor("androidx.room:room-compiler:$roomVersion")
 	implementation("androidx.room:room-ktx:$roomVersion")
 
+	implementation("com.journeyapps:zxing-android-embedded:4.3.0")
+
+	implementation("io.github.ParkSangGwon:tedpermission-normal:3.4.2")
+//	implementation("io.github.ParkSangGwon:tedpermission-coroutine:3.4.2")
+	implementation(kotlin("reflect"))
+
 	ksp("androidx.room:room-compiler:$roomVersion")
 	implementation("androidx.core:core-ktx:1.16.0")
 	implementation(platform("com.google.firebase:firebase-bom:33.16.0"))

@@ -1,5 +1,5 @@
 <resources>
-	<string name="app_name">Clipper</string>
+	<string name="app_name">Bargen</string>
 	<string name="open_manager">Open Clipper</string>
 	<string name="enter_for_input">Нажмите Enter для ввода</string>
 	<string name="use_dynamic_colors">Использовать Dynamic Colors</string>

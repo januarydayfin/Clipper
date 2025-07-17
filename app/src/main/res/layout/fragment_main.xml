@@ -36,6 +36,14 @@
 		app:layout_constraintTop_toTopOf="parent"
 		app:layout_constraintVertical_bias="0.3" />
 
+	<Button
+		android:id="@+id/startScanner"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="Start Scanner"
+		app:layout_constraintBottom_toTopOf="@+id/textContainer"
+		app:layout_constraintEnd_toEndOf="parent" />
+
 	<FrameLayout
 		android:id="@+id/textContainer"
 		android:layout_width="match_parent"
