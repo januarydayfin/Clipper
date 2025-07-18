@@ -3,6 +3,9 @@ package com.krayapp.buffercompanion.ui.fragments
 import android.Manifest
 import android.content.ClipboardManager
 import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.RippleDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -21,6 +24,7 @@ import com.krayapp.buffercompanion.databinding.FragmentMainBinding
 import com.krayapp.buffercompanion.ui.adapter.BarcodeAdapter
 import com.krayapp.buffercompanion.ui.bottomsheets.CreateBarcodeBottomsheet
 import com.krayapp.buffercompanion.ui.dialogs.ScanDialog
+import com.krayapp.buffercompanion.ui.dialogs.showColorPickerDialog
 import com.krayapp.buffercompanion.utils.addPermissionListener
 import com.krayapp.buffercompanion.utils.runOnUi
 import kotlinx.coroutines.flow.collectLatest
@@ -117,6 +121,12 @@ class MainFragment : Fragment() {
             }
             createCustom.setOnClickListener {
                 startCreatingCustomBarcode()
+            }
+
+            colorPicker.setOnClickListener {
+                context?.showColorPickerDialog {
+                    colorPicker.setBackgroundColor(it)
+                }
             }
         }
     }

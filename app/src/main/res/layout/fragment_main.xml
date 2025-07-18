@@ -44,5 +44,10 @@
         android:layout_height="wrap_content"
         android:text="CreateCustom barcode" />
 
+    <Button
+        android:id="@+id/colorPicker"
+        android:layout_width="wrap_content"
+        android:text="Color picker"
+        android:layout_height="wrap_content"/>
 
 </LinearLayout>
