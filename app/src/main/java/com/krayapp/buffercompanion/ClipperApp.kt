@@ -3,6 +3,7 @@ package com.krayapp.buffercompanion
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
 import com.google.android.material.color.DynamicColors
+import com.krayapp.buffercompanion.utils.displayWidth
 
 class ClipperApp: Application() {
 
@@ -15,6 +16,9 @@ class ClipperApp: Application() {
         fun getPrefs(): GlobalPrefs {
             return globalPrefs
         }
+
+        val displayWidth: Int
+            get() = getApplication().displayWidth()
     }
     override fun onCreate() {
         instance = this

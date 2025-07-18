@@ -1,7 +1,6 @@
 package com.krayapp.buffercompanion.ui.fragments
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.content.ClipboardManager
 import android.content.Context
 import android.os.Bundle
@@ -10,20 +9,28 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.transition.TransitionInflater
 import com.gun0912.tedpermission.normal.TedPermission
+import com.krayapp.buffercompanion.BargenViewModel
 import com.krayapp.buffercompanion.R
 import com.krayapp.buffercompanion.databinding.FragmentMainBinding
 import com.krayapp.buffercompanion.ui.adapter.BarcodeAdapter
 import com.krayapp.buffercompanion.ui.bottomsheets.CreateBarcodeBottomsheet
 import com.krayapp.buffercompanion.ui.dialogs.ScanDialog
 import com.krayapp.buffercompanion.utils.addPermissionListener
+import com.krayapp.buffercompanion.utils.runOnUi
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class MainFragment : Fragment() {
     private var vb: FragmentMainBinding? = null
 
-    private var barcodeAdapter : BarcodeAdapter? = null
+    private var barcodeAdapter: BarcodeAdapter? = null
+    private val viewmodel: BargenViewModel by viewModels()
 
     private val backDispatcher =
         object : OnBackPressedCallback(true) {
@@ -51,9 +58,9 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         view.setBackgroundColor(requireContext().getColor(R.color.md_theme_surface))
-
         initClick()
         initAdapter()
+        observeDataFlow()
     }
 
 
@@ -62,9 +69,26 @@ class MainFragment : Fragment() {
             activity?.onBackPressedDispatcher?.addCallback(backDispatcher)
         }
 
-        with(vb!!.recycler) {
-            layoutManager = LinearLayoutManager(requireContext())
-            adapter = barcodeAdapter
+        vb?.recycler?.let {
+            it.layoutManager = LinearLayoutManager(requireContext())
+            it.adapter = barcodeAdapter
+        }
+    }
+
+    private fun observeDataFlow() {
+        runOnUi {
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                launch {
+                    viewmodel.barcodeFlow.collectLatest {
+                        barcodeAdapter?.updateData(it)
+                    }
+                }
+                launch {
+                    viewmodel.tagsFlow.collectLatest {
+                        //todo вставялем в чипгруп и меняем на чекнутые
+                    }
+                }
+            }
         }
     }
 

@@ -18,7 +18,7 @@ suspend fun <T> withMain(block: () -> T): T {
     }
 }
 
-fun ViewModel.launchInIO(block: () -> Unit) {
+fun ViewModel.launchInIO(block: suspend () -> Unit) {
     viewModelScope.launch(Dispatchers.IO) { block() }
 }
 

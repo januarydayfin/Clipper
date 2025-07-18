@@ -28,22 +28,33 @@ class BargenRepo {
         withIO { tags.removeByName(name) }
     }
 
-    suspend fun searchByName(name: String) = withContext(Dispatchers.IO) {
-            barcodes.getBarcodesByName().filter { it.name.contains(name, true) }
-        }
+    suspend fun searchBarcodesByName(name: String) = withContext(Dispatchers.IO) {
+        barcodes.getBarcodesByName().filter { it.name.contains(name, true) }
+    }
 
     suspend fun filterTagsByName(name: String) = withContext(Dispatchers.IO) {
         tags.getTags().filter { it.name.contains(name, true) }
     }
 
-    suspend fun removeTagFromBarcodes(tagId: String) {
-        fun List<String>.removeStringFromStrings(str: String) = filter { it != str }
+    suspend fun getTagsWithIds(list: List<String>) = withContext(Dispatchers.IO) {
+        tags.getTags().filter { it.id in list }
+    }
 
+    suspend fun filterBarcodesWithTags(
+        tags: List<String>,
+        sort: SortType,
+        sourceList: List<BarcodeEntity>? = null
+    ): List<BarcodeEntity> =
+        withContext(Dispatchers.IO) {
+            (sourceList ?: getAllBarcodes(sort)).filter { it.tags.containsAll(tags) }
+        }
+
+    suspend fun removeTagFromBarcodes(tagId: String) {
         withIO {
             val modifiedList = mutableListOf<BarcodeEntity>()
 
             barcodes.getBarcodesByUsage().forEach {
-                val clearedTags = it.tags.removeStringFromStrings(tagId)
+                val clearedTags = it.tags.filter { tag -> tag != tagId }
                 val newEntity = it.copy(tags = clearedTags)
                 modifiedList.add(newEntity)
             }

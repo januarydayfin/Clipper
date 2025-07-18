@@ -6,5 +6,6 @@ data class TagUiModel(
     val id: String,
     val name: String,
     val backgroundColor: Color,
-    val fontColor: Color
+    val fontColor: Color,
+    val checked: Boolean = false
 )
