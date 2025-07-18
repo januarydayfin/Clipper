@@ -4,7 +4,9 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import androidx.core.graphics.createBitmap
 import com.google.zxing.BarcodeFormat
+import com.google.zxing.EncodeHintType
 import com.google.zxing.MultiFormatWriter
+import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel
 import com.krayapp.buffercompanion.bargen.bargenCore.BarGenerator
 import com.krayapp.buffercompanion.bargen.bargenCore.BitmapCache
 import kotlinx.coroutines.Dispatchers
@@ -29,35 +31,62 @@ object BarcodeGenerator : BarGenerator {
         return withContext(Dispatchers.IO) {
             val cachedBitmap = BitmapCache.instance?.get(content)
 
-            if (cachedBitmap != null)
-                return@withContext cachedBitmap
+            if (cachedBitmap != null) return@withContext cachedBitmap
 
-            val backgroundColor = Color.WHITE
+            runCatching {
+                // Подготовка данных с учетом кодировки
+                val encodedContent = when (format) {
+                    BarcodeFormat.QR_CODE -> {
+                        // Для QR-кода указываем UTF-8 через Map
+                        val hints = mapOf(
+                            EncodeHintType.CHARACTER_SET to "UTF-8",
+                            EncodeHintType.ERROR_CORRECTION to ErrorCorrectionLevel.M
+                        )
+                        MultiFormatWriter().encode(
+                            content,
+                            format,
+                            width,
+                            height,
+                            hints
+                        )
+                    }
 
-            val bitMatrix = runCatching {
-                MultiFormatWriter().encode(
-                    content,
-                    format,
-                    width,
-                    height
-                )
-            }.getOrNull()
+                    BarcodeFormat.DATA_MATRIX -> {
+                        // DataMatrix также поддерживает UTF-8
+                        val hints = mapOf(EncodeHintType.CHARACTER_SET to "UTF-8")
+                        MultiFormatWriter().encode(
+                            content,
+                            format,
+                            width,
+                            height,
+                            hints
+                        )
+                    }
 
-            bitMatrix ?: return@withContext null
-
-            val pixels = IntArray(width * height)
-            for (y in 0 until height) {
-                for (x in 0 until width) {
-                    pixels[y * width + x] =
-                        if (bitMatrix[x, y]) Color.BLACK else backgroundColor
+                    else -> {
+                        MultiFormatWriter().encode(
+                            content,
+                            format,
+                            width,
+                            height
+                        )
+                    }
                 }
-            }
 
-            val bpm = createBitmap(width, height).apply {
-                setPixels(pixels, 0, width, 0, 0, width, height)
-            }
-            BitmapCache.instance?.put(content, bpm)
-            return@withContext bpm
+                val pixels = IntArray(width * height)
+                for (y in 0 until height) {
+                    for (x in 0 until width) {
+                        pixels[y * width + x] =
+                            if (encodedContent[x, y]) Color.BLACK else Color.WHITE
+                    }
+                }
+
+                createBitmap(width, height).apply {
+                    setPixels(pixels, 0, width, 0, 0, width, height)
+                }.also { bitmap ->
+                    BitmapCache.instance?.put(content, bitmap)
+                }
+            }.getOrNull()
         }
     }
 }
