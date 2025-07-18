@@ -13,6 +13,8 @@
 	<string name="empty_hint">This place is empty for now\n\nStart entering text or paste it from the buffer</string>
 	<string name="settings_title">Settings</string>
 
+	<string name="camera_required">The app needs access to the camera to scan</string>
+
 	<string name="light_theme">Light theme</string>
 	<string name="system_theme">System theme</string>
 	<string name="dark_theme">Dark theme</string>
@@ -23,6 +25,7 @@
 	<string name="check_all">Select all</string>
 	<string name="delete">Delete</string>
 	<string name="next">Next</string>
+	<string name="create_from_buffer">QR from buffer</string>
 
 	<string name="already_exist">Already exists</string>
 	<string name="text_editing">Text editing</string>

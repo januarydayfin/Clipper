@@ -22,6 +22,8 @@
 	<string name="check_all">Выделить все</string>
 	<string name="delete">Удалить</string>
 
+	<string name="camera_required">Приложению необходим доступ к камере, чтобы сканировать</string>
+	<string name="create_from_buffer">QR из буфера</string>
 	<string name="already_exist">Уже существует</string>
 	<string name="text_editing">Редактирование текста</string>
 	<string name="save">Сохранить</string>

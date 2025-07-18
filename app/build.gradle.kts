@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.krayapp.buffercompanion"
+    namespace = "com.krayapp.buffercompanion.bargen"
     compileSdk = 35
 
     defaultConfig {
