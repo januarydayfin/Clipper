@@ -19,6 +19,9 @@ class BargenRepo {
     suspend fun upsertTag(tag: TagEntity) {
         withIO { tags.upsertTag(tag) }
     }
+    suspend fun upsertTags(list: List<TagEntity>) {
+        withIO { tags.upsertTags(list) }
+    }
 
     suspend fun removeBarcodeById(id: String) {
         withIO { barcodes.removeBarcodeById(id) }

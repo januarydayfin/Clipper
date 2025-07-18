@@ -10,6 +10,9 @@ interface TagDao {
     @Upsert
     suspend fun upsertTag(tag: TagEntity)
 
+    @Upsert
+    suspend fun upsertTags(list: List<TagEntity>)
+
     @Query("DELETE FROM tags WHERE :name == name")
     suspend fun removeByName(name: String)
 

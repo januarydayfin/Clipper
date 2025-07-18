@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 data class BarcodeUiModel(
     val id: String,
     val name: String,
+    val barcodeType: String,
     val description: String?,
     val image: Bitmap?,
     val tags: List<TagUiModel>,

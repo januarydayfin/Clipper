@@ -118,6 +118,7 @@ class CreateBarcodeBottomsheet(private val saveBarcodeAndTags: (barcode: Barcode
             )
 
             saveBarcodeAndTags(entity, newTags.map { it.toEntity() })
+            dismiss()
         }
     }
 

@@ -45,6 +45,7 @@ suspend fun BarcodeEntity.toBarcodeUiModel(): BarcodeUiModel =
                 width = displayWidth,
                 height = displayWidth / 2
             ),
+            barcodeType = this@toBarcodeUiModel.type,
             tags = tagsModel
         )
     }

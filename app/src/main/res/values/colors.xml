@@ -143,5 +143,6 @@
 	<color name="md_theme_surfaceContainerHighest_highContrast">#DEE3E5</color>
 
 	<color name="colorTransparent">#00FFFFFF</color>
+	<color name="white">#FFFFFF</color>
 </resources>
 

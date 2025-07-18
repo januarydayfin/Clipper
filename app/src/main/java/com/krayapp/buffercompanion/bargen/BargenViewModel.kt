@@ -6,6 +6,7 @@ import com.krayapp.buffercompanion.bargen.data.BargenRepo
 import com.krayapp.buffercompanion.bargen.data.FilterState
 import com.krayapp.buffercompanion.bargen.data.SortType
 import com.krayapp.buffercompanion.bargen.data.room.bargen.entity.BarcodeEntity
+import com.krayapp.buffercompanion.bargen.data.room.bargen.entity.TagEntity
 import com.krayapp.buffercompanion.bargen.ui.models.BarcodeUiModel
 import com.krayapp.buffercompanion.bargen.ui.models.TagUiModel
 import com.krayapp.buffercompanion.bargen.utils.launchInIO
@@ -53,21 +54,10 @@ class BargenViewModel : ViewModel() {
     }
 
     fun createBarcodeRecord(
-        text: String,
-        name: String,
-        description: String = "",
-        tags: List<String> = emptyList(),
-        format: BarcodeFormat = BarcodeFormat.QR_CODE,
+        entity: BarcodeEntity,
         onCreated: (BarcodeUiModel) -> Unit = { }
     ) {
         launchInIO {
-            val entity = BarcodeEntity(
-                content = text,
-                name = name,
-                description = description,
-                tags = tags,
-                type = format.toString()
-            )
             repo.upsertBarcode(entity)
             onCreated(entity.toBarcodeUiModel())
             updateBarcodeFlow()
@@ -101,7 +91,13 @@ class BargenViewModel : ViewModel() {
         }
     }
 
-    private fun updateBarcodeFlow() {
+    fun recordTags(tags: List<TagEntity>) {
+        launchInIO {
+            repo.upsertTags(tags)
+        }
+    }
+
+    fun updateBarcodeFlow() {
         launchInIO {
             val nameFilter = filterState.nameFilter
 

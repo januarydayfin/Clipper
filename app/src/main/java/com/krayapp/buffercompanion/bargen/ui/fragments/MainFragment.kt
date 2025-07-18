@@ -24,7 +24,6 @@ import com.krayapp.buffercompanion.bargen.ui.adapter.BarcodeAdapter
 import com.krayapp.buffercompanion.bargen.ui.bottomsheets.CreateBarcodeBottomsheet
 import com.krayapp.buffercompanion.bargen.ui.dialogs.BarcodeDialog
 import com.krayapp.buffercompanion.bargen.ui.dialogs.ScanDialog
-import com.krayapp.buffercompanion.bargen.ui.dialogs.showColorPickerDialog
 import com.krayapp.buffercompanion.bargen.ui.models.BarcodeUiModel
 import com.krayapp.buffercompanion.bargen.ui.models.TagUiModel
 import com.krayapp.buffercompanion.bargen.utils.addPermissionListener
@@ -71,22 +70,6 @@ class MainFragment : Fragment() {
         initClick()
         initAdapter()
         observeDataFlow()
-
-        vb?.let {
-            val context = it.root.context
-
-            for (i in 0 until 3) {
-                val uiModel = TagUiModel(
-                    id = "",
-                    name = "message $i",
-                    backgroundColor = Color.RED,
-                    fontColor = Color.GREEN,
-                )
-
-                it.chipGroup.addView(context.filterChip(uiModel, false))
-            }
-        }
-
     }
 
     private fun checkAppShortcut() {
@@ -97,9 +80,15 @@ class MainFragment : Fragment() {
     }
 
     private fun initAdapter() {
-        barcodeAdapter = BarcodeAdapter {
-            activity?.onBackPressedDispatcher?.addCallback(backDispatcher)
-        }
+        barcodeAdapter = BarcodeAdapter(
+            onSelectionStarted = {
+                activity?.onBackPressedDispatcher?.addCallback(backDispatcher)
+            },
+            openBarcode = ::showBarcodeInfo,
+            openContextMenu = { x, y, v ->
+
+            }
+        )
 
         vb?.recycler?.let {
             it.layoutManager = LinearLayoutManager(requireContext())
@@ -122,6 +111,7 @@ class MainFragment : Fragment() {
                 }
             }
         }
+        viewmodel.updateBarcodeFlow()
     }
 
     private fun startScannerDialog() {
@@ -144,24 +134,23 @@ class MainFragment : Fragment() {
 
     private fun startCreatingCustomBarcode() {
         CreateBarcodeBottomsheet { barcode, tags ->
-
+            viewmodel.createBarcodeRecord(barcode)
+            viewmodel.recordTags(tags)
         }.show(childFragmentManager, "")
     }
 
 
     private fun initClick() {
         vb?.run {
-            startScanner.setOnClickListener {
+            scanBarcode.setOnClickListener {
                 startScannerDialog()
             }
-            createCustom.setOnClickListener {
+            createNew.setOnClickListener {
                 startCreatingCustomBarcode()
             }
 
-            colorPicker.setOnClickListener {
-                context?.showColorPickerDialog {
-                    colorPicker.setBackgroundColor(it)
-                }
+            tags.setOnClickListener {
+                //todo меню тегов
             }
         }
     }

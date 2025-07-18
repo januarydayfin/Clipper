@@ -10,7 +10,7 @@
 	<string name="sign_google">Sign in with Google</string>
 	<string name="widget_settings">Widget settings</string>
 
-	<string name="empty_hint">This place is empty for now\n\nStart entering text or paste it from the buffer</string>
+	<string name="empty_hint">Empty</string>
 	<string name="settings_title">Settings</string>
 
 	<string name="camera_required">The app needs access to the camera to scan</string>

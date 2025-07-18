@@ -8,7 +8,7 @@
 	<string name="sign_google">Вход с Google</string>
 	<string name="widget_settings">Настройки виджета</string>
 
-	<string name="empty_hint">Пока здесь пусто\n\nНачните вводить текст или вставьте его из буффера</string>
+	<string name="empty_hint">Пусто</string>
 	<string name="settings_title">Настройки</string>
 
 	<string name="light_theme">Светлая тема</string>
@@ -41,6 +41,8 @@
 	<string name="tutor_widget_title">Виджет</string>
 	<string name="tutor_widget_desc">Нажмите на элемент в виджете, чтобы копировать его в буфер</string>
 
+	<string name="scan">Сканировать</string>
+	<string name="create">Создать</string>
 	<string name="apply">Применить</string>
 	<string name="name">Название</string>
 	<string name="description">Описание</string>
