@@ -8,5 +8,5 @@ class TagEntity(
     @PrimaryKey val id: String,
     val name: String,
     val backgroundColor: Int,
-    val textColor: Int,
+    val fontColor: Int,
 )

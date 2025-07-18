@@ -4,11 +4,13 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
 import androidx.room.withTransaction
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipDrawable
-import com.google.android.material.chip.ChipGroup
+import com.google.android.material.color.MaterialColors
 import com.google.zxing.BarcodeFormat
 import com.krayapp.buffercompanion.bargen.ClipperApp.Companion.displayWidth
+import com.krayapp.buffercompanion.bargen.R
 import com.krayapp.buffercompanion.bargen.bargenCore.BarGenerator
 import com.krayapp.buffercompanion.bargen.bargenCore.generator.BarcodeGenerator
 import com.krayapp.buffercompanion.bargen.data.room.bargen.BargenDB
@@ -47,12 +49,30 @@ suspend fun BarcodeEntity.toBarcodeUiModel(): BarcodeUiModel =
         )
     }
 
+fun BottomSheetDialogFragment.colorNavBar(
+    color: Int = MaterialColors.getColor(
+        requireContext(),
+        R.attr.bottomSheetBottomColor,
+        Color.BLACK
+    )
+) {
+    dialog?.window?.navigationBarColor = color
+}
+
 fun TagEntity.toTagUiModel() =
     TagUiModel(
         id = this.id,
         backgroundColor = this.backgroundColor,
-        fontColor = textColor,
+        fontColor = fontColor,
         name = this.name
+    )
+
+fun TagUiModel.toEntity() =
+    TagEntity(
+        id = this.id,
+        name = this.name,
+        backgroundColor = this.backgroundColor,
+        fontColor = this.fontColor
     )
 
 fun Long.toReadableTime() =

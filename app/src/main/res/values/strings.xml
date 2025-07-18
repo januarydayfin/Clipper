@@ -40,4 +40,10 @@
 
 	<string name="tutor_widget_title">Виджет</string>
 	<string name="tutor_widget_desc">Нажмите на элемент в виджете, чтобы копировать его в буфер</string>
+
+	<string name="apply">Применить</string>
+	<string name="name">Название</string>
+	<string name="description">Описание</string>
+	<string name="content">Содержимое</string>
+	<string name="tags">Теги</string>
 </resources>

@@ -75,7 +75,7 @@ class MainFragment : Fragment() {
         vb?.let {
             val context = it.root.context
 
-            for(i in 0 until 3) {
+            for (i in 0 until 3) {
                 val uiModel = TagUiModel(
                     id = "",
                     name = "message $i",
@@ -83,7 +83,7 @@ class MainFragment : Fragment() {
                     fontColor = Color.GREEN,
                 )
 
-                it.chipGroup.addView(context.filterChip(uiModel,false))
+                it.chipGroup.addView(context.filterChip(uiModel, false))
             }
         }
 
@@ -143,7 +143,9 @@ class MainFragment : Fragment() {
     }
 
     private fun startCreatingCustomBarcode() {
-        CreateBarcodeBottomsheet().show(childFragmentManager, "")
+        CreateBarcodeBottomsheet { barcode, tags ->
+
+        }.show(childFragmentManager, "")
     }
 
 
