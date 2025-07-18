@@ -1,11 +1,11 @@
 package com.krayapp.buffercompanion.bargen.ui.models
 
-import android.graphics.Color
+import java.util.UUID
 
 data class TagUiModel(
-    val id: String,
+    val id: String = UUID.randomUUID().toString(),
     val name: String,
-    val backgroundColor: Int,
-    val fontColor: Int,
+    val backgroundColor: Int? = null,
+    val fontColor: Int? = null,
     val checked: Boolean = false
 )

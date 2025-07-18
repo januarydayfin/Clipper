@@ -84,16 +84,29 @@ fun Context.filterChip(tagUiModel: TagUiModel, canChecked: Boolean = true): Chip
 
 
     return Chip(this).apply {
+        val backgroundColor = tagUiModel.backgroundColor.toColorStateList()
+        val fontColor = tagUiModel.fontColor.toColorStateList()
+
         setChipDrawable(drawable)
         text = tagUiModel.name
-        chipBackgroundColor = ColorStateList.valueOf(tagUiModel.backgroundColor)
-        setTextColor(ColorStateList.valueOf(tagUiModel.fontColor))
-        checkedIconTint = ColorStateList.valueOf(tagUiModel.fontColor)
+        chipBackgroundColor = backgroundColor
+
+        if (fontColor != null)
+            setTextColor(fontColor)
+
+        checkedIconTint = fontColor
         isCheckable = canChecked
-        chipStrokeColor = ColorStateList.valueOf(tagUiModel.backgroundColor)
+        chipStrokeColor = backgroundColor
         isChecked = tagUiModel.checked
     }
 }
+
+private fun Int?.toColorStateList() =
+    if (this == null)
+        null
+    else {
+        ColorStateList.valueOf(this)
+    }
 
 val filterChipStyle: Int
     get() = com.google.android.material.R.style.Widget_Material3_Chip_Filter

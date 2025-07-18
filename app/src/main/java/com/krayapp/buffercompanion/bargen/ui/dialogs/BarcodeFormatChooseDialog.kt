@@ -41,7 +41,10 @@ class BarcodeFormatChooseDialog(
                 val checkedId = radioGroup.checkedRadioButtonId
                 val checkedButton = root.findViewById<RadioButton>(checkedId)
 
-                onFormatSelected(BarcodeFormat.valueOf(checkedButton.text.toString()))
+                runCatching {
+                    onFormatSelected(BarcodeFormat.valueOf(checkedButton.text.toString()))
+                }
+
                 dismiss()
             }
         }

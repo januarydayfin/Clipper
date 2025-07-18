@@ -1,6 +1,7 @@
 package com.krayapp.buffercompanion.bargen.ui.bottomsheets
 
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,6 +21,7 @@ import com.krayapp.buffercompanion.bargen.ui.dialogs.BarcodeFormatChooseDialog
 import com.krayapp.buffercompanion.bargen.ui.models.TagUiModel
 import com.krayapp.buffercompanion.bargen.utils.colorNavBar
 import com.krayapp.buffercompanion.bargen.utils.displayWidth
+import com.krayapp.buffercompanion.bargen.utils.filterChip
 import com.krayapp.buffercompanion.bargen.utils.runOnUi
 import com.krayapp.buffercompanion.bargen.utils.toEntity
 
@@ -56,7 +58,9 @@ class CreateBarcodeBottomsheet(private val saveBarcodeAndTags: (barcode: Barcode
             bitmapGenerator = BarcodeGenerator
             contentEdit.addTextWatcher { generatePreview(it, preview) }
             preview.layoutParams =
-                LayoutParams(context.displayWidth(), context.displayWidth() / 2)
+                LayoutParams(context.displayWidth(), context.displayWidth() / 2).apply {
+                    gravity = Gravity.CENTER
+                }
 
             chosenFormat.text = barcodeFormat.toString()
             chosenFormat.setOnClickListener {
@@ -85,7 +89,23 @@ class CreateBarcodeBottomsheet(private val saveBarcodeAndTags: (barcode: Barcode
     }
 
     private fun renderTagsEditText(text: String) {
+        val nameList = text.split(",").map { it.trim() }
 
+        newTags.clear()
+        nameList.forEach {
+            if (it.isNotEmpty()) {
+                val model = TagUiModel(name = it)
+                newTags.add(model)
+            }
+        }
+
+
+        vb?.run {
+            tagsGroup.removeAllViews()
+            newTags.forEach {
+                tagsGroup.addView(this.root.context.filterChip(it, false))
+            }
+        }
     }
 
     private fun collectInfoAndSave() {
