@@ -13,14 +13,29 @@
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingStart="12dp"
-        android:paddingVertical="12dp">
+        android:paddingVertical="12dp"
+        android:paddingStart="12dp">
 
-        <ImageView
-            android:id="@+id/barcodePreview"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:src="@color/cardview_dark_background" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/barcodePreview"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@color/cardview_dark_background" />
+
+            <TextView
+                android:id="@+id/barcodeType"
+                style="@style/LabelSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                tools:text="123213" />
+        </LinearLayout>
+
 
         <LinearLayout
             android:layout_width="0dp"
@@ -31,14 +46,14 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/name"
+                android:id="@+id/content"
                 style="@style/TitleSmall"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 tools:text="Name name" />
 
             <TextView
-                android:id="@+id/barcodeType"
+                android:id="@+id/name"
                 style="@style/LabelMedium"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

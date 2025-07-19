@@ -25,6 +25,7 @@ class BarcodeViewHolder(private val view: View) : ViewHolder(view) {
         val binding = ItemBarcodeHolderBinding.bind(view)
 
         with(binding) {
+            content.text = uiModel.content
             name.text = uiModel.name
             barcodeType.text = uiModel.barcodeType
             tags.removeAllViews()
