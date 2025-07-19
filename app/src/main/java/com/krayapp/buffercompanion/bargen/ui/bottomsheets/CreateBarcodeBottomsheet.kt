@@ -1,6 +1,7 @@
 package com.krayapp.buffercompanion.bargen.ui.bottomsheets
 
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -22,6 +23,7 @@ import com.krayapp.buffercompanion.bargen.ui.dialogs.BarcodeFormatChooseDialog
 import com.krayapp.buffercompanion.bargen.ui.models.BarcodeUiModel
 import com.krayapp.buffercompanion.bargen.ui.models.TagUiModel
 import com.krayapp.buffercompanion.bargen.utils.colorNavBar
+import com.krayapp.buffercompanion.bargen.utils.decodedSize
 import com.krayapp.buffercompanion.bargen.utils.displayWidth
 import com.krayapp.buffercompanion.bargen.utils.filterChip
 import com.krayapp.buffercompanion.bargen.utils.runOnUi
@@ -65,8 +67,10 @@ class CreateBarcodeBottomsheet(
         vb?.run {
             bitmapGenerator = BarcodeGenerator
             contentEdit.addTextWatcher { generatePreview(it, preview) }
+            val (width, height) = decodedSize
+
             preview.layoutParams =
-                LayoutParams(context.displayWidth(), context.displayWidth() / 2).apply {
+                LayoutParams(width,height).apply {
                     gravity = Gravity.CENTER
                 }
 
@@ -95,10 +99,12 @@ class CreateBarcodeBottomsheet(
 
     private fun renderExistModel(uiModel: BarcodeUiModel) {
         vb?.run {
+            barcodeFormat = BarcodeFormat.valueOf(uiModel.barcodeType)
             contentEdit.setText(uiModel.content)
             nameEdit.setText(uiModel.name)
             descriptionEdit.setText(uiModel.description)
             tagEdit.setText(uiModel.tags.joinToString { it.name })
+
             generatePreview(uiModel.content, preview)
         }
     }
@@ -153,9 +159,6 @@ class CreateBarcodeBottomsheet(
                 val preview = bitmapGenerator?.generate(
                     content = text,
                     type = barcodeFormat,
-                    width = view.width,
-                    height = view.height
-
                 )
                 view.setImageBitmap(preview)
             }

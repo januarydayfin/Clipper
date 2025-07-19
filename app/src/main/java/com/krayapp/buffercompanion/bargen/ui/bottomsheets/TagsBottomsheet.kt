@@ -9,7 +9,11 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.Chip
 import com.krayapp.buffercompanion.bargen.BargenViewModel
 import com.krayapp.buffercompanion.bargen.databinding.BottomsheetTagsBinding
+import com.krayapp.buffercompanion.bargen.ui.dialogs.TagEditDialog
+import com.krayapp.buffercompanion.bargen.ui.models.TagUiModel
 import com.krayapp.buffercompanion.bargen.utils.filterChip
+import com.krayapp.buffercompanion.bargen.utils.showDeleteConfirmationDialog
+import com.krayapp.buffercompanion.bargen.utils.showTagEditMenu
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -45,11 +49,35 @@ class TagsBottomsheet(private val viewModel: BargenViewModel) : BottomSheetDialo
                         val tagUi = raw.copy(checked = raw.id in checkedTags)
                         chipGroup.addView(
                             chipGroup.context.filterChip(tagUi).apply {
+                                setOnLongClickListener { v ->
+                                    v.showTagEditMenu(
+                                        onEditCalled = {
+                                            showTagEditDialog(tagUi)
+                                        },
+                                        onDeleteCalled = {
+                                            showDeletionDialog(tagUi)
+                                        },
+                                    )
+                                    false
+                                }
                                 tag = tagUi.id
                             }
                         )
                     }
                 }
+            }
+        }
+    }
+
+    private fun showTagEditDialog(uiModel: TagUiModel) {
+        TagEditDialog(uiModel).show(childFragmentManager, "")
+    }
+
+    private fun showDeletionDialog(uiModel: TagUiModel) {
+        context?.run {
+            showDeleteConfirmationDialog {
+                viewModel.removeTagById(uiModel.id)
+                loadAllTags()
             }
         }
     }

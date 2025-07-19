@@ -2,6 +2,7 @@ package com.krayapp.buffercompanion.bargen.ui.dialogs
 
 import android.content.DialogInterface
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +13,7 @@ import com.journeyapps.barcodescanner.Size
 import com.krayapp.buffercompanion.bargen.bargenCore.BarReader
 import com.krayapp.buffercompanion.bargen.bargenCore.reader.BargenReaderImpl
 import com.krayapp.buffercompanion.bargen.databinding.DialogScannerLayoutBinding
+import com.krayapp.buffercompanion.bargen.utils.decodedSize
 import com.krayapp.buffercompanion.bargen.utils.displayWidth
 import com.krayapp.buffercompanion.bargen.utils.rectangleParams
 import kotlinx.coroutines.flow.collectLatest
@@ -41,14 +43,18 @@ class ScanDialog(private val onScanned: (BarcodeResult?) -> Unit) : DialogFragme
         super.onViewCreated(view, savedInstanceState)
         binding?.let { root ->
             with(root.scanner) {
-                layoutParams = rectangleParams(context.displayWidth())
-                barcodeView.framingRectSize = Size(context.displayWidth(), context.displayWidth())
+                val (width, _) = decodedSize
+
+                layoutParams = rectangleParams(width)
+                barcodeView.framingRectSize = Size(width, width)
             }
             reader = BargenReaderImpl(root.scanner)
             reader.startScan()
 
             lifecycleScope.launch {
                 reader.readerFlow().collectLatest {
+                    Log.d("FATA", String.format("%s", it))
+
                     if (it?.text != null) {
                         onScanned(it)
                         dismiss()

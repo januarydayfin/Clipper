@@ -2,12 +2,14 @@ package com.krayapp.buffercompanion.bargen.bargenCore.generator
 
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.util.Log
 import androidx.core.graphics.createBitmap
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.EncodeHintType
 import com.google.zxing.MultiFormatWriter
 import com.krayapp.buffercompanion.bargen.bargenCore.BarGenerator
 import com.krayapp.buffercompanion.bargen.bargenCore.BitmapCache
+import com.krayapp.buffercompanion.bargen.utils.decodedSize
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -15,19 +17,17 @@ object BarcodeGenerator : BarGenerator {
     override suspend fun generate(
         content: String,
         type: BarcodeFormat,
-        width: Int,
-        height: Int
+
     ): Bitmap? {
-        return generateBitmap(content = content, width = width, height = height, format = type)
+        return generateBitmap(content = content, format = type)
     }
 
 
     private suspend fun generateBitmap(
         content: String,
-        width: Int,
-        height: Int,
         format: BarcodeFormat
     ): Bitmap? {
+        val (width, height) = decodedSize
         return withContext(Dispatchers.IO) {
             val cachedBitmap = BitmapCache.instance?.get(content)
 
@@ -74,6 +74,9 @@ object BarcodeGenerator : BarGenerator {
                 }.also { bitmap ->
                     BitmapCache.instance?.put(content, bitmap)
                 }
+            }.onFailure {
+                Log.e("FATA", String.format("%s", it))
+
             }.getOrNull()
         }
     }

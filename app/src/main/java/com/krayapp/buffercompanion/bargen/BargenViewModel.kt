@@ -1,5 +1,6 @@
 package com.krayapp.buffercompanion.bargen
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.google.zxing.BarcodeFormat
 import com.krayapp.buffercompanion.bargen.data.BargenRepo
@@ -23,10 +24,10 @@ class BargenViewModel : ViewModel() {
     val barcodeFlow = _barcodeFlow.asStateFlow()
     val tagFilterFlow = _tagsFilterFlow.asStateFlow()
 
-    private var sortType: SortType = SortType.DATE_ASC
+    private var sortType: SortType
         get() = SortType.valueOf(ClipperApp.getPrefs().sortType)
         set(value) {
-            field = value
+            ClipperApp.getPrefs().sortType = value.toString()
             updateBarcodeFlow()
         }
 
@@ -61,6 +62,18 @@ class BargenViewModel : ViewModel() {
             onCreated(entity.toBarcodeUiModel())
             updateBarcodeFlow()
         }
+    }
+
+    fun removeTagById(id: String) {
+        launchInIO {
+            repo.removeTagById(id)
+            repo.removeTagFromBarcodes(id)
+            updateBarcodeFlow()
+        }
+    }
+
+    fun changeSort(sortType: SortType) {
+        this.sortType = sortType
     }
 
     fun clearTagFilter() {
@@ -136,8 +149,10 @@ class BargenViewModel : ViewModel() {
         launchInIO {
             val nameFilter = filterState.nameFilter
 
+            Log.d("FATA", String.format("%s", sortType))
+
             //Сначала пытаемся фильтровать по имени
-            val filteredWithName = if (nameFilter != null)
+            val filteredWithName = if (!nameFilter.isNullOrEmpty())
                 repo.searchBarcodesByName(nameFilter)
             else
                 null

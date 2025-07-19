@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -21,7 +22,6 @@ import com.krayapp.buffercompanion.bargen.ui.MainActivity
 import com.krayapp.buffercompanion.bargen.ui.adapter.BarcodeAdapter
 import com.krayapp.buffercompanion.bargen.ui.bottomsheets.CreateBarcodeBottomsheet
 import com.krayapp.buffercompanion.bargen.ui.bottomsheets.TagsBottomsheet
-import com.krayapp.buffercompanion.bargen.ui.dialogs.BarcodeDialog
 import com.krayapp.buffercompanion.bargen.ui.dialogs.ScanDialog
 import com.krayapp.buffercompanion.bargen.ui.models.BarcodeUiModel
 import com.krayapp.buffercompanion.bargen.utils.addPermissionListener
@@ -32,6 +32,7 @@ import com.krayapp.buffercompanion.bargen.utils.filterChip
 import com.krayapp.buffercompanion.bargen.utils.runOnUi
 import com.krayapp.buffercompanion.bargen.utils.showBarcodeMenu
 import com.krayapp.buffercompanion.bargen.utils.showDeleteConfirmationDialog
+import com.krayapp.buffercompanion.bargen.utils.showSortMenu
 import com.krayapp.buffercompanion.bargen.utils.toast
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
@@ -45,6 +46,7 @@ class MainFragment : Fragment() {
     private val backDispatcher =
         object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
+                toolbarMode(false)
                 barcodeAdapter?.selectionModeOff()
                 vb?.recycler?.enableAnimation(lifecycleScope)
                 viewmodel.clearTagFilter()
@@ -76,6 +78,31 @@ class MainFragment : Fragment() {
         initAdapter()
         attachHidingButtons()
         observeDataFlow()
+        setupSortPopup()
+    }
+
+    private fun setupSortPopup() {
+        vb?.run {
+            sortDirection.showSortMenu { viewmodel.changeSort(it) }
+        }
+    }
+
+    private fun toolbarMode(chooseMode: Boolean) {
+        vb?.run {
+            mainToolbar.isVisible = !chooseMode
+            selectionToolbar.isVisible = chooseMode
+
+            selectAll.setOnClickListener {
+                barcodeAdapter?.selectAll()
+            }
+
+            delete.setOnClickListener {
+                it.context.showDeleteConfirmationDialog {
+                    viewmodel.removeBarcodes(barcodeAdapter?.getListIdsForDelete() ?: emptyList())
+                    backDispatcher.handleOnBackPressed()
+                }
+            }
+        }
     }
 
     private fun checkAppShortcut() {
@@ -101,6 +128,7 @@ class MainFragment : Fragment() {
                     chooseMode = {
                         vb?.recycler?.disableAnimation()
                         barcodeAdapter?.selectionModeOn()
+                        toolbarMode(true)
                         addBackCallback()
                     },
                     callDeleteDialog = {
@@ -196,7 +224,7 @@ class MainFragment : Fragment() {
     }
 
     private fun showBarcodeInfo(uiModel: BarcodeUiModel) {
-        BarcodeDialog(uiModel).show(childFragmentManager, "")
+        startCreatingCustomBarcode(uiModel)
         viewmodel.incrementUsageCount(uiModel.id)
     }
 

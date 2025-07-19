@@ -16,6 +16,9 @@ interface TagDao {
     @Query("DELETE FROM tags WHERE :name == name")
     suspend fun removeByName(name: String)
 
+    @Query("DELETE FROM tags WHERE :id == id")
+    suspend fun removeById(id: String)
+
     @Query("SELECT * FROM tags")
     suspend fun getTags(): List<TagEntity>
 

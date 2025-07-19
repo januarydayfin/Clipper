@@ -1,5 +1,6 @@
 package com.krayapp.buffercompanion.bargen.ui.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -49,14 +50,22 @@ class BarcodeAdapter(
         differ.submitList(listModeOff)
     }
 
+    fun selectAll() {
+        val selectedAll = differ.currentList.map {
+            it.copy(
+                checkedForDeletion = true
+            )
+        }
+        differ.submitList(selectedAll)
+    }
 
-    fun getListIdsForDelete(): List<String> =
+    fun getListIdsForDelete() =
         differ.currentList
             .filter { it.checkedForDeletion }
             .map { it.id }
 
-
     private fun checkBarcode(model: BarcodeUiModel) {
+
         val newList = differ.currentList.map {
             if (it.id == model.id)
                 it.copy(checkedForDeletion = !it.checkedForDeletion)

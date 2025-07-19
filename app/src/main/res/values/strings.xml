@@ -52,8 +52,8 @@
     <string name="edit">Изменить</string>
     <string name="delete">Удалить</string>
     <string name="choose">Выбрать</string>
-    <string name="by_date_asc">По дате - свежее</string>
-    <string name="by_date_desc">По дате - старое</string>
+    <string name="by_date_asc">По дате - старое</string>
+    <string name="by_date_desc">По дате - свежее</string>
     <string name="by_name">По имени</string>
     <string name="by_usage">По частоте использования</string>
     <string name="are_you_sure">Вы уверены?</string>

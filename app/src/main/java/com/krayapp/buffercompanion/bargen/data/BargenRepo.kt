@@ -31,12 +31,12 @@ class BargenRepo {
         withIO { barcodes.removeBarcodesById(ids) }
     }
 
-    suspend fun removeTagByName(name: String) {
-        withIO { tags.removeByName(name) }
+    suspend fun removeTagById(id: String) {
+        withIO { tags.removeById(id) }
     }
 
     suspend fun searchBarcodesByName(name: String) = withContext(Dispatchers.IO) {
-        barcodes.getBarcodesByName().filter { it.name.contains(name, true) }
+        barcodes.getFilteredByName(name)
     }
 
     suspend fun filterTagsByName(name: String) = withContext(Dispatchers.IO) {

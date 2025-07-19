@@ -7,15 +7,15 @@ import com.krayapp.buffercompanion.bargen.databinding.ItemBarcodeHolderBinding
 import com.krayapp.buffercompanion.bargen.ui.models.BarcodeUiModel
 import com.krayapp.buffercompanion.bargen.utils.filterChip
 
-class BarcodeViewHolder(view: View) : ViewHolder(view) {
-    private val binding = ItemBarcodeHolderBinding.bind(view)
-
+class BarcodeViewHolder(private val view: View) : ViewHolder(view) {
     fun onBind(
         uiModel: BarcodeUiModel,
         onOpenBarcode: (BarcodeUiModel) -> Unit,
         onContextMenuCalled: (uiModel: BarcodeUiModel, v: View) -> Unit,
         onChecked: (BarcodeUiModel) -> Unit,
     ) {
+        val binding = ItemBarcodeHolderBinding.bind(view)
+
         with(binding) {
             name.text = uiModel.name
             barcodeType.text = uiModel.barcodeType
@@ -25,7 +25,7 @@ class BarcodeViewHolder(view: View) : ViewHolder(view) {
             }
             root.setOnClickListener {
                 if (uiModel.selectionMode)
-                    checkbox.performClick()
+                    onChecked(uiModel)
                 else
                     onOpenBarcode(uiModel)
             }
@@ -39,6 +39,7 @@ class BarcodeViewHolder(view: View) : ViewHolder(view) {
                 else
                     onContextMenuCalled(uiModel, binding.contextMenuCall)
             }
+
         }
     }
 }

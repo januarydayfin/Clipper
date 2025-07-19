@@ -5,14 +5,15 @@ import androidx.appcompat.app.AppCompatDelegate
 import com.google.android.material.color.DynamicColors
 import com.krayapp.buffercompanion.bargen.utils.displayWidth
 
-class ClipperApp: Application() {
+class ClipperApp : Application() {
 
     companion object {
-        private var instance : Application? = null
-        private lateinit var globalPrefs : GlobalPrefs
+        private var instance: Application? = null
+        private lateinit var globalPrefs: GlobalPrefs
         fun getApplication(): Application {
             return instance!!
         }
+
         fun getPrefs(): GlobalPrefs {
             return globalPrefs
         }
@@ -20,6 +21,7 @@ class ClipperApp: Application() {
         val displayWidth: Int
             get() = getApplication().displayWidth()
     }
+
     override fun onCreate() {
         instance = this
         globalPrefs = GlobalPrefs()
