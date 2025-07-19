@@ -41,6 +41,7 @@ android {
 }
 
 dependencies {
+    implementation("androidx.compose.ui:ui-unit-android:1.8.3")
     val roomVersion = "2.7.2"
     implementation("androidx.navigation:navigation-fragment-ktx:2.9.2")
     implementation("androidx.navigation:navigation-ui-ktx:2.9.2")

@@ -24,6 +24,7 @@ import com.krayapp.buffercompanion.bargen.ui.dialogs.BarcodeDialog
 import com.krayapp.buffercompanion.bargen.ui.dialogs.ScanDialog
 import com.krayapp.buffercompanion.bargen.ui.models.BarcodeUiModel
 import com.krayapp.buffercompanion.bargen.utils.addPermissionListener
+import com.krayapp.buffercompanion.bargen.utils.attachHidingWithRecycler
 import com.krayapp.buffercompanion.bargen.utils.runOnUi
 import com.krayapp.buffercompanion.bargen.utils.toast
 import kotlinx.coroutines.delay
@@ -64,6 +65,7 @@ class MainFragment : Fragment() {
         checkAppShortcut()
         initClick()
         initAdapter()
+        attachHidingButtons()
         observeDataFlow()
     }
 
@@ -72,6 +74,12 @@ class MainFragment : Fragment() {
 
         if (isCalledFromShortcut)
             pasteFromClip()
+    }
+
+    private fun attachHidingButtons() {
+        vb?.run {
+            buttonGroup.attachHidingWithRecycler(recycler, false)
+        }
     }
 
     private fun initAdapter() {
