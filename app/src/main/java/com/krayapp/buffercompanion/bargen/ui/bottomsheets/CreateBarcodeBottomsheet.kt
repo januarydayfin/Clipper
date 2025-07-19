@@ -14,6 +14,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.Chip
 import com.google.zxing.BarcodeFormat
 import com.krayapp.buffercompanion.bargen.ClipperApp
+import com.krayapp.buffercompanion.bargen.R
 import com.krayapp.buffercompanion.bargen.addTextWatcher
 import com.krayapp.buffercompanion.bargen.bargenCore.BarGenerator
 import com.krayapp.buffercompanion.bargen.bargenCore.generator.BarcodeGenerator
@@ -179,6 +180,7 @@ class CreateBarcodeBottomsheet(
                     content = text,
                     type = barcodeFormat,
                 )
+
                 view.setImageBitmap(preview)
             }
         }

@@ -11,6 +11,7 @@ import com.journeyapps.barcodescanner.ScanOptions.PDF_417
 import com.journeyapps.barcodescanner.ScanOptions.QR_CODE
 import com.krayapp.buffercompanion.bargen.R
 import com.krayapp.buffercompanion.bargen.databinding.ItemBarcodeHolderBinding
+import com.krayapp.buffercompanion.bargen.justVibrateABit
 import com.krayapp.buffercompanion.bargen.ui.models.BarcodeUiModel
 import com.krayapp.buffercompanion.bargen.utils.filterChip
 
@@ -41,6 +42,14 @@ class BarcodeViewHolder(private val view: View) : ViewHolder(view) {
             checkbox.isVisible = uiModel.selectionMode
             contextMenu.isVisible = !uiModel.selectionMode
 
+            root.setOnLongClickListener {
+                if (!uiModel.selectionMode) {
+                    root.context.justVibrateABit()
+                    onContextMenuCalled(uiModel, binding.name)
+                }
+
+                false
+            }
             contextMenuCall.setOnClickListener {
                 if (uiModel.selectionMode)
                     onChecked(uiModel)

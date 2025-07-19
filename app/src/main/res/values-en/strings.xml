@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<string name="app_name">Clipper</string>
+	<string name="app_name">Bargen</string>
 	<string name="open_manager">Open Clipper</string>
 
 	<string name="enter_for_input">Press Enter to enter</string>
@@ -44,4 +44,22 @@
 	<string name="tutor_widget_title">Widget</string>
 	<string name="tutor_widget_desc">Click on an element in the widget to copy it to the clipboard</string>
 
+	<string name="scan">Scan</string>
+	<string name="create">Create</string>
+	<string name="apply">Apply</string>
+	<string name="name">Title</string>
+	<string name="description">Description</string>
+	<string name="content">Content</string>
+	<string name="tags">Tags</string>
+	<string name="search">Search</string>
+	<string name="close">Close</string>
+	<string name="edit">Edit</string>
+	<string name="choose">Select</string>
+	<string name="by_date_asc">By date - old</string>
+	<string name="by_date_desc">By date - new</string>
+	<string name="by_name">By name</string>
+	<string name="by_usage">By frequency of use</string>
+	<string name="are_you_sure">Are you sure?</string>
+	<string name="tag_background">Tag color</string>
+	<string name="tag_font_color">Tag text color</string>
 </resources>

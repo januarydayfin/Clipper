@@ -30,6 +30,8 @@ fun Context.filterChip(tagUiModel: TagUiModel, canChecked: Boolean = true): Chip
         ensureAccessibleTouchTarget(20)
         checkedIconTint = fontColor
         isCheckable = canChecked
+        isClickable = canChecked
+        isFocusable = canChecked
         chipStrokeColor = backgroundColor
         isChecked = tagUiModel.checked
         tag = tagUiModel

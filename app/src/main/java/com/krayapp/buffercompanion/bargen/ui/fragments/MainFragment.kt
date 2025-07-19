@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.ClipboardManager
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -88,7 +89,9 @@ class MainFragment : Fragment() {
 
     private fun setupSortPopup() {
         vb?.run {
-            sortDirection.showSortMenu { viewmodel.changeSort(it) }
+            sortDirection.setOnClickListener { v ->
+                v.showSortMenu { viewmodel.changeSort(it) }
+            }
         }
     }
 
@@ -102,6 +105,9 @@ class MainFragment : Fragment() {
                 showSettingsDialog()
             }
 
+            cancel.setOnClickListener {
+                backDispatcher.handleOnBackPressed()
+            }
             delete.setOnClickListener {
                 it.context.showDeleteConfirmationDialog {
                     viewmodel.removeBarcodes(barcodeAdapter?.getListIdsForDelete() ?: emptyList())
