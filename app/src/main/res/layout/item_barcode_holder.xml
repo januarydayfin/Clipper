@@ -47,6 +47,7 @@
 
             <TextView
                 android:id="@+id/content"
+                android:maxLines="1"
                 style="@style/TitleSmall"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
