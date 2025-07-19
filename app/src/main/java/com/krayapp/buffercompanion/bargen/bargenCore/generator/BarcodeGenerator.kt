@@ -45,7 +45,7 @@ object BarcodeGenerator : BarGenerator {
                 }
 
 
-                BitmapCache.instance?.put(content, generated)
+                BitmapCache.instance?.put("$content$format", generated)
                 generated
             }.onFailure {
 
