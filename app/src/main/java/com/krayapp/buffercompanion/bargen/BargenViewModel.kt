@@ -1,5 +1,6 @@
 package com.krayapp.buffercompanion.bargen
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.google.zxing.BarcodeFormat
 import com.krayapp.buffercompanion.bargen.data.BargenRepo
@@ -11,6 +12,7 @@ import com.krayapp.buffercompanion.bargen.ui.models.BarcodeUiModel
 import com.krayapp.buffercompanion.bargen.ui.models.TagUiModel
 import com.krayapp.buffercompanion.bargen.utils.launchInIO
 import com.krayapp.buffercompanion.bargen.utils.toBarcodeUiModel
+import com.krayapp.buffercompanion.bargen.utils.toReadableString
 import com.krayapp.buffercompanion.bargen.utils.toTagUiModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -85,6 +87,11 @@ class BargenViewModel : ViewModel() {
 
     fun updateTagFilter(tagIds: List<String>) {
         filterState = filterState.copy(tagIds = tagIds)
+    }
+
+    fun removeChipFromFilter(id: String) {
+        val withoutTag = filterState.tagIds.filter { it != id }
+        filterState = filterState.copy(tagIds = withoutTag)
     }
 
     fun updateNameFilter(name: String) {

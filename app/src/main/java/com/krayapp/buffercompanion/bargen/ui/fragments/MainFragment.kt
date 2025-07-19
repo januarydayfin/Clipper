@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.ClipboardManager
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,7 +26,9 @@ import com.krayapp.buffercompanion.bargen.ui.dialogs.ScanDialog
 import com.krayapp.buffercompanion.bargen.ui.models.BarcodeUiModel
 import com.krayapp.buffercompanion.bargen.utils.addPermissionListener
 import com.krayapp.buffercompanion.bargen.utils.attachHidingWithRecycler
+import com.krayapp.buffercompanion.bargen.utils.filterChip
 import com.krayapp.buffercompanion.bargen.utils.runOnUi
+import com.krayapp.buffercompanion.bargen.utils.toReadableString
 import com.krayapp.buffercompanion.bargen.utils.toast
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
@@ -105,8 +108,23 @@ class MainFragment : Fragment() {
                 barcodeAdapter?.updateData(it)
             }
 
-            viewmodel.tagFilterFlow.collectLatest {
 
+        }
+        runOnUi {
+            viewmodel.tagFilterFlow.collectLatest {
+                vb?.run {
+                    chipGroup.removeAllViews()
+
+                    it.forEach { rawModel ->
+                        val uiModel = rawModel.copy(checked = true)
+                        val chip = chipGroup.context.filterChip(uiModel).apply {
+                            setOnClickListener {
+                                viewmodel.removeChipFromFilter(uiModel.id)
+                            }
+                        }
+                        chipGroup.addView(chip)
+                    }
+                }
             }
         }
     }
