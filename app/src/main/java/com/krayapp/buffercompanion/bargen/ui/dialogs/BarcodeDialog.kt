@@ -6,12 +6,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
+import com.google.zxing.BarcodeFormat
+import com.krayapp.buffercompanion.bargen.ClipperApp
+import com.krayapp.buffercompanion.bargen.bargenCore.generator.BarcodeGenerator
 import com.krayapp.buffercompanion.bargen.databinding.DialogBarcodeInfoBinding
 import com.krayapp.buffercompanion.bargen.ui.models.BarcodeUiModel
+import com.krayapp.buffercompanion.bargen.utils.runOnUi
 
 class BarcodeDialog(private val uiModel: BarcodeUiModel) : DialogFragment() {
     private var binding: DialogBarcodeInfoBinding? = null
-
+    private val generator = BarcodeGenerator
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -26,7 +30,17 @@ class BarcodeDialog(private val uiModel: BarcodeUiModel) : DialogFragment() {
         binding?.run {
             name.text = uiModel.name
             description.text = uiModel.description
-            barcode.setImageBitmap(uiModel.image)
+
+            runOnUi {
+                barcode.setImageBitmap(
+                    generator.generate(
+                        content = uiModel.content,
+                        type = BarcodeFormat.valueOf(uiModel.barcodeType),
+                        width = ClipperApp.displayWidth,
+                        height = ClipperApp.displayWidth / 2
+                    )
+                )
+            }
         }
     }
 

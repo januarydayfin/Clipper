@@ -48,4 +48,5 @@
 	<string name="description">Описание</string>
 	<string name="content">Содержимое</string>
 	<string name="tags">Теги</string>
+	<string name="search">Поиск</string>
 </resources>

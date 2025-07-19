@@ -3,7 +3,6 @@ package com.krayapp.buffercompanion.bargen.ui.fragments
 import android.Manifest
 import android.content.ClipboardManager
 import android.content.Context
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,8 +10,6 @@ import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.transition.TransitionInflater
 import com.gun0912.tedpermission.normal.TedPermission
@@ -25,14 +22,11 @@ import com.krayapp.buffercompanion.bargen.ui.bottomsheets.CreateBarcodeBottomshe
 import com.krayapp.buffercompanion.bargen.ui.dialogs.BarcodeDialog
 import com.krayapp.buffercompanion.bargen.ui.dialogs.ScanDialog
 import com.krayapp.buffercompanion.bargen.ui.models.BarcodeUiModel
-import com.krayapp.buffercompanion.bargen.ui.models.TagUiModel
 import com.krayapp.buffercompanion.bargen.utils.addPermissionListener
-import com.krayapp.buffercompanion.bargen.utils.filterChip
 import com.krayapp.buffercompanion.bargen.utils.runOnUi
 import com.krayapp.buffercompanion.bargen.utils.toast
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 
 class MainFragment : Fragment() {
     private var vb: FragmentMainBinding? = null
@@ -98,20 +92,14 @@ class MainFragment : Fragment() {
 
     private fun observeDataFlow() {
         runOnUi {
-            repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                launch {
-                    viewmodel.barcodeFlow.collectLatest {
-                        barcodeAdapter?.updateData(it)
-                    }
-                }
-                launch {
-                    viewmodel.tagsFlow.collectLatest {
-                        //todo вставялем в чипгруп и меняем на чекнутые
-                    }
-                }
+            viewmodel.barcodeFlow.collectLatest {
+                barcodeAdapter?.updateData(it)
+            }
+
+            viewmodel.tagsFlow.collectLatest {
+                //todo вставялем в чипгруп и меняем на чекнутые
             }
         }
-        viewmodel.updateBarcodeFlow()
     }
 
     private fun startScannerDialog() {
@@ -134,8 +122,8 @@ class MainFragment : Fragment() {
 
     private fun startCreatingCustomBarcode() {
         CreateBarcodeBottomsheet { barcode, tags ->
-            viewmodel.createBarcodeRecord(barcode)
             viewmodel.recordTags(tags)
+            viewmodel.createBarcodeRecord(barcode)
         }.show(childFragmentManager, "")
     }
 

@@ -132,19 +132,4 @@
 		<item name="android:lineHeight">16sp</item>
 	</style>
 
-
-	<style name="ViewDragStyle">
-		<item name="android:layout_width">32dp</item>
-		<item name="android:layout_height">4dp</item>
-		<item name="android:layout_gravity">center_horizontal</item>
-		<item name="android:layout_margin">10dp</item>
-		<item name="android:background">@drawable/drag_drawable</item>
-	</style>
-
-	<style name="BaseActionContainer">
-		<item name="android:clickable">true</item>
-		<item name="android:focusable">true</item>
-		<item name="android:background">@drawable/background_base_card</item>
-	</style>
-
 </resources>

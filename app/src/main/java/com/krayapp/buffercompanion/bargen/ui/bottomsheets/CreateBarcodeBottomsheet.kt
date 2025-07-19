@@ -17,6 +17,7 @@ import com.krayapp.buffercompanion.bargen.data.room.bargen.entity.BarcodeEntity
 import com.krayapp.buffercompanion.bargen.data.room.bargen.entity.TagEntity
 import com.krayapp.buffercompanion.bargen.databinding.BottomsheetCreateCodeBinding
 import com.krayapp.buffercompanion.bargen.expand
+import com.krayapp.buffercompanion.bargen.onImeAction
 import com.krayapp.buffercompanion.bargen.ui.dialogs.BarcodeFormatChooseDialog
 import com.krayapp.buffercompanion.bargen.ui.models.TagUiModel
 import com.krayapp.buffercompanion.bargen.utils.colorNavBar
@@ -76,6 +77,8 @@ class CreateBarcodeBottomsheet(private val saveBarcodeAndTags: (barcode: Barcode
 
             tagEdit.addTextWatcher {
                 renderTagsEditText(it)
+            }.onImeAction {
+                collectInfoAndSave()
             }
         }
     }
@@ -112,6 +115,7 @@ class CreateBarcodeBottomsheet(private val saveBarcodeAndTags: (barcode: Barcode
         vb?.run {
             val entity = BarcodeEntity(
                 content = contentEdit.text.toString(),
+                name = nameEdit.text.toString(),
                 description = descriptionEdit.text.toString(),
                 type = barcodeFormat.toString(),
                 tags = newTags.map { it.id }

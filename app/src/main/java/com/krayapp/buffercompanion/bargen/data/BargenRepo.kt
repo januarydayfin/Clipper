@@ -43,6 +43,10 @@ class BargenRepo {
         tags.getTags().filter { it.id in list }
     }
 
+    suspend fun getAllTags() = withContext(Dispatchers.IO) {
+        tags.getTags()
+    }
+
     suspend fun incrementUsageCount(id: String) = withContext(Dispatchers.IO) {
         val entity = barcodes.getBarcodeById(id)
 

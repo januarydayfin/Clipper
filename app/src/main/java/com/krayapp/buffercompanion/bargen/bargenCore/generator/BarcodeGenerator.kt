@@ -6,15 +6,12 @@ import androidx.core.graphics.createBitmap
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.EncodeHintType
 import com.google.zxing.MultiFormatWriter
-import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel
-import com.journeyapps.barcodescanner.BarcodeEncoder
 import com.krayapp.buffercompanion.bargen.bargenCore.BarGenerator
 import com.krayapp.buffercompanion.bargen.bargenCore.BitmapCache
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 object BarcodeGenerator : BarGenerator {
-    private val encoder = BarcodeEncoder()
     override suspend fun generate(
         content: String,
         type: BarcodeFormat,

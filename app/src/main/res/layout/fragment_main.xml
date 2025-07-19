@@ -11,6 +11,37 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/colorSurfaceContainer"
+            android:gravity="center_vertical"
+            android:paddingHorizontal="12dp"
+            android:paddingTop="?attr/actionBarSize"
+            android:paddingBottom="12dp">
+
+            <ImageView
+                android:id="@+id/settings"
+                android:layout_width="@dimen/toolbar_icon_size"
+                android:layout_height="@dimen/toolbar_icon_size"
+                android:src="@drawable/settings" />
+
+            <include
+                layout="@layout/search_view"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1" />
+
+            <ImageView
+                android:id="@+id/sortDirection"
+                android:layout_width="@dimen/toolbar_icon_size"
+                android:layout_height="@dimen/toolbar_icon_size"
+                android:layout_marginStart="8dp"
+                android:src="@drawable/ic_filter"
+                app:tint="?attr/colorOnSurfaceVariant" />
+        </LinearLayout>
+
         <com.google.android.material.chip.ChipGroup
             android:id="@+id/chipGroup"
             android:layout_width="match_parent"

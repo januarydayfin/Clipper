@@ -37,6 +37,10 @@ class BargenViewModel : ViewModel() {
             updateTagsFlow()
         }
 
+    init {
+        updateBarcodeFlow()
+    }
+
     fun createBarcodeRecord(
         text: String,
         format: BarcodeFormat = BarcodeFormat.QR_CODE,
@@ -97,7 +101,7 @@ class BargenViewModel : ViewModel() {
         }
     }
 
-    fun updateBarcodeFlow() {
+    private fun updateBarcodeFlow() {
         launchInIO {
             val nameFilter = filterState.nameFilter
 
@@ -117,7 +121,9 @@ class BargenViewModel : ViewModel() {
             else
                 filteredWithName ?: repo.getAllBarcodes(sortType)
 
-            _barcodeFlow.emit(dataToEmit.map { it.toBarcodeUiModel() })
+            val allTags = repo.getAllTags()
+
+            _barcodeFlow.emit(dataToEmit.map { it.toBarcodeUiModel(allTags) })
         }
     }
 }

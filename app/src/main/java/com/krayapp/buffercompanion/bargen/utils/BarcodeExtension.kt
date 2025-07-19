@@ -3,16 +3,11 @@ package com.krayapp.buffercompanion.bargen.utils
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
-import androidx.room.withTransaction
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipDrawable
 import com.google.android.material.color.MaterialColors
-import com.google.zxing.BarcodeFormat
-import com.krayapp.buffercompanion.bargen.ClipperApp.Companion.displayWidth
 import com.krayapp.buffercompanion.bargen.R
-import com.krayapp.buffercompanion.bargen.bargenCore.BarGenerator
-import com.krayapp.buffercompanion.bargen.bargenCore.generator.BarcodeGenerator
 import com.krayapp.buffercompanion.bargen.data.room.bargen.BargenDB
 import com.krayapp.buffercompanion.bargen.data.room.bargen.entity.BarcodeEntity
 import com.krayapp.buffercompanion.bargen.data.room.bargen.entity.TagEntity
@@ -22,31 +17,22 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 
-suspend fun BarcodeEntity.toBarcodeUiModel(): BarcodeUiModel =
+suspend fun BarcodeEntity.toBarcodeUiModel(cachedTags: List<TagEntity>? = null): BarcodeUiModel =
     withContext(Dispatchers.IO) {
-        val db = provideDatabase<BargenDB>()
-        val tagsDao = db.tagsDao()
-        val bitmapGen: BarGenerator = BarcodeGenerator
         val tagsModel = mutableListOf<TagUiModel>()
+        val allTags = cachedTags ?: provideDatabase<BargenDB>().tagsDao().getTags()
 
-        db.withTransaction {
-            this@toBarcodeUiModel.tags.forEach {
-                tagsModel.add(tagsDao.getTagById(it).toTagUiModel())
-            }
-        }
+        allTags
+            .filter { this@toBarcodeUiModel.tags.contains(it.id) }
+            .forEach { tagsModel.add(it.toTagUiModel()) }
 
         BarcodeUiModel(
             id = this@toBarcodeUiModel.id,
             name = this@toBarcodeUiModel.name,
             description = this@toBarcodeUiModel.description,
-            image = bitmapGen.generate(
-                this@toBarcodeUiModel.content,
-                type = BarcodeFormat.valueOf(this@toBarcodeUiModel.type),
-                width = displayWidth,
-                height = displayWidth / 2
-            ),
             barcodeType = this@toBarcodeUiModel.type,
-            tags = tagsModel
+            tags = tagsModel,
+            content = this@toBarcodeUiModel.content
         )
     }
 

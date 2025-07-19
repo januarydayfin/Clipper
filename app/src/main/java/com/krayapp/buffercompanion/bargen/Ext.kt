@@ -57,7 +57,7 @@ fun CheckBox.switchState() {
 	isChecked = !isChecked
 }
 
-fun EditText.addTextWatcher(onChanged: (String) -> Unit) {
+fun EditText.addTextWatcher(onChanged: (String) -> Unit): EditText {
 	addTextChangedListener(object : TextWatcher {
 		override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
@@ -72,17 +72,14 @@ fun EditText.addTextWatcher(onChanged: (String) -> Unit) {
 		}
 
 	})
+	return this
 }
-fun EditText.onImeDone(onDone: (String) -> Unit) {
-	setOnEditorActionListener(object : TextView.OnEditorActionListener {
-		override fun onEditorAction(v: TextView, actionId: Int, event: KeyEvent?): Boolean {
-			if (actionId == EditorInfo.IME_ACTION_DONE) {
-				onDone(v.text.toString())
-				return true
-			}
-			return false
-		}
-	})
+
+fun EditText.onImeAction(onDone: () -> Unit) {
+	setOnEditorActionListener { v, _, _ ->
+		onDone()
+		true
+	}
 }
 
 fun View.hideKeyboard() {
