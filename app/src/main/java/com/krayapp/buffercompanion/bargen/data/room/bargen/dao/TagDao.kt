@@ -24,4 +24,7 @@ interface TagDao {
 
     @Query("select * from tags where :id == id")
     suspend fun getTagById(id: String): TagEntity
+
+    @Query("select * from tags where :name == name")
+    suspend fun findTagByName(name: String): TagEntity?
 }

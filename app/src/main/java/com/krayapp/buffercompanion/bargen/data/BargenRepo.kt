@@ -35,6 +35,9 @@ class BargenRepo {
         withIO { tags.removeById(id) }
     }
 
+    suspend fun findTagWithName(name: String) = withContext(Dispatchers.IO) {
+        tags.findTagByName(name)
+    }
     suspend fun searchBarcodesByName(name: String) = withContext(Dispatchers.IO) {
         barcodes.getFilteredByName(name)
     }

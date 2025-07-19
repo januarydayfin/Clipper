@@ -1,7 +1,6 @@
 package com.krayapp.buffercompanion.bargen.ui.bottomsheets
 
 import android.os.Bundle
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -24,7 +23,6 @@ import com.krayapp.buffercompanion.bargen.ui.models.BarcodeUiModel
 import com.krayapp.buffercompanion.bargen.ui.models.TagUiModel
 import com.krayapp.buffercompanion.bargen.utils.colorNavBar
 import com.krayapp.buffercompanion.bargen.utils.decodedSize
-import com.krayapp.buffercompanion.bargen.utils.displayWidth
 import com.krayapp.buffercompanion.bargen.utils.filterChip
 import com.krayapp.buffercompanion.bargen.utils.runOnUi
 import com.krayapp.buffercompanion.bargen.utils.toEntity
@@ -34,15 +32,14 @@ class CreateBarcodeBottomsheet(
     private val existModel: BarcodeUiModel? = null,
     private val saveBarcodeAndTags: (
         barcode: BarcodeEntity, tags: List<TagEntity>
-    ) -> Unit
+    ) -> Unit,
+    private val tagFounder: suspend (name: String) -> TagUiModel?
 ) :
     BottomSheetDialogFragment() {
     private var vb: BottomsheetCreateCodeBinding? = null
     private var bitmapGenerator: BarGenerator? = null
     private var barcodeFormat: BarcodeFormat
-        get() {
-            return BarcodeFormat.valueOf(ClipperApp.getPrefs().lastBarFormat)
-        }
+        get() = BarcodeFormat.valueOf(ClipperApp.getPrefs().lastBarFormat)
         set(value) {
             vb?.chosenFormat?.text = value.toString()
             ClipperApp.getPrefs().lastBarFormat = value.toString()
@@ -70,7 +67,7 @@ class CreateBarcodeBottomsheet(
             val (width, height) = decodedSize
 
             preview.layoutParams =
-                LayoutParams(width,height).apply {
+                LayoutParams(width, height).apply {
                     gravity = Gravity.CENTER
                 }
 
@@ -111,7 +108,7 @@ class CreateBarcodeBottomsheet(
 
     private fun showChooseFormatDialog() {
         context?.run {
-            BarcodeFormatChooseDialog(this) {
+            BarcodeFormatChooseDialog(barcodeFormat) {
                 barcodeFormat = it
             }.show(childFragmentManager, "")
         }
@@ -122,12 +119,14 @@ class CreateBarcodeBottomsheet(
 
         newTags.clear()
         nameList.forEach {
-            if (it.isNotEmpty()) {
-                val model = TagUiModel(name = it)
-                newTags.add(model)
+            runOnUi {
+                if (it.isNotEmpty()) {
+                    val model = tagFounder(it) ?: TagUiModel(name = it)
+                    newTags.add(model)
+                }
             }
-        }
 
+        }
 
         vb?.run {
             tagsGroup.removeAllViews()

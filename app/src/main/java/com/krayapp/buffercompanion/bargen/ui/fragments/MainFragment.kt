@@ -198,10 +198,12 @@ class MainFragment : Fragment() {
     }
 
     private fun startCreatingCustomBarcode(uiModel: BarcodeUiModel? = null) {
-        CreateBarcodeBottomsheet(uiModel) { barcode, tags ->
+        CreateBarcodeBottomsheet(uiModel, saveBarcodeAndTags = { barcode, tags ->
             viewmodel.recordTags(tags)
             viewmodel.createBarcodeRecord(barcode)
-        }.show(childFragmentManager, "")
+        }, tagFounder = { name ->
+            viewmodel.findTagWithName(name)
+        }).show(childFragmentManager, "")
     }
 
     private fun startTagBottomSheet() {

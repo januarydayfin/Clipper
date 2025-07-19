@@ -1,17 +1,17 @@
 package com.krayapp.buffercompanion.bargen.ui.dialogs
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioButton
+import androidx.core.view.children
 import androidx.fragment.app.DialogFragment
 import com.google.zxing.BarcodeFormat
 import com.krayapp.buffercompanion.bargen.databinding.ChooseFormatDialogBinding
 
 class BarcodeFormatChooseDialog(
-    context: Context,
+    private val currentFormat: BarcodeFormat,
     private val onFormatSelected: (BarcodeFormat) -> Unit
 ) : DialogFragment() {
     private var binding: ChooseFormatDialogBinding? = null
@@ -48,6 +48,21 @@ class BarcodeFormatChooseDialog(
                 dismiss()
             }
         }
+        binding?.radioGroup?.check(getPrecheckId() ?: -1)
+
+    }
+
+    private fun getPrecheckId(): Int? {
+        var id: Int? = null
+        binding?.radioGroup?.children?.forEach {
+            it as RadioButton
+
+            if (it.text == currentFormat.toString()) {
+                id = it.id
+                return@forEach
+            }
+        }
+        return id
     }
 
     private fun radioButtonFrom(format: String) = RadioButton(context).apply {

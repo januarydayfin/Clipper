@@ -13,8 +13,10 @@ import com.krayapp.buffercompanion.bargen.ui.models.TagUiModel
 import com.krayapp.buffercompanion.bargen.utils.launchInIO
 import com.krayapp.buffercompanion.bargen.utils.toBarcodeUiModel
 import com.krayapp.buffercompanion.bargen.utils.toTagUiModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.withContext
 
 class BargenViewModel : ViewModel() {
     private val repo = BargenRepo()
@@ -63,6 +65,12 @@ class BargenViewModel : ViewModel() {
             updateBarcodeFlow()
         }
     }
+
+    suspend fun findTagWithName(name: String) =
+        withContext(Dispatchers.IO) {
+            repo.findTagWithName(name)?.toTagUiModel()
+        }
+
 
     fun removeTagById(id: String) {
         launchInIO {
