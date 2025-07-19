@@ -33,7 +33,7 @@ object BarcodeGenerator : BarGenerator {
         )
         return withContext(Dispatchers.IO) {
             runCatching {
-                val cachedBitmap = BitmapCache.instance?.get(content)
+                val cachedBitmap = BitmapCache.instance?.get("$content$format")
                 if (cachedBitmap != null) return@withContext cachedBitmap
 
 
