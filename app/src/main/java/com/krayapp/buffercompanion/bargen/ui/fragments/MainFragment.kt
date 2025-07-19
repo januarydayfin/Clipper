@@ -26,6 +26,7 @@ import com.krayapp.buffercompanion.bargen.ui.adapter.BarcodeAdapter
 import com.krayapp.buffercompanion.bargen.ui.bottomsheets.CreateBarcodeBottomsheet
 import com.krayapp.buffercompanion.bargen.ui.bottomsheets.TagsBottomsheet
 import com.krayapp.buffercompanion.bargen.ui.dialogs.ScanDialog
+import com.krayapp.buffercompanion.bargen.ui.dialogs.SettingsDialog
 import com.krayapp.buffercompanion.bargen.ui.models.BarcodeUiModel
 import com.krayapp.buffercompanion.bargen.utils.addPermissionListener
 import com.krayapp.buffercompanion.bargen.utils.attachHidingWithRecycler
@@ -97,6 +98,10 @@ class MainFragment : Fragment() {
                 barcodeAdapter?.selectAll()
             }
 
+            settings.setOnClickListener {
+                showSettingsDialog()
+            }
+
             delete.setOnClickListener {
                 it.context.showDeleteConfirmationDialog {
                     viewmodel.removeBarcodes(barcodeAdapter?.getListIdsForDelete() ?: emptyList())
@@ -106,7 +111,10 @@ class MainFragment : Fragment() {
 
             with(searchView.searchEditText) {
                 addTextWatcher { viewmodel.updateNameFilter(it) }
-                onImeAction { hideKeyboard() }
+                onImeAction { v ->
+                    hideKeyboard()
+                    v.clearFocus()
+                }
             }
         }
     }
@@ -115,9 +123,11 @@ class MainFragment : Fragment() {
         vb?.run {
             mainToolbar.isVisible = !chooseMode
             selectionToolbar.isVisible = chooseMode
-
-
         }
+    }
+
+    private fun showSettingsDialog() {
+        SettingsDialog().show(childFragmentManager, "")
     }
 
     private fun checkAppShortcut() {

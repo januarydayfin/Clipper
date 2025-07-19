@@ -75,9 +75,9 @@ fun EditText.addTextWatcher(onChanged: (String) -> Unit): EditText {
 	return this
 }
 
-fun EditText.onImeAction(onDone: () -> Unit) {
+fun EditText.onImeAction(onDone: (View) -> Unit) {
 	setOnEditorActionListener { v, _, _ ->
-		onDone()
+		onDone(v)
 		true
 	}
 }

@@ -26,29 +26,10 @@ class GlobalPrefs {
             prefs.edit { putString(BARCODE_FORMAT, value) }
         }
 
-    fun isDynamicColors(): Boolean {
-        return prefs.getBoolean(KEY_DYNAMIC_COLORS, true)
-    }
 
-    fun setDynamicColors(on: Boolean) {
-        prefs.edit().putBoolean(KEY_DYNAMIC_COLORS, on).apply()
-    }
-
-    fun setThemeMode(mode: Int) {
-        prefs.edit().putInt(KEY_THEME_MODE, mode).apply()
-    }
-
-    fun isTutorialShown(): Boolean {
-        return prefs.getBoolean(TUTORIAL_SHOWN, false)
-    }
-
-    fun onTutorFinished() {
-        prefs.edit().putBoolean(TUTORIAL_SHOWN, true).apply()
-    }
-
-    fun getTheme(): Int {
-        return prefs.getInt(KEY_THEME_MODE, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
-    }
+    var theme: Int
+        get() = prefs.getInt(KEY_THEME_MODE, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+        set(value) = prefs.edit { putInt(KEY_THEME_MODE, value) }
 
 
     companion object {
