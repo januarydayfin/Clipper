@@ -19,14 +19,21 @@ import com.krayapp.buffercompanion.bargen.databinding.BottomsheetCreateCodeBindi
 import com.krayapp.buffercompanion.bargen.expand
 import com.krayapp.buffercompanion.bargen.onImeAction
 import com.krayapp.buffercompanion.bargen.ui.dialogs.BarcodeFormatChooseDialog
+import com.krayapp.buffercompanion.bargen.ui.models.BarcodeUiModel
 import com.krayapp.buffercompanion.bargen.ui.models.TagUiModel
 import com.krayapp.buffercompanion.bargen.utils.colorNavBar
 import com.krayapp.buffercompanion.bargen.utils.displayWidth
 import com.krayapp.buffercompanion.bargen.utils.filterChip
 import com.krayapp.buffercompanion.bargen.utils.runOnUi
 import com.krayapp.buffercompanion.bargen.utils.toEntity
+import java.util.UUID
 
-class CreateBarcodeBottomsheet(private val saveBarcodeAndTags: (barcode: BarcodeEntity, tags: List<TagEntity>) -> Unit) :
+class CreateBarcodeBottomsheet(
+    private val existModel: BarcodeUiModel? = null,
+    private val saveBarcodeAndTags: (
+        barcode: BarcodeEntity, tags: List<TagEntity>
+    ) -> Unit
+) :
     BottomSheetDialogFragment() {
     private var vb: BottomsheetCreateCodeBinding? = null
     private var bitmapGenerator: BarGenerator? = null
@@ -81,6 +88,19 @@ class CreateBarcodeBottomsheet(private val saveBarcodeAndTags: (barcode: Barcode
                 collectInfoAndSave()
             }
         }
+
+        if (existModel != null)
+            renderExistModel(existModel)
+    }
+
+    private fun renderExistModel(uiModel: BarcodeUiModel) {
+        vb?.run {
+            contentEdit.setText(uiModel.content)
+            nameEdit.setText(uiModel.name)
+            descriptionEdit.setText(uiModel.description)
+            tagEdit.setText(uiModel.tags.joinToString { it.name })
+            generatePreview(uiModel.content, preview)
+        }
     }
 
     private fun showChooseFormatDialog() {
@@ -114,6 +134,7 @@ class CreateBarcodeBottomsheet(private val saveBarcodeAndTags: (barcode: Barcode
     private fun collectInfoAndSave() {
         vb?.run {
             val entity = BarcodeEntity(
+                id = existModel?.id ?: UUID.randomUUID().toString(),
                 content = contentEdit.text.toString(),
                 name = nameEdit.text.toString(),
                 description = descriptionEdit.text.toString(),

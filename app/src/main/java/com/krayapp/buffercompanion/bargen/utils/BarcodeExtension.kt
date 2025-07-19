@@ -6,21 +6,27 @@ import android.content.res.ColorStateList
 import android.graphics.Color
 import android.view.View
 import android.view.ViewPropertyAnimator
+import androidx.appcompat.widget.PopupMenu
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.core.view.isVisible
+import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipDrawable
 import com.google.android.material.color.MaterialColors
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.krayapp.buffercompanion.bargen.R
 import com.krayapp.buffercompanion.bargen.data.room.bargen.BargenDB
 import com.krayapp.buffercompanion.bargen.data.room.bargen.entity.BarcodeEntity
 import com.krayapp.buffercompanion.bargen.data.room.bargen.entity.TagEntity
 import com.krayapp.buffercompanion.bargen.ui.models.BarcodeUiModel
 import com.krayapp.buffercompanion.bargen.ui.models.TagUiModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 
@@ -154,4 +160,69 @@ fun View.attachHidingWithRecycler(
 
         isClickable = show
     })
+}
+
+fun View.showBarcodeMenu(
+    uiModel: BarcodeUiModel,
+    chooseMode: () -> Unit,
+    startEdit: (BarcodeUiModel) -> Unit,
+    callDeleteDialog: (BarcodeUiModel) -> Unit
+) {
+    this.setOnClickListener {
+        val popup = PopupMenu(this.context, this)
+        fun dismissMenu() {
+            popup.dismiss()
+        }
+        with(popup) {
+            menuInflater.inflate(R.menu.barcode_menu, menu)
+
+            setOnMenuItemClickListener { menuItem ->
+                when (menuItem.itemId) {
+                    R.id.choose -> {
+                        chooseMode()
+                        dismissMenu()
+                    }
+
+                    R.id.edit -> {
+                        startEdit(uiModel)
+                        dismissMenu()
+                    }
+
+                    R.id.delete -> {
+                        callDeleteDialog(uiModel)
+                        dismissMenu()
+                    }
+
+                    else -> { }
+                }
+                true
+            }
+            show()
+        }
+    }
+}
+
+fun Context.showDeleteConfirmationDialog(onDelete: () -> Unit) {
+    MaterialAlertDialogBuilder(this)
+        .setTitle(R.string.delete)
+        .setMessage(R.string.are_you_sure)
+        .setPositiveButton(R.string.delete) { dialog, _ ->
+            onDelete()
+            dialog.dismiss()
+        }
+        .setNegativeButton(R.string.cancel) { dialog, _ ->
+            dialog.dismiss()
+        }
+        .show()
+}
+
+fun RecyclerView?.disableAnimation() {
+    this?.itemAnimator = null
+}
+
+fun RecyclerView?.enableAnimation(scope: CoroutineScope) {
+    scope.launch {
+        delay(500)
+        this@enableAnimation?.itemAnimator = DefaultItemAnimator()
+    }
 }

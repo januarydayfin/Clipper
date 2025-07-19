@@ -27,6 +27,10 @@ class BargenRepo {
         withIO { barcodes.removeBarcodeById(id) }
     }
 
+    suspend fun removeBarcodesByIds(ids: List<String>) {
+        withIO { barcodes.removeBarcodesById(ids) }
+    }
+
     suspend fun removeTagByName(name: String) {
         withIO { tags.removeByName(name) }
     }

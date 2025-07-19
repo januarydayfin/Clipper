@@ -11,9 +11,8 @@ import com.krayapp.buffercompanion.bargen.ui.models.BarcodeUiModel
 
 
 class BarcodeAdapter(
-    private val onSelectionStarted: () -> Unit,
     private val openBarcode: (BarcodeUiModel) -> Unit,
-    private val openContextMenu: ((x: Int, y: Int, v: View) -> Unit)
+    private val openContextMenu: (uiModel: BarcodeUiModel, v: View) -> Unit
 ) : RecyclerView.Adapter<BarcodeViewHolder>() {
     private val differ = AsyncListDiffer(this, barcodeDiffer)
 
@@ -35,16 +34,15 @@ class BarcodeAdapter(
         differ.submitList(data)
     }
 
-    private fun selectionModeOn() {
+    fun selectionModeOn() {
         val listModeOn = differ.currentList.map { it.copy(selectionMode = true) }
         differ.submitList(listModeOn)
-        onSelectionStarted()
     }
 
     fun selectionModeOff() {
         val listModeOff = differ.currentList.map {
             it.copy(
-                selectionMode = true,
+                selectionMode = false,
                 checkedForDeletion = false
             )
         }

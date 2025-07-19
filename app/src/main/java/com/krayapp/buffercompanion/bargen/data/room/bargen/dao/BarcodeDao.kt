@@ -16,6 +16,9 @@ interface BarcodeDao {
     @Query("DELETE FROM barcodes WHERE :id == id")
     suspend fun removeBarcodeById(id: String)
 
+    @Query("DELETE FROM barcodes WHERE id IN (:ids)")
+    suspend fun removeBarcodesById(ids: List<String>)
+
     @Query("select * from barcodes where :id == id")
     suspend fun getBarcodeById(id: String): BarcodeEntity?
 

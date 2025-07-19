@@ -4,13 +4,13 @@ import android.Manifest
 import android.content.ClipboardManager
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.transition.TransitionInflater
 import com.gun0912.tedpermission.normal.TedPermission
@@ -26,9 +26,12 @@ import com.krayapp.buffercompanion.bargen.ui.dialogs.ScanDialog
 import com.krayapp.buffercompanion.bargen.ui.models.BarcodeUiModel
 import com.krayapp.buffercompanion.bargen.utils.addPermissionListener
 import com.krayapp.buffercompanion.bargen.utils.attachHidingWithRecycler
+import com.krayapp.buffercompanion.bargen.utils.disableAnimation
+import com.krayapp.buffercompanion.bargen.utils.enableAnimation
 import com.krayapp.buffercompanion.bargen.utils.filterChip
 import com.krayapp.buffercompanion.bargen.utils.runOnUi
-import com.krayapp.buffercompanion.bargen.utils.toReadableString
+import com.krayapp.buffercompanion.bargen.utils.showBarcodeMenu
+import com.krayapp.buffercompanion.bargen.utils.showDeleteConfirmationDialog
 import com.krayapp.buffercompanion.bargen.utils.toast
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
@@ -43,6 +46,9 @@ class MainFragment : Fragment() {
         object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 barcodeAdapter?.selectionModeOff()
+                vb?.recycler?.enableAnimation(lifecycleScope)
+                viewmodel.clearTagFilter()
+
                 this.remove()
             }
         }
@@ -87,12 +93,22 @@ class MainFragment : Fragment() {
 
     private fun initAdapter() {
         barcodeAdapter = BarcodeAdapter(
-            onSelectionStarted = {
-                activity?.onBackPressedDispatcher?.addCallback(backDispatcher)
-            },
             openBarcode = ::showBarcodeInfo,
-            openContextMenu = { x, y, v ->
-
+            openContextMenu = { model, anchor ->
+                anchor.showBarcodeMenu(
+                    uiModel = model,
+                    startEdit = { startCreatingCustomBarcode(model) },
+                    chooseMode = {
+                        vb?.recycler?.disableAnimation()
+                        barcodeAdapter?.selectionModeOn()
+                        addBackCallback()
+                    },
+                    callDeleteDialog = {
+                        anchor.context.showDeleteConfirmationDialog {
+                            viewmodel.removeBarcode(model.id)
+                        }
+                    }
+                )
             }
         )
 
@@ -107,13 +123,15 @@ class MainFragment : Fragment() {
             viewmodel.barcodeFlow.collectLatest {
                 barcodeAdapter?.updateData(it)
             }
-
-
         }
+
         runOnUi {
             viewmodel.tagFilterFlow.collectLatest {
                 vb?.run {
                     chipGroup.removeAllViews()
+
+                    if (it.isNotEmpty())
+                        addBackCallback()
 
                     it.forEach { rawModel ->
                         val uiModel = rawModel.copy(checked = true)
@@ -127,6 +145,10 @@ class MainFragment : Fragment() {
                 }
             }
         }
+    }
+
+    private fun addBackCallback() {
+        activity?.onBackPressedDispatcher?.addCallback(backDispatcher)
     }
 
     private fun startScannerDialog() {
@@ -147,8 +169,8 @@ class MainFragment : Fragment() {
             .check()
     }
 
-    private fun startCreatingCustomBarcode() {
-        CreateBarcodeBottomsheet { barcode, tags ->
+    private fun startCreatingCustomBarcode(uiModel: BarcodeUiModel? = null) {
+        CreateBarcodeBottomsheet(uiModel) { barcode, tags ->
             viewmodel.recordTags(tags)
             viewmodel.createBarcodeRecord(barcode)
         }.show(childFragmentManager, "")
