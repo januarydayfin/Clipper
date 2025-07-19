@@ -75,8 +75,6 @@ object BarcodeGenerator : BarGenerator {
                     BitmapCache.instance?.put(content, bitmap)
                 }
             }.onFailure {
-                Log.e("FATA", String.format("%s", it))
-
             }.getOrNull()
         }
     }

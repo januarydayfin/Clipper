@@ -2,6 +2,7 @@ package com.krayapp.buffercompanion.bargen.utils
 
 import android.content.Context
 import android.content.res.ColorStateList
+import android.nfc.Tag
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipDrawable
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -26,12 +27,17 @@ fun Context.filterChip(tagUiModel: TagUiModel, canChecked: Boolean = true): Chip
         if (fontColor != null)
             setTextColor(fontColor)
 
+        ensureAccessibleTouchTarget(20)
         checkedIconTint = fontColor
         isCheckable = canChecked
         chipStrokeColor = backgroundColor
         isChecked = tagUiModel.checked
+        tag = tagUiModel
     }
 }
+
+val Chip.uiModelTag
+    get() = tag as TagUiModel
 
 private fun Int?.toColorStateList() =
     if (this == null)

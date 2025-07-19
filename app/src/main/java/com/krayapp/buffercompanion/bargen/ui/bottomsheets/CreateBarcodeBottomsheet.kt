@@ -1,20 +1,23 @@
 package com.krayapp.buffercompanion.bargen.ui.bottomsheets
 
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout.LayoutParams
+import androidx.core.view.children
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.chip.Chip
 import com.google.zxing.BarcodeFormat
 import com.krayapp.buffercompanion.bargen.ClipperApp
 import com.krayapp.buffercompanion.bargen.addTextWatcher
 import com.krayapp.buffercompanion.bargen.bargenCore.BarGenerator
 import com.krayapp.buffercompanion.bargen.bargenCore.generator.BarcodeGenerator
 import com.krayapp.buffercompanion.bargen.data.room.bargen.entity.BarcodeEntity
-import com.krayapp.buffercompanion.bargen.data.room.bargen.entity.TagEntity
 import com.krayapp.buffercompanion.bargen.databinding.BottomsheetCreateCodeBinding
 import com.krayapp.buffercompanion.bargen.expand
 import com.krayapp.buffercompanion.bargen.onImeAction
@@ -25,15 +28,17 @@ import com.krayapp.buffercompanion.bargen.utils.colorNavBar
 import com.krayapp.buffercompanion.bargen.utils.decodedSize
 import com.krayapp.buffercompanion.bargen.utils.filterChip
 import com.krayapp.buffercompanion.bargen.utils.runOnUi
-import com.krayapp.buffercompanion.bargen.utils.toEntity
+import com.krayapp.buffercompanion.bargen.utils.toReadableString
+import com.krayapp.buffercompanion.bargen.utils.uiModelTag
+import kotlinx.coroutines.async
 import java.util.UUID
 
 class CreateBarcodeBottomsheet(
     private val existModel: BarcodeUiModel? = null,
     private val saveBarcodeAndTags: (
-        barcode: BarcodeEntity, tags: List<TagEntity>
+        barcode: BarcodeEntity, tags: List<TagUiModel>
     ) -> Unit,
-    private val tagFounder: suspend (name: String) -> TagUiModel?
+    private val tagFounder: suspend (name: String) -> List<TagUiModel>
 ) :
     BottomSheetDialogFragment() {
     private var vb: BottomsheetCreateCodeBinding? = null
@@ -118,20 +123,35 @@ class CreateBarcodeBottomsheet(
         val nameList = text.split(",").map { it.trim() }
 
         newTags.clear()
-        nameList.forEach {
-            runOnUi {
-                if (it.isNotEmpty()) {
-                    val model = tagFounder(it) ?: TagUiModel(name = it)
-                    newTags.add(model)
+
+        runOnUi {
+            nameList.forEach { stringName ->
+                if (stringName.isNotEmpty()) {
+                    //ищем существующие теги в базе по началу имению
+                    val foundTags = tagFounder(stringName)
+                    if (foundTags.isNotEmpty())
+                        //если есть, то добавляем впревью
+                        newTags.addAll(foundTags)
+                    else
+                        //или показываем новый тег
+                        newTags.add(TagUiModel(name = stringName))
                 }
-            }
 
-        }
-
-        vb?.run {
-            tagsGroup.removeAllViews()
-            newTags.forEach {
-                tagsGroup.addView(this.root.context.filterChip(it, false))
+                vb?.run {
+                    tagsGroup.removeAllViews()
+                    newTags
+                        .distinct()
+                        .forEach { freshTag ->
+                        tagsGroup.addView(this.root.context.filterChip(freshTag, false).apply {
+                            setOnClickListener {
+                                val correctedTags = tagEdit.text.toString().removeSuffix(stringName)
+                                    .plus(freshTag.name)
+                                tagEdit.setText("$correctedTags, ")
+                                tagEdit.setSelection(tagEdit.text?.length ?: 0)
+                            }
+                        })
+                    }
+                }
             }
         }
     }
@@ -147,7 +167,7 @@ class CreateBarcodeBottomsheet(
                 tags = newTags.map { it.id }
             )
 
-            saveBarcodeAndTags(entity, newTags.map { it.toEntity() })
+            saveBarcodeAndTags(entity, newTags)
             dismiss()
         }
     }

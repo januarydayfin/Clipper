@@ -53,7 +53,6 @@ class ScanDialog(private val onScanned: (BarcodeResult?) -> Unit) : DialogFragme
 
             lifecycleScope.launch {
                 reader.readerFlow().collectLatest {
-                    Log.d("FATA", String.format("%s", it))
 
                     if (it?.text != null) {
                         onScanned(it)

@@ -12,6 +12,7 @@ import com.krayapp.buffercompanion.bargen.ui.models.BarcodeUiModel
 import com.krayapp.buffercompanion.bargen.ui.models.TagUiModel
 import com.krayapp.buffercompanion.bargen.utils.launchInIO
 import com.krayapp.buffercompanion.bargen.utils.toBarcodeUiModel
+import com.krayapp.buffercompanion.bargen.utils.toEntity
 import com.krayapp.buffercompanion.bargen.utils.toTagUiModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -66,9 +67,9 @@ class BargenViewModel : ViewModel() {
         }
     }
 
-    suspend fun findTagWithName(name: String) =
+    suspend fun findTagWithName(name: String): List<TagUiModel> =
         withContext(Dispatchers.IO) {
-            repo.findTagWithName(name)?.toTagUiModel()
+            repo.findTagWithName(name).map { it.toTagUiModel() }
         }
 
 
@@ -147,18 +148,21 @@ class BargenViewModel : ViewModel() {
         }
     }
 
-    fun recordTags(tags: List<TagEntity>) {
+    fun recordTags(tags: List<TagUiModel>) {
         launchInIO {
-            repo.upsertTags(tags)
+            repo.upsertTags(tags.map { it.toEntity() })
+        }
+    }
+
+    fun recordTag(tag: TagUiModel) {
+        launchInIO {
+            repo.upsertTag(tag.toEntity())
         }
     }
 
     private fun updateBarcodeFlow() {
         launchInIO {
             val nameFilter = filterState.nameFilter
-
-            Log.d("FATA", String.format("%s", sortType))
-
             //Сначала пытаемся фильтровать по имени
             val filteredWithName = if (!nameFilter.isNullOrEmpty())
                 repo.searchBarcodesByName(nameFilter)

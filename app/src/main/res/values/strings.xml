@@ -57,4 +57,7 @@
     <string name="by_name">По имени</string>
     <string name="by_usage">По частоте использования</string>
     <string name="are_you_sure">Вы уверены?</string>
+    <string name="tag_background">Цвет тега</string>
+    <string name="tag_font_color">Цвет текста тега</string>
+
 </resources>
