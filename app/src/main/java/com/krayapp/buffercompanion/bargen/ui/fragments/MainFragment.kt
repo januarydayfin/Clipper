@@ -17,7 +17,10 @@ import androidx.transition.TransitionInflater
 import com.gun0912.tedpermission.normal.TedPermission
 import com.krayapp.buffercompanion.bargen.BargenViewModel
 import com.krayapp.buffercompanion.bargen.R
+import com.krayapp.buffercompanion.bargen.addTextWatcher
 import com.krayapp.buffercompanion.bargen.databinding.FragmentMainBinding
+import com.krayapp.buffercompanion.bargen.hideKeyboard
+import com.krayapp.buffercompanion.bargen.onImeAction
 import com.krayapp.buffercompanion.bargen.ui.MainActivity
 import com.krayapp.buffercompanion.bargen.ui.adapter.BarcodeAdapter
 import com.krayapp.buffercompanion.bargen.ui.bottomsheets.CreateBarcodeBottomsheet
@@ -79,6 +82,7 @@ class MainFragment : Fragment() {
         attachHidingButtons()
         observeDataFlow()
         setupSortPopup()
+        setupToolbar()
     }
 
     private fun setupSortPopup() {
@@ -87,11 +91,8 @@ class MainFragment : Fragment() {
         }
     }
 
-    private fun toolbarMode(chooseMode: Boolean) {
+    private fun setupToolbar() {
         vb?.run {
-            mainToolbar.isVisible = !chooseMode
-            selectionToolbar.isVisible = chooseMode
-
             selectAll.setOnClickListener {
                 barcodeAdapter?.selectAll()
             }
@@ -102,6 +103,20 @@ class MainFragment : Fragment() {
                     backDispatcher.handleOnBackPressed()
                 }
             }
+
+            with(searchView.searchEditText) {
+                addTextWatcher { viewmodel.updateNameFilter(it) }
+                onImeAction { hideKeyboard() }
+            }
+        }
+    }
+
+    private fun toolbarMode(chooseMode: Boolean) {
+        vb?.run {
+            mainToolbar.isVisible = !chooseMode
+            selectionToolbar.isVisible = chooseMode
+
+
         }
     }
 

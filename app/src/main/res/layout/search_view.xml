@@ -22,6 +22,6 @@
         android:inputType="text"
         android:background="@color/colorTransparent"
         android:hint="@string/search"
-        android:imeOptions="actionSearch"
+        android:imeOptions="actionDone"
         android:paddingVertical="12dp" />
 </LinearLayout>
