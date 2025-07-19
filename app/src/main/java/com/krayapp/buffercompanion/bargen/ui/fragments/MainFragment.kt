@@ -19,6 +19,7 @@ import com.krayapp.buffercompanion.bargen.databinding.FragmentMainBinding
 import com.krayapp.buffercompanion.bargen.ui.MainActivity
 import com.krayapp.buffercompanion.bargen.ui.adapter.BarcodeAdapter
 import com.krayapp.buffercompanion.bargen.ui.bottomsheets.CreateBarcodeBottomsheet
+import com.krayapp.buffercompanion.bargen.ui.bottomsheets.TagsBottomsheet
 import com.krayapp.buffercompanion.bargen.ui.dialogs.BarcodeDialog
 import com.krayapp.buffercompanion.bargen.ui.dialogs.ScanDialog
 import com.krayapp.buffercompanion.bargen.ui.models.BarcodeUiModel
@@ -96,8 +97,8 @@ class MainFragment : Fragment() {
                 barcodeAdapter?.updateData(it)
             }
 
-            viewmodel.tagsFlow.collectLatest {
-                //todo вставялем в чипгруп и меняем на чекнутые
+            viewmodel.tagFilterFlow.collectLatest {
+
             }
         }
     }
@@ -127,6 +128,9 @@ class MainFragment : Fragment() {
         }.show(childFragmentManager, "")
     }
 
+    private fun startTagBottomSheet() {
+        TagsBottomsheet(viewmodel).show(childFragmentManager, "")
+    }
 
     private fun initClick() {
         vb?.run {
@@ -138,7 +142,7 @@ class MainFragment : Fragment() {
             }
 
             tags.setOnClickListener {
-                //todo меню тегов
+                startTagBottomSheet()
             }
         }
     }

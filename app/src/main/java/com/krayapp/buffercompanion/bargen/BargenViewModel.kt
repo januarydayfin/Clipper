@@ -18,10 +18,10 @@ import kotlinx.coroutines.flow.asStateFlow
 class BargenViewModel : ViewModel() {
     private val repo = BargenRepo()
     private val _barcodeFlow = MutableStateFlow<List<BarcodeUiModel>>(emptyList())
-    private val _tagsFlow = MutableStateFlow<List<TagUiModel>>(emptyList())
+    private val _tagsFilterFlow = MutableStateFlow<List<TagUiModel>>(emptyList())
 
     val barcodeFlow = _barcodeFlow.asStateFlow()
-    val tagsFlow = _tagsFlow.asStateFlow()
+    val tagFilterFlow = _tagsFilterFlow.asStateFlow()
 
     private var sortType: SortType = SortType.DATE_ASC
         get() = SortType.valueOf(ClipperApp.getPrefs().sortType)
@@ -39,6 +39,12 @@ class BargenViewModel : ViewModel() {
 
     init {
         updateBarcodeFlow()
+    }
+
+    fun loadAllTags(onLoaded: suspend (List<TagUiModel>) -> Unit) {
+        launchInIO {
+            onLoaded(repo.getAllTags().map { it.toTagUiModel() })
+        }
     }
 
     fun createBarcodeRecord(
@@ -91,7 +97,7 @@ class BargenViewModel : ViewModel() {
                 repo.getTagsWithIds(this)
             }.map { it.toTagUiModel() }
 
-            _tagsFlow.emit(tags)
+            _tagsFilterFlow.emit(tags)
         }
     }
 
