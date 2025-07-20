@@ -136,8 +136,10 @@ class MainFragment : Fragment() {
     }
 
     private fun showSettingsDialog() {
-        SettingsDialog {
-            renderSearchViewType()
+        SettingsDialog().apply {
+            setOnDismiss {
+                renderSearchViewType()
+            }
         }.show(childFragmentManager, "")
     }
 

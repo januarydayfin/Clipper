@@ -2,7 +2,6 @@ package com.krayapp.buffercompanion.bargen.ui.dialogs
 
 import android.content.DialogInterface
 import android.os.Bundle
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -20,9 +19,9 @@ import com.krayapp.buffercompanion.bargen.data.SearchType
 import com.krayapp.buffercompanion.bargen.databinding.DialogSettingsBinding
 import com.krayapp.buffercompanion.bargen.utils.decodedSize
 
-class SettingsDialog(private val onDismiss: () -> Unit) : DialogFragment() {
+class SettingsDialog : DialogFragment() {
     private var binding: DialogSettingsBinding? = null
-
+    private var onDismiss: () -> Unit = { }
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -79,6 +78,10 @@ class SettingsDialog(private val onDismiss: () -> Unit) : DialogFragment() {
                 dismiss()
             }
         }
+    }
+
+    fun setOnDismiss(onDismiss: () -> Unit) {
+        this.onDismiss = onDismiss
     }
 
     private fun uncheckExcept(except: View, group: MaterialButtonToggleGroup) {
