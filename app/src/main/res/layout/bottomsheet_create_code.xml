@@ -15,8 +15,7 @@
             android:id="@+id/preview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            />
+            android:layout_gravity="center" />
 
 
         <com.google.android.material.chip.Chip
@@ -29,7 +28,7 @@
 
 
         <com.google.android.material.textfield.TextInputLayout
-            style="?attr/textInputFilledStyle"
+            style="?attr/textInputOutlinedStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
@@ -45,7 +44,7 @@
 
 
         <com.google.android.material.textfield.TextInputLayout
-            style="?attr/textInputFilledStyle"
+            style="?attr/textInputOutlinedStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
@@ -53,14 +52,14 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/nameEdit"
-                android:imeOptions="actionNext"
-                android:inputType="text"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:imeOptions="actionNext"
+                android:inputType="text" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            style="?attr/textInputFilledStyle"
+            style="?attr/textInputOutlinedStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
@@ -68,14 +67,14 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/descriptionEdit"
-                android:imeOptions="actionNext"
-                android:inputType="text"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:imeOptions="actionNext"
+                android:inputType="text" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            style="?attr/textInputFilledStyle"
+            style="?attr/textInputOutlinedStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
@@ -83,10 +82,10 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/tagEdit"
-                android:imeOptions="actionDone"
-                android:inputType="text"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:imeOptions="actionDone"
+                android:inputType="text" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.chip.ChipGroup

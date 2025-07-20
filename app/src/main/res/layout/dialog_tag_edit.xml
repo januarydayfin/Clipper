@@ -13,7 +13,7 @@
         android:layout_gravity="center" />
 
     <com.google.android.material.textfield.TextInputLayout
-        style="?attr/textInputFilledStyle"
+        style="?attr/textInputOutlinedStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
