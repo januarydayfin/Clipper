@@ -6,12 +6,12 @@ plugins {
 
 android {
 	namespace = "com.krayapp.buffercompanion"
-	compileSdk = 34
+	compileSdk = 35
 
 	defaultConfig {
 		applicationId = "com.krayapp.buffercompanion"
 		minSdk = 28
-		targetSdk = 34
+		targetSdk = 35
 		versionCode = 109
 		versionName = "1.09"
 
