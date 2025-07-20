@@ -26,6 +26,7 @@ class ClipperApp : Application() {
         instance = this
         globalPrefs = GlobalPrefs()
 
+        DynamicColors.applyToActivitiesIfAvailable(this)
         AppCompatDelegate.setDefaultNightMode(globalPrefs.theme)
         super.onCreate()
     }
