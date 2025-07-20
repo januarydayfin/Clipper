@@ -1,20 +1,15 @@
 package com.krayapp.buffercompanion.bargen.ui.bottomsheets
 
 import android.os.Bundle
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout.LayoutParams
-import androidx.core.view.children
-import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.google.android.material.chip.Chip
 import com.google.zxing.BarcodeFormat
 import com.krayapp.buffercompanion.bargen.ClipperApp
-import com.krayapp.buffercompanion.bargen.R
 import com.krayapp.buffercompanion.bargen.addTextWatcher
 import com.krayapp.buffercompanion.bargen.bargenCore.BarGenerator
 import com.krayapp.buffercompanion.bargen.bargenCore.generator.BarcodeGenerator
@@ -26,12 +21,10 @@ import com.krayapp.buffercompanion.bargen.ui.dialogs.BarcodeFormatChooseDialog
 import com.krayapp.buffercompanion.bargen.ui.models.BarcodeUiModel
 import com.krayapp.buffercompanion.bargen.ui.models.TagUiModel
 import com.krayapp.buffercompanion.bargen.utils.colorNavBar
+import com.krayapp.buffercompanion.bargen.utils.currentBarcodeFormat
 import com.krayapp.buffercompanion.bargen.utils.decodedSize
 import com.krayapp.buffercompanion.bargen.utils.filterChip
 import com.krayapp.buffercompanion.bargen.utils.runOnUi
-import com.krayapp.buffercompanion.bargen.utils.toReadableString
-import com.krayapp.buffercompanion.bargen.utils.uiModelTag
-import kotlinx.coroutines.async
 import java.util.UUID
 
 class CreateBarcodeBottomsheet(
@@ -45,7 +38,7 @@ class CreateBarcodeBottomsheet(
     private var vb: BottomsheetCreateCodeBinding? = null
     private var bitmapGenerator: BarGenerator? = null
     private var barcodeFormat: BarcodeFormat
-        get() = BarcodeFormat.valueOf(ClipperApp.getPrefs().lastBarFormat)
+        get() = currentBarcodeFormat
         set(value) {
             vb?.chosenFormat?.text = value.toString()
             ClipperApp.getPrefs().lastBarFormat = value.toString()

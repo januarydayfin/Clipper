@@ -42,6 +42,10 @@ class BargenRepo {
         barcodes.getFilteredByName(name)
     }
 
+    suspend fun searchBarcodesByValue(value: String) = withContext(Dispatchers.IO) {
+        barcodes.getFilteredByValue(value)
+    }
+
     suspend fun filterTagsByName(name: String) = withContext(Dispatchers.IO) {
         tags.getTags().filter { it.name.contains(name, true) }
     }

@@ -19,6 +19,9 @@ interface BarcodeDao {
     @Query("SELECT * FROM barcodes WHERE name LIKE '%' || :filter || '%'")
     suspend fun getFilteredByName(filter: String): List<BarcodeEntity>
 
+    @Query("SELECT * FROM barcodes WHERE content LIKE '%' || :filter || '%'")
+    suspend fun getFilteredByValue(filter: String): List<BarcodeEntity>
+
     @Query("DELETE FROM barcodes WHERE id IN (:ids)")
     suspend fun removeBarcodesById(ids: List<String>)
 

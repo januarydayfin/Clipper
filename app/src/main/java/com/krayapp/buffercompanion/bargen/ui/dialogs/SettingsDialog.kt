@@ -2,6 +2,7 @@ package com.krayapp.buffercompanion.bargen.ui.dialogs
 
 import android.content.DialogInterface
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -13,11 +14,13 @@ import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
 import androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode
 import androidx.core.view.children
 import androidx.fragment.app.DialogFragment
+import com.google.android.material.button.MaterialButtonToggleGroup
 import com.krayapp.buffercompanion.bargen.ClipperApp
+import com.krayapp.buffercompanion.bargen.data.SearchType
 import com.krayapp.buffercompanion.bargen.databinding.DialogSettingsBinding
 import com.krayapp.buffercompanion.bargen.utils.decodedSize
 
-class SettingsDialog : DialogFragment() {
+class SettingsDialog(private val onDismiss: () -> Unit) : DialogFragment() {
     private var binding: DialogSettingsBinding? = null
 
     override fun onCreateView(
@@ -38,14 +41,38 @@ class SettingsDialog : DialogFragment() {
                 gravity = Gravity.CENTER
             }
 
-            val needToCheckId = findCurrentThemeButtonId()
-            if (needToCheckId != null)
-                toggleButton.check(needToCheckId)
+            val themeCurrentCheckId = findCurrentThemeButtonId()
+            val currentSearchCheckId = findCurrentSearchTypeId()
+
+            if (currentSearchCheckId != null)
+                searchToggleGroup.check(currentSearchCheckId)
+
+            if (themeCurrentCheckId != null)
+                themeToggleGroup.check(themeCurrentCheckId)
 
             binding?.run {
-                darkTheme.setOnClickListener(::uncheckExcept)
-                systemTheme.setOnClickListener(::uncheckExcept)
-                lightTheme.setOnClickListener(::uncheckExcept)
+                darkTheme.setOnClickListener { v ->
+                    uncheckExcept(v, themeToggleGroup)
+                    setMode(AppTheme.valueOf(v.tag.toString()))
+                }
+                systemTheme.setOnClickListener { v ->
+                    uncheckExcept(v, themeToggleGroup)
+                    setMode(AppTheme.valueOf(v.tag.toString()))
+
+                }
+                lightTheme.setOnClickListener { v ->
+                    uncheckExcept(v, themeToggleGroup)
+                    setMode(AppTheme.valueOf(v.tag.toString()))
+                }
+
+                byName.setOnClickListener { v ->
+                    uncheckExcept(v, searchToggleGroup)
+                    setSearchType(SearchType.valueOf(v.tag.toString()))
+                }
+                byValue.setOnClickListener { v ->
+                    uncheckExcept(v, searchToggleGroup)
+                    setSearchType(SearchType.valueOf(v.tag.toString()))
+                }
             }
 
             close.setOnClickListener {
@@ -54,26 +81,37 @@ class SettingsDialog : DialogFragment() {
         }
     }
 
-    private fun uncheckExcept(except: View) {
-        val theme = AppTheme.valueOf(except.tag.toString())
-        binding?.toggleButton?.run {
+    private fun uncheckExcept(except: View, group: MaterialButtonToggleGroup) {
+        group.run {
             val toUncheck = children.filter { it.id != except.id }
             toUncheck.forEach {
                 uncheck(it.id)
             }
             check(except.id)
         }
-
-        setMode(theme)
     }
+
 
     private fun findCurrentThemeButtonId(): Int? {
         var id: Int? = null
 
         binding?.run {
-            toggleButton.children.forEach {
+            themeToggleGroup.children.forEach {
                 val parsed = AppTheme.valueOf(it.tag.toString())
                 if (parsed.value == ClipperApp.getPrefs().theme)
+                    id = it.id
+            }
+        }
+        return id
+    }
+
+    private fun findCurrentSearchTypeId(): Int? {
+        var id: Int? = null
+
+        binding?.run {
+            searchToggleGroup.children.forEach {
+                val parsed = SearchType.valueOf(it.tag.toString()).toString()
+                if (parsed == ClipperApp.getPrefs().searchType)
                     id = it.id
             }
         }
@@ -85,8 +123,13 @@ class SettingsDialog : DialogFragment() {
         ClipperApp.getPrefs().theme = theme.value
     }
 
+    private fun setSearchType(type: SearchType) {
+        ClipperApp.getPrefs().searchType = type.toString()
+    }
+
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
+        onDismiss()
         binding = null
     }
 

@@ -1,15 +1,16 @@
 package com.krayapp.buffercompanion.bargen
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.google.zxing.BarcodeFormat
 import com.krayapp.buffercompanion.bargen.data.BargenRepo
 import com.krayapp.buffercompanion.bargen.data.FilterState
+import com.krayapp.buffercompanion.bargen.data.SearchType
 import com.krayapp.buffercompanion.bargen.data.SortType
 import com.krayapp.buffercompanion.bargen.data.room.bargen.entity.BarcodeEntity
-import com.krayapp.buffercompanion.bargen.data.room.bargen.entity.TagEntity
 import com.krayapp.buffercompanion.bargen.ui.models.BarcodeUiModel
 import com.krayapp.buffercompanion.bargen.ui.models.TagUiModel
+import com.krayapp.buffercompanion.bargen.utils.currentSearchType
+import com.krayapp.buffercompanion.bargen.utils.currentSortType
 import com.krayapp.buffercompanion.bargen.utils.launchInIO
 import com.krayapp.buffercompanion.bargen.utils.toBarcodeUiModel
 import com.krayapp.buffercompanion.bargen.utils.toEntity
@@ -28,7 +29,7 @@ class BargenViewModel : ViewModel() {
     val tagFilterFlow = _tagsFilterFlow.asStateFlow()
 
     private var sortType: SortType
-        get() = SortType.valueOf(ClipperApp.getPrefs().sortType)
+        get() = currentSortType
         set(value) {
             ClipperApp.getPrefs().sortType = value.toString()
             updateBarcodeFlow()
@@ -135,7 +136,7 @@ class BargenViewModel : ViewModel() {
     }
 
     fun updateNameFilter(name: String) {
-        filterState = filterState.copy(nameFilter = name)
+        filterState = filterState.copy(searchFilter = name)
     }
 
     private fun updateTagsFlow() {
@@ -162,22 +163,29 @@ class BargenViewModel : ViewModel() {
 
     private fun updateBarcodeFlow() {
         launchInIO {
-            val nameFilter = filterState.nameFilter
-            //Сначала пытаемся фильтровать по имени
-            val filteredWithName = if (!nameFilter.isNullOrEmpty())
-                repo.searchBarcodesByName(nameFilter)
-            else
-                null
+            val searchFilter = filterState.searchFilter
+            //Сначала пытаемся фильтровать по строке
+
+
+            val filtered =
+                if (searchFilter == null)
+                    null
+                else
+                    when (currentSearchType) {
+                        SearchType.NAME -> repo.searchBarcodesByName(searchFilter)
+                        else -> repo.searchBarcodesByValue(searchFilter)
+                    }
+
 
             //Потом пытаемся отфильтровать полученный список еще и по тегам
             val dataToEmit = if (filterState.tagIds.isNotEmpty())
                 repo.filterBarcodesWithTags(
                     tags = filterState.tagIds,
                     sort = sortType,
-                    sourceList = filteredWithName
+                    sourceList = filtered
                 )
             else
-                filteredWithName ?: repo.getAllBarcodes(sortType)
+                filtered ?: repo.getAllBarcodes(sortType)
 
             val allTags = repo.getAllTags()
 

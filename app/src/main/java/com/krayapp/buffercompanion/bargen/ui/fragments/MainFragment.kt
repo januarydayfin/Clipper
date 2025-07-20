@@ -17,8 +17,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.transition.TransitionInflater
 import com.gun0912.tedpermission.normal.TedPermission
 import com.krayapp.buffercompanion.bargen.BargenViewModel
+import com.krayapp.buffercompanion.bargen.ClipperApp
 import com.krayapp.buffercompanion.bargen.R
 import com.krayapp.buffercompanion.bargen.addTextWatcher
+import com.krayapp.buffercompanion.bargen.data.SearchType
 import com.krayapp.buffercompanion.bargen.databinding.FragmentMainBinding
 import com.krayapp.buffercompanion.bargen.hideKeyboard
 import com.krayapp.buffercompanion.bargen.onImeAction
@@ -85,6 +87,7 @@ class MainFragment : Fragment() {
         observeDataFlow()
         setupSortPopup()
         setupToolbar()
+        renderSearchViewType()
     }
 
     private fun setupSortPopup() {
@@ -133,7 +136,19 @@ class MainFragment : Fragment() {
     }
 
     private fun showSettingsDialog() {
-        SettingsDialog().show(childFragmentManager, "")
+        SettingsDialog {
+            renderSearchViewType()
+        }.show(childFragmentManager, "")
+    }
+
+    private fun renderSearchViewType() {
+        val type = SearchType.valueOf(ClipperApp.getPrefs().searchType)
+        vb?.run {
+            when (type) {
+                SearchType.NAME -> searchView.searchEditText.hint = getString(R.string.search_name)
+                else -> searchView.searchEditText.hint = getString(R.string.search_value)
+            }
+        }
     }
 
     private fun checkAppShortcut() {

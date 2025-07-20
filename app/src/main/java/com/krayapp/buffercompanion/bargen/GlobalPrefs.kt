@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.edit
 import com.google.zxing.BarcodeFormat
+import com.krayapp.buffercompanion.bargen.data.SearchType
 import com.krayapp.buffercompanion.bargen.data.SortType
 
 class GlobalPrefs {
@@ -32,12 +33,18 @@ class GlobalPrefs {
         set(value) = prefs.edit { putInt(KEY_THEME_MODE, value) }
 
 
+    var searchType: String
+        get() = prefs.getString(SEARCH_TYPE, SearchType.NAME.toString())
+            ?: SearchType.NAME.toString()
+        set(value) {
+            prefs.edit { putString(SEARCH_TYPE, value) }
+        }
+
     companion object {
         private const val PREFS_NAME = "mainSettings"
 
-        private const val KEY_DYNAMIC_COLORS = "KEY_DYNAMIC_COLORS"
         private const val KEY_THEME_MODE = "KEY_THEME_MODE"
-        private const val TUTORIAL_SHOWN = "TUTORIAL_SHOWN"
+        private const val SEARCH_TYPE = "SEARCH_TYPE"
         private const val SORT_TYPE = "SORT_TYPE"
         private const val BARCODE_FORMAT = "BARCODE_FORMAT"
     }
