@@ -15,9 +15,9 @@
 
 	<string name="camera_required">The app needs access to the camera to scan</string>
 
-	<string name="light_theme">Light theme</string>
-	<string name="system_theme">System theme</string>
-	<string name="dark_theme">Dark theme</string>
+	<string name="light_theme">Light</string>
+	<string name="system_theme">System</string>
+	<string name="dark_theme">Dark</string>
 
 	<string name="copied">Copied</string>
 	<string name="tutorial">How to use it?</string>
@@ -62,4 +62,9 @@
 	<string name="are_you_sure">Are you sure?</string>
 	<string name="tag_background">Tag color</string>
 	<string name="tag_font_color">Tag text color</string>
+
+	<string name="by_value">By value</string>
+	<string name="search_type">Search type</string>
+	<string name="search_name">Search by name</string>
+	<string name="search_value">Search by value</string>
 </resources>
