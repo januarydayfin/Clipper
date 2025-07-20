@@ -46,7 +46,7 @@ class SettingsFragment : AbsFragment() {
 			} else {
 				packageManager.getPackageInfo(packageName, 0)
 			}
-			packageInfo.versionName
+			packageInfo.versionName ?: ""
 		} catch (e: Exception) {
 			""
 		}
