@@ -2,11 +2,9 @@ package com.krayapp.buffercompanion.bargen.ui.dialogs
 
 import android.content.DialogInterface
 import android.os.Bundle
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
@@ -15,9 +13,11 @@ import androidx.core.view.children
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.button.MaterialButtonToggleGroup
 import com.krayapp.buffercompanion.bargen.ClipperApp
+import com.krayapp.buffercompanion.bargen.R
 import com.krayapp.buffercompanion.bargen.data.SearchType
 import com.krayapp.buffercompanion.bargen.databinding.DialogSettingsBinding
-import com.krayapp.buffercompanion.bargen.utils.decodedSize
+import com.krayapp.buffercompanion.bargen.utils.setCustomBackground
+import com.krayapp.buffercompanion.bargen.utils.setupDialogWidth
 
 class SettingsDialog : DialogFragment() {
     private var binding: DialogSettingsBinding? = null
@@ -33,12 +33,10 @@ class SettingsDialog : DialogFragment() {
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        dialog.setCustomBackground(R.drawable.dialog_background)
         super.onViewCreated(view, savedInstanceState)
         binding?.run {
-            val (width, height) = decodedSize
-            root.layoutParams = FrameLayout.LayoutParams(width, -1).apply {
-                gravity = Gravity.CENTER
-            }
+            setupDialogWidth()
 
             val themeCurrentCheckId = findCurrentThemeButtonId()
             val currentSearchCheckId = findCurrentSearchTypeId()

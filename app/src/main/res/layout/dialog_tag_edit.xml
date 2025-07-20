@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/dialog_background"
     android:orientation="vertical"
     android:padding="12dp">
 
@@ -39,6 +40,10 @@
             android:layout_height="wrap_content"
             android:text="@string/tag_background" />
 
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
 
         <ImageView
             android:id="@+id/tagBackgroundColor"
@@ -61,6 +66,10 @@
             android:layout_height="wrap_content"
             android:text="@string/tag_font_color" />
 
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
 
         <ImageView
             android:id="@+id/tagFontColor"

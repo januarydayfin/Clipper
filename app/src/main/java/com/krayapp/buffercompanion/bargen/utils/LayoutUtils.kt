@@ -23,5 +23,4 @@ fun LayoutParams.addMargins(
     }
 }
 
-fun rectangleParams(size: Int) = LinearLayout.LayoutParams(size, size)
 fun Context?.displayWidth() = this?.resources?.displayMetrics?.widthPixels ?: 0

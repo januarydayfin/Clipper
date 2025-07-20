@@ -21,7 +21,9 @@ import com.journeyapps.barcodescanner.ScanOptions.RSS_14
 import com.journeyapps.barcodescanner.ScanOptions.RSS_EXPANDED
 import com.journeyapps.barcodescanner.ScanOptions.UPC_A
 import com.journeyapps.barcodescanner.ScanOptions.UPC_E
+import com.krayapp.buffercompanion.bargen.R
 import com.krayapp.buffercompanion.bargen.databinding.ChooseFormatDialogBinding
+import com.krayapp.buffercompanion.bargen.utils.setCustomBackground
 
 class BarcodeFormatChooseDialog(
     private val currentFormat: BarcodeFormat,
@@ -41,7 +43,7 @@ class BarcodeFormatChooseDialog(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        dialog.setCustomBackground(R.drawable.dialog_background)
         binding?.run {
             val entries = listOf(
                 BarcodeFormat.AZTEC,

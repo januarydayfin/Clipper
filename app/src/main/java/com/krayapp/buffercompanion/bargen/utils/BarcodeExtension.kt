@@ -3,6 +3,9 @@ package com.krayapp.buffercompanion.bargen.utils
 import android.content.Context
 import android.content.res.ColorStateList
 import android.nfc.Tag
+import android.view.Gravity
+import android.widget.FrameLayout
+import androidx.fragment.app.DialogFragment
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipDrawable
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -12,6 +15,15 @@ import com.krayapp.buffercompanion.bargen.ui.models.TagUiModel
 
 
 val decodedSize = ClipperApp.displayWidth to ClipperApp.displayWidth / 2
+
+val dialogWidth = (ClipperApp.displayWidth * 0.9).toInt()
+
+fun DialogFragment.setupDialogWidth() {
+    view?.layoutParams = FrameLayout.LayoutParams(dialogWidth, -1).apply {
+        gravity = Gravity.CENTER
+    }
+}
+
 fun Context.filterChip(tagUiModel: TagUiModel, canChecked: Boolean = true): Chip {
     val drawable = ChipDrawable.createFromAttributes(this, null, 0, filterChipStyle)
 

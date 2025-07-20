@@ -10,6 +10,7 @@ import com.google.android.material.chip.Chip
 import com.krayapp.buffercompanion.bargen.BargenViewModel
 import com.krayapp.buffercompanion.bargen.databinding.BottomsheetTagsBinding
 import com.krayapp.buffercompanion.bargen.expand
+import com.krayapp.buffercompanion.bargen.justVibrateABit
 import com.krayapp.buffercompanion.bargen.ui.dialogs.TagEditDialog
 import com.krayapp.buffercompanion.bargen.ui.models.TagUiModel
 import com.krayapp.buffercompanion.bargen.utils.colorNavBar
@@ -58,6 +59,7 @@ class TagsBottomsheet(private val viewModel: BargenViewModel) : BottomSheetDialo
                             chipGroup.addView(
                                 chipGroup.context.filterChip(tagUi).apply {
                                     setOnLongClickListener { v ->
+                                        v.context.justVibrateABit()
                                         v.showTagEditMenu(
                                             onEditCalled = {
                                                 showTagEditDialog(tagUi)

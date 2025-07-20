@@ -1,8 +1,11 @@
 package com.krayapp.buffercompanion.bargen.utils
 
 import android.annotation.SuppressLint
+import android.app.Dialog
 import android.content.Context
+import android.graphics.Color
 import android.graphics.PointF
+import android.graphics.drawable.ColorDrawable
 import android.util.DisplayMetrics
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -29,7 +32,7 @@ fun View.getPercentagePxFromDisplayWidth(percentage: Int): Int {
     return (displayWidth / 100) * percentage
 }
 
-fun View.getPercentagePxFromDisplayHeight(percentage: Int) : Int {
+fun View.getPercentagePxFromDisplayHeight(percentage: Int): Int {
     val displayHeight = context.resources.displayMetrics.heightPixels
     return (displayHeight / 100) * percentage
 }
@@ -40,7 +43,8 @@ fun View.dp(value: Int): Int {
 }
 
 fun View.dpToPx(dp: Float): Int = context.dpToPx(dp)
-fun Context.dpToPx(dp: Float): Int = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, resources.displayMetrics).toInt()
+fun Context.dpToPx(dp: Float): Int =
+    TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, resources.displayMetrics).toInt()
 
 fun View.hideKeyboard() {
     (context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(
@@ -73,4 +77,8 @@ fun View.onTouchCoordinates(xy: (Float, Float) -> Unit) {
         xy(event.x, event.y)
         false
     }
+}
+
+fun Dialog?.setCustomBackground(res: Int) {
+    this?.window?.setBackgroundDrawable(context.getDrawable(res))
 }

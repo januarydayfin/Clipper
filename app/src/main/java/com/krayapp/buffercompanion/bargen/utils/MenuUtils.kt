@@ -1,5 +1,6 @@
 package com.krayapp.buffercompanion.bargen.utils
 
+import android.view.ContextThemeWrapper
 import android.view.View
 import androidx.appcompat.widget.PopupMenu
 import com.krayapp.buffercompanion.bargen.R
@@ -12,8 +13,9 @@ fun View.showBarcodeMenu(
     startEdit: (BarcodeUiModel) -> Unit,
     callDeleteDialog: (BarcodeUiModel) -> Unit
 ) {
-    val popup = PopupMenu(this.context, this)
+    val popup = PopupMenu(ContextThemeWrapper(this.context, R.style.ThemeOverlay_App_PopupMenu), this)
     with(popup) {
+
         menuInflater.inflate(R.menu.barcode_menu, menu)
         setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
@@ -41,7 +43,7 @@ fun View.showBarcodeMenu(
 fun View.showSortMenu(
     onSortSelected: (SortType) -> Unit
 ) {
-    val popup = PopupMenu(this.context, this)
+    val popup = PopupMenu(ContextThemeWrapper(this.context, R.style.ThemeOverlay_App_PopupMenu), this)
 
     with(popup) {
         menuInflater.inflate(R.menu.sort_menu, menu)
@@ -79,7 +81,7 @@ fun View.showTagEditMenu(
     onEditCalled: () -> Unit,
     onDeleteCalled: () -> Unit,
 ) {
-    val popup = PopupMenu(this.context, this)
+    val popup = PopupMenu(ContextThemeWrapper(this.context, R.style.ThemeOverlay_App_PopupMenu), this)
 
     with(popup) {
         menuInflater.inflate(R.menu.tag_menu, menu)

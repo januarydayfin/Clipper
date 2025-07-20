@@ -132,4 +132,15 @@
 		<item name="android:lineHeight">16sp</item>
 	</style>
 
+	<style name="PopupMenu" parent="@android:style/Widget.PopupMenu">
+		<item name="android:popupBackground">@drawable/menu_background</item>
+	</style>
+
+	<style name="ThemeOverlay.App.PopupMenu" parent="">
+		<!-- if using android.widget.PopupMenu -->
+		<item name="android:popupMenuStyle">@style/PopupMenu</item>
+		<!-- if using androidx.appcompat.widget.PopupMenu -->
+		<item name="popupMenuStyle">@style/PopupMenu</item>
+	</style>
+
 </resources>
