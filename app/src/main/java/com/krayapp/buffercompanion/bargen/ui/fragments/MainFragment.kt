@@ -162,6 +162,7 @@ class MainFragment : Fragment() {
 
     private fun attachHidingButtons() {
         vb?.run {
+            navSpace.layoutParams = LinearLayout.LayoutParams(0, activity.navbarHeight)
             buttonGroup.attachHidingWithRecycler(recycler, false)
         }
     }

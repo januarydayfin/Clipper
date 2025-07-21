@@ -104,36 +104,48 @@
     </LinearLayout>
 
 
-    <com.google.android.material.button.MaterialButtonGroup
+    <LinearLayout
         android:id="@+id/buttonGroup"
-        style="@style/Widget.Material3.MaterialButtonGroup.Connected"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center_horizontal"
-        android:layout_marginBottom="36dp">
+        android:orientation="vertical">
 
-        <Button
-            android:id="@+id/scanBarcode"
-            style="@style/Widget.Material3.Button.Icon"
+        <com.google.android.material.button.MaterialButtonGroup
+            style="@style/Widget.Material3.MaterialButtonGroup.Connected"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/scan"
-            app:icon="@drawable/qr_example" />
+            android:layout_marginBottom="8dp"
+            android:layout_height="wrap_content">
 
-        <Button
-            android:id="@+id/createNew"
-            style="@style/Widget.Material3.Button.Icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/create"
-            app:icon="@drawable/ic_plus" />
+            <Button
+                android:id="@+id/scanBarcode"
+                style="@style/Widget.Material3.Button.Icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/scan"
+                app:icon="@drawable/qr_example" />
 
-        <Button
-            android:id="@+id/tags"
-            style="@style/Widget.Material3.Button.Icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/tags"
-            app:icon="@drawable/ic_label" />
-    </com.google.android.material.button.MaterialButtonGroup>
+            <Button
+                android:id="@+id/createNew"
+                style="@style/Widget.Material3.Button.Icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/create"
+                app:icon="@drawable/ic_plus" />
+
+            <Button
+                android:id="@+id/tags"
+                style="@style/Widget.Material3.Button.Icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tags"
+                app:icon="@drawable/ic_label" />
+        </com.google.android.material.button.MaterialButtonGroup>
+
+        <View
+            android:id="@+id/navSpace"
+            android:layout_width="0dp"
+            android:layout_height="0dp" />
+    </LinearLayout>
+
 </FrameLayout>

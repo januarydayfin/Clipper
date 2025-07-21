@@ -1,16 +1,16 @@
 package com.krayapp.buffercompanion.bargen.utils
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.Dialog
 import android.content.Context
-import android.graphics.Color
 import android.graphics.PointF
-import android.graphics.drawable.ColorDrawable
 import android.util.DisplayMetrics
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowInsets
 import android.view.inputmethod.InputMethodManager
 import android.widget.DatePicker
 import android.widget.LinearLayout
@@ -82,3 +82,9 @@ fun View.onTouchCoordinates(xy: (Float, Float) -> Unit) {
 fun Dialog?.setCustomBackground(res: Int) {
     this?.window?.setBackgroundDrawable(context.getDrawable(res))
 }
+
+val Activity?.navbarHeight: Int
+    get() {
+        val windowInsets = this?.windowManager?.currentWindowMetrics?.windowInsets
+        return windowInsets?.getInsets(WindowInsets.Type.navigationBars())?.bottom ?: -1
+    }
