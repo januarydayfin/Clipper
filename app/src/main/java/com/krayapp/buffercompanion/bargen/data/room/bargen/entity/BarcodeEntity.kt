@@ -16,7 +16,7 @@ data class BarcodeEntity(
     val description: String = "",
     val usageCount: Int = 0,
     val modificationTime: Long = Date().time,
-    val name: String = modificationTime.toReadableTime(),
+    val name: String = "",
     val type: String,
     val tags: List<String> = emptyList()
 )
