@@ -4,10 +4,10 @@ import android.Manifest
 import android.content.ClipboardManager
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.activity.OnBackPressedCallback
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -17,10 +17,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.transition.TransitionInflater
 import com.gun0912.tedpermission.normal.TedPermission
 import com.krayapp.buffercompanion.bargen.BargenViewModel
-import com.krayapp.buffercompanion.bargen.ClipperApp
 import com.krayapp.buffercompanion.bargen.R
 import com.krayapp.buffercompanion.bargen.addTextWatcher
-import com.krayapp.buffercompanion.bargen.data.SearchType
 import com.krayapp.buffercompanion.bargen.databinding.FragmentMainBinding
 import com.krayapp.buffercompanion.bargen.hideKeyboard
 import com.krayapp.buffercompanion.bargen.onImeAction
@@ -36,6 +34,7 @@ import com.krayapp.buffercompanion.bargen.utils.attachHidingWithRecycler
 import com.krayapp.buffercompanion.bargen.utils.disableAnimation
 import com.krayapp.buffercompanion.bargen.utils.enableAnimation
 import com.krayapp.buffercompanion.bargen.utils.filterChip
+import com.krayapp.buffercompanion.bargen.utils.navbarHeight
 import com.krayapp.buffercompanion.bargen.utils.runOnUi
 import com.krayapp.buffercompanion.bargen.utils.showBarcodeMenu
 import com.krayapp.buffercompanion.bargen.utils.showDeleteConfirmationDialog
@@ -87,7 +86,6 @@ class MainFragment : Fragment() {
         observeDataFlow()
         setupSortPopup()
         setupToolbar()
-        renderSearchViewType()
     }
 
     private fun setupSortPopup() {
@@ -136,21 +134,7 @@ class MainFragment : Fragment() {
     }
 
     private fun showSettingsDialog() {
-        SettingsDialog().apply {
-            setOnDismiss {
-                renderSearchViewType()
-            }
-        }.show(childFragmentManager, "")
-    }
-
-    private fun renderSearchViewType() {
-        val type = SearchType.valueOf(ClipperApp.getPrefs().searchType)
-        vb?.run {
-            when (type) {
-                SearchType.NAME -> searchView.searchEditText.hint = getString(R.string.search_name)
-                else -> searchView.searchEditText.hint = getString(R.string.search_value)
-            }
-        }
+        SettingsDialog().show(childFragmentManager, "")
     }
 
     private fun checkAppShortcut() {

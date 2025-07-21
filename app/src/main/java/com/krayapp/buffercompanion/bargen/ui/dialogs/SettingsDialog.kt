@@ -21,7 +21,6 @@ import com.krayapp.buffercompanion.bargen.utils.setupDialogWidth
 
 class SettingsDialog : DialogFragment() {
     private var binding: DialogSettingsBinding? = null
-    private var onDismiss: () -> Unit = { }
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -39,11 +38,6 @@ class SettingsDialog : DialogFragment() {
             setupDialogWidth()
 
             val themeCurrentCheckId = findCurrentThemeButtonId()
-            val currentSearchCheckId = findCurrentSearchTypeId()
-
-            if (currentSearchCheckId != null)
-                searchToggleGroup.check(currentSearchCheckId)
-
             if (themeCurrentCheckId != null)
                 themeToggleGroup.check(themeCurrentCheckId)
 
@@ -61,15 +55,6 @@ class SettingsDialog : DialogFragment() {
                     uncheckExcept(v, themeToggleGroup)
                     setMode(AppTheme.valueOf(v.tag.toString()))
                 }
-
-                byName.setOnClickListener { v ->
-                    uncheckExcept(v, searchToggleGroup)
-                    setSearchType(SearchType.valueOf(v.tag.toString()))
-                }
-                byValue.setOnClickListener { v ->
-                    uncheckExcept(v, searchToggleGroup)
-                    setSearchType(SearchType.valueOf(v.tag.toString()))
-                }
             }
 
             close.setOnClickListener {
@@ -78,9 +63,6 @@ class SettingsDialog : DialogFragment() {
         }
     }
 
-    fun setOnDismiss(onDismiss: () -> Unit) {
-        this.onDismiss = onDismiss
-    }
 
     private fun uncheckExcept(except: View, group: MaterialButtonToggleGroup) {
         group.run {
@@ -106,19 +88,6 @@ class SettingsDialog : DialogFragment() {
         return id
     }
 
-    private fun findCurrentSearchTypeId(): Int? {
-        var id: Int? = null
-
-        binding?.run {
-            searchToggleGroup.children.forEach {
-                val parsed = SearchType.valueOf(it.tag.toString()).toString()
-                if (parsed == ClipperApp.getPrefs().searchType)
-                    id = it.id
-            }
-        }
-        return id
-    }
-
     private fun setMode(theme: AppTheme) {
         setDefaultNightMode(theme.value)
         ClipperApp.getPrefs().theme = theme.value
@@ -130,7 +99,6 @@ class SettingsDialog : DialogFragment() {
 
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
-        onDismiss()
         binding = null
     }
 

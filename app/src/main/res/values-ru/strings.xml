@@ -59,9 +59,4 @@
     <string name="are_you_sure">Вы уверены?</string>
     <string name="tag_background">Цвет тега</string>
     <string name="tag_font_color">Цвет текста тега</string>
-
-    <string name="by_value">По значению</string>
-    <string name="search_type">Тип поиска</string>
-    <string name="search_name">Поиск по имени</string>
-    <string name="search_value">Поиск по значению</string>
 </resources>

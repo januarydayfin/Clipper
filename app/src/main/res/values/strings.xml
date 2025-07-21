@@ -63,8 +63,4 @@
 	<string name="tag_background">Tag color</string>
 	<string name="tag_font_color">Tag text color</string>
 
-	<string name="by_value">By value</string>
-	<string name="search_type">Search type</string>
-	<string name="search_name">Search by name</string>
-	<string name="search_value">Search by value</string>
 </resources>

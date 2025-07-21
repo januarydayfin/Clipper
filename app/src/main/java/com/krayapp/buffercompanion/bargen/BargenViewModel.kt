@@ -4,12 +4,10 @@ import androidx.lifecycle.ViewModel
 import com.google.zxing.BarcodeFormat
 import com.krayapp.buffercompanion.bargen.data.BargenRepo
 import com.krayapp.buffercompanion.bargen.data.FilterState
-import com.krayapp.buffercompanion.bargen.data.SearchType
 import com.krayapp.buffercompanion.bargen.data.SortType
 import com.krayapp.buffercompanion.bargen.data.room.bargen.entity.BarcodeEntity
 import com.krayapp.buffercompanion.bargen.ui.models.BarcodeUiModel
 import com.krayapp.buffercompanion.bargen.ui.models.TagUiModel
-import com.krayapp.buffercompanion.bargen.utils.currentSearchType
 import com.krayapp.buffercompanion.bargen.utils.currentSortType
 import com.krayapp.buffercompanion.bargen.utils.launchInIO
 import com.krayapp.buffercompanion.bargen.utils.toBarcodeUiModel
@@ -171,10 +169,7 @@ class BargenViewModel : ViewModel() {
                 if (searchFilter == null)
                     null
                 else
-                    when (currentSearchType) {
-                        SearchType.NAME -> repo.searchBarcodesByName(searchFilter)
-                        else -> repo.searchBarcodesByValue(searchFilter)
-                    }
+                    repo.searchWithFilter(searchFilter)
 
 
             //Потом пытаемся отфильтровать полученный список еще и по тегам

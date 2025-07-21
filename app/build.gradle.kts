@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId = "com.krayapp.buffercompanion.bargen"
-        minSdk = 28
+        minSdk = 30
         targetSdk = 35
         versionCode = 206
         versionName = "2.0.6"

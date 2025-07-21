@@ -6,37 +6,6 @@
     android:gravity="center_horizontal"
     android:orientation="vertical">
 
-    <TextView
-        style="@style/TitleMedium"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="@string/search_type" />
-
-    <com.google.android.material.button.MaterialButtonToggleGroup
-        android:id="@+id/searchToggleGroup"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp">
-
-        <Button
-            android:id="@+id/byName"
-            style="?attr/materialButtonOutlinedStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:tag="NAME"
-            android:text="@string/by_name" />
-
-        <Button
-            android:id="@+id/byValue"
-            style="?attr/materialButtonOutlinedStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:tag="VALUE"
-            android:text="@string/by_value" />
-
-    </com.google.android.material.button.MaterialButtonToggleGroup>
-
 
     <TextView
         style="@style/TitleMedium"
