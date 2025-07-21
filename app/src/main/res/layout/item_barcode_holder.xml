@@ -48,14 +48,14 @@
             <TextView
                 android:id="@+id/content"
                 android:maxLines="1"
-                style="@style/TitleSmall"
+                style="@style/TitleMedium"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 tools:text="Name name" />
 
             <TextView
                 android:id="@+id/name"
-                style="@style/LabelMedium"
+                style="@style/TitleMedium"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 tools:text="Name name" />
