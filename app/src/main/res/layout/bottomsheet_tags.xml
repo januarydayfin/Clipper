@@ -10,11 +10,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
+    <TextView
+        style="@style/LabelMedium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/tag_longtap_hint" />
+
     <Button
         android:id="@+id/close"
         style="@style/Widget.Material3.Button.IconButton.Filled"
         android:layout_width="match_parent"
-        android:layout_marginTop="16dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:text="@string/close" />
 </LinearLayout>

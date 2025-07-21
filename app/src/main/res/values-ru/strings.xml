@@ -59,4 +59,6 @@
     <string name="are_you_sure">Вы уверены?</string>
     <string name="tag_background">Цвет тега</string>
     <string name="tag_font_color">Цвет текста тега</string>
+
+    <string name="tag_longtap_hint">Долгое нажатие на тег открывает меню</string>
 </resources>
