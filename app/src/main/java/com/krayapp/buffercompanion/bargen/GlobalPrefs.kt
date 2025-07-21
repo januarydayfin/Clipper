@@ -14,8 +14,8 @@ class GlobalPrefs {
         ClipperApp.getApplication().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
     var sortType: String
-        get() = prefs.getString(SORT_TYPE, SortType.DATE_ASC.toString())
-            ?: SortType.DATE_ASC.toString()
+        get() = prefs.getString(SORT_TYPE, SortType.DATE_DESC.toString())
+            ?: SortType.DATE_DESC.toString()
         set(value) {
             prefs.edit { putString(SORT_TYPE, value) }
         }
