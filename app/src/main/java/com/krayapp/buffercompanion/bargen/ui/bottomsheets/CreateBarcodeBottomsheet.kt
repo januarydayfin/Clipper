@@ -115,24 +115,35 @@ class CreateBarcodeBottomsheet(
 
     private fun renderTagsEditText(text: String) {
         val nameList = text.split(",").map { it.trim() }
+        val previewsTag = mutableListOf<TagUiModel>()
 
         newTags.clear()
-
         runOnUi {
             nameList.forEach { stringName ->
                 if (stringName.isNotEmpty()) {
-                    //ищем существующие теги в базе по началу имению
-                    val foundTags = tagFounder(stringName)
-                    if (foundTags.isNotEmpty())
-                        //если есть, то добавляем впревью
-                        newTags.addAll(foundTags)
-                    else
-                        //или показываем новый тег
-                        newTags.add(TagUiModel(name = stringName))
+                    val foundTags = tagFounder(stringName) //ищем теги по совпадениям в бд
+                    val exactTag = runCatching { foundTags.first { stringName == it.name } }.getOrNull() //если тег полностью совпадает по имени, берем из бд
+                    newTags.add(exactTag ?: TagUiModel(name = stringName)) //добавляем либо совпавший тег, либо создаем новйы
+                    previewsTag.addAll(foundTags.filter { it !in newTags }) // добавляем в превью все теги за минусом добавленных
                 }
 
                 vb?.run {
                     tagsGroup.removeAllViews()
+                    tagsPreview.removeAllViews()
+                    previewsTag
+                        .distinct()
+                        .forEach { prev ->
+                            tagsPreview.addView(this.root.context.filterChip(prev, false).apply {
+                                setOnClickListener {
+                                    val correctedTags = tagEdit.text.toString().removeSuffix(stringName)
+                                        .plus(prev.name)
+                                    tagEdit.setText("$correctedTags, ")
+                                    tagEdit.setSelection(tagEdit.text?.length ?: 0)
+                                    tagsPreview.removeAllViews()
+                                }
+                            })
+                        }
+
                     newTags
                         .distinct()
                         .forEach { freshTag ->

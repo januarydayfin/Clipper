@@ -63,6 +63,7 @@
     <string name="tag_background">Tag color</string>
     <string name="tag_font_color">Tag text color</string>
 
+    <string name="found_tags">Found tags:</string>
     <string name="tag_longtap_hint">Long tap on a tag to open a menu</string>
 
 </resources>
