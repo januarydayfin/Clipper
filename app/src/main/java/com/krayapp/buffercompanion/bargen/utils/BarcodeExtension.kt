@@ -39,7 +39,7 @@ fun Context.filterChip(tagUiModel: TagUiModel, canChecked: Boolean = true): Chip
         if (fontColor != null)
             setTextColor(fontColor)
 
-        ensureAccessibleTouchTarget(20)
+        ensureAccessibleTouchTarget(15)
         checkedIconTint = fontColor
         isCheckable = canChecked
         isClickable = canChecked
