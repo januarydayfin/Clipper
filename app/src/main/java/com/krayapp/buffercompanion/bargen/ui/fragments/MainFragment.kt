@@ -157,7 +157,7 @@ class MainFragment : Fragment() {
             openContextMenu = { model, anchor ->
                 anchor.showBarcodeMenu(
                     uiModel = model,
-                    startEdit = { startCreatingCustomBarcode(model) },
+                    startEdit = { showBarcodeBottomsheet(model) },
                     chooseMode = {
                         vb?.recycler?.disableAnimation()
                         barcodeAdapter?.selectionModeOn()
@@ -220,7 +220,8 @@ class MainFragment : Fragment() {
                     if (result != null)
                         viewmodel.createBarcodeRecord(
                             text = result.text,
-                            format = result.barcodeFormat
+                            format = result.barcodeFormat,
+                            onCreated = ::showBarcodeInfo
                         )
                 }.show(childFragmentManager, "")
             }, onDenied = { _ ->
@@ -228,9 +229,10 @@ class MainFragment : Fragment() {
             })
             .setPermissions(Manifest.permission.CAMERA)
             .check()
+
     }
 
-    private fun startCreatingCustomBarcode(uiModel: BarcodeUiModel? = null) {
+    private fun showBarcodeBottomsheet(uiModel: BarcodeUiModel? = null) {
         CreateBarcodeBottomsheet(uiModel, saveBarcodeAndTags = { barcode, tags ->
             viewmodel.recordTags(tags)
             viewmodel.createBarcodeRecord(barcode)
@@ -249,7 +251,7 @@ class MainFragment : Fragment() {
                 startScannerDialog()
             }
             createNew.setOnClickListener {
-                startCreatingCustomBarcode()
+                showBarcodeBottomsheet()
             }
 
             tags.setOnClickListener {
@@ -259,7 +261,7 @@ class MainFragment : Fragment() {
     }
 
     private fun showBarcodeInfo(uiModel: BarcodeUiModel) {
-        startCreatingCustomBarcode(uiModel)
+        showBarcodeBottomsheet(uiModel)
         viewmodel.incrementUsageCount(uiModel.id)
     }
 
