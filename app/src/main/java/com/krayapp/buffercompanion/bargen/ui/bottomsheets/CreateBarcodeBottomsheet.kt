@@ -30,6 +30,7 @@ import com.krayapp.buffercompanion.bargen.utils.decodedSize
 import com.krayapp.buffercompanion.bargen.utils.filterChip
 import com.krayapp.buffercompanion.bargen.utils.runOnUi
 import com.krayapp.buffercompanion.bargen.utils.savePictureInStorage
+import com.krayapp.buffercompanion.bargen.utils.shareBitmap
 import com.krayapp.buffercompanion.bargen.utils.toReadableTime
 import com.krayapp.buffercompanion.bargen.utils.toast
 import java.util.Date
@@ -95,12 +96,16 @@ class CreateBarcodeBottomsheet(
                     bmp = generatedBitmap,
                     filename = "${nameEdit.text.toString()}_${Date().time.toReadableTime()}"
                 ) {
-                    toast("${getString(R.string.saved_to)}_${Environment.DIRECTORY_PICTURES}/Bargen")
+                    toast("${getString(R.string.saved_to)} ${Environment.DIRECTORY_PICTURES}/Bargen")
                 }
             }
             shareImage.setOnClickListener {
-
+                it.context.shareBitmap(
+                    generatedBitmap,
+                    "${nameEdit.text.toString()}_${Date().time.toReadableTime()}"
+                )
             }
+
             tagEdit.addTextWatcher {
                 renderTagsEditText(it)
             }.onImeAction {

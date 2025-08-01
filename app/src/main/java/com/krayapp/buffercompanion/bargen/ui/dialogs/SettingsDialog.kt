@@ -14,7 +14,6 @@ import androidx.fragment.app.DialogFragment
 import com.google.android.material.button.MaterialButtonToggleGroup
 import com.krayapp.buffercompanion.bargen.ClipperApp
 import com.krayapp.buffercompanion.bargen.R
-import com.krayapp.buffercompanion.bargen.data.SearchType
 import com.krayapp.buffercompanion.bargen.databinding.DialogSettingsBinding
 import com.krayapp.buffercompanion.bargen.utils.setCustomBackground
 import com.krayapp.buffercompanion.bargen.utils.setupDialogWidth

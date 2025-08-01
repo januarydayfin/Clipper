@@ -2,14 +2,15 @@ package com.krayapp.buffercompanion.bargen.utils
 
 import android.content.ContentValues
 import android.content.Context
+import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.net.Uri
-import android.nfc.Tag
 import android.os.Environment
 import android.provider.MediaStore
 import android.view.Gravity
 import android.widget.FrameLayout
+import androidx.core.content.FileProvider
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipDrawable
@@ -17,6 +18,8 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.krayapp.buffercompanion.bargen.ClipperApp
 import com.krayapp.buffercompanion.bargen.R
 import com.krayapp.buffercompanion.bargen.ui.models.TagUiModel
+import java.io.File
+import java.io.FileOutputStream
 import java.io.IOException
 import java.io.OutputStream
 
@@ -56,9 +59,6 @@ fun Context.filterChip(tagUiModel: TagUiModel, canChecked: Boolean = true): Chip
         tag = tagUiModel
     }
 }
-
-val Chip.uiModelTag
-    get() = tag as TagUiModel
 
 private fun Int?.toColorStateList() =
     if (this == null)
@@ -114,5 +114,43 @@ fun Context.savePictureInStorage(bmp: Bitmap?, filename: String, onSaved: (Strin
     }
 }
 
+fun Context.shareBitmap(bitmap: Bitmap?, title: String) {
+    val cachePath = File(cacheDir, "images")
+    cachePath.mkdirs()
 
+    val file = File(cachePath, "$title.png")
+    try {
+        val stream = FileOutputStream(file)
+        bitmap?.compress(Bitmap.CompressFormat.PNG, 100, stream) ?: return
+        stream.close()
+    } catch (e: IOException) {
+        e.printStackTrace()
+        return
+    }
 
+    // 2. Получаем Uri для файла с помощью FileProvider
+    val fileUri: Uri? = try {
+        FileProvider.getUriForFile(this, "${packageName}.fileprovider", file)
+    } catch (e: IllegalArgumentException) {
+        e.printStackTrace()
+        null
+    }
+
+    if (fileUri == null) {
+        return
+    }
+
+    // 3. Создаем и запускаем Intent для обмена
+    val shareIntent = Intent(Intent.ACTION_SEND).apply {
+        type = "image/png"
+        putExtra(Intent.EXTRA_STREAM, fileUri)
+        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION) // Даем разрешение на чтение Uri
+    }
+
+    val chooserIntent = Intent.createChooser(shareIntent, title)
+
+    // Проверяем, есть ли приложения, которые могут обработать этот Intent
+    if (chooserIntent.resolveActivity(packageManager) != null) {
+        startActivity(chooserIntent)
+    }
+}
