@@ -55,6 +55,11 @@ class SettingsDialog : DialogFragment() {
                     uncheckExcept(v, themeToggleGroup)
                     setMode(AppTheme.valueOf(v.tag.toString()))
                 }
+
+                openCardAfterScanBox.isChecked = ClipperApp.getPrefs().openCardAfterScan
+                openCardAfterScanBox.setOnCheckedChangeListener { _, isChecked ->
+                    setOpenAfterScan(isChecked)
+                }
             }
 
             close.setOnClickListener {
@@ -93,8 +98,8 @@ class SettingsDialog : DialogFragment() {
         ClipperApp.getPrefs().theme = theme.value
     }
 
-    private fun setSearchType(type: SearchType) {
-        ClipperApp.getPrefs().searchType = type.toString()
+    private fun setOpenAfterScan(needOpen: Boolean) {
+        ClipperApp.getPrefs().openCardAfterScan = needOpen
     }
 
     override fun onDismiss(dialog: DialogInterface) {

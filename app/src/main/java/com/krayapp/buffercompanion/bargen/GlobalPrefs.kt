@@ -8,8 +8,6 @@ import com.krayapp.buffercompanion.bargen.data.SearchType
 import com.krayapp.buffercompanion.bargen.data.SortType
 
 class GlobalPrefs {
-
-
     private val prefs =
         ClipperApp.getApplication().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
@@ -40,6 +38,11 @@ class GlobalPrefs {
             prefs.edit { putString(SEARCH_TYPE, value) }
         }
 
+    var openCardAfterScan: Boolean
+        get() = prefs.getBoolean(OPEN_AFTER_SCAN, true)
+        set(value) = prefs.edit { putBoolean(OPEN_AFTER_SCAN, value) }
+
+
     companion object {
         private const val PREFS_NAME = "mainSettings"
 
@@ -47,5 +50,6 @@ class GlobalPrefs {
         private const val SEARCH_TYPE = "SEARCH_TYPE"
         private const val SORT_TYPE = "SORT_TYPE"
         private const val BARCODE_FORMAT = "BARCODE_FORMAT"
+        private const val OPEN_AFTER_SCAN = "OPEN_AFTER_SCAN"
     }
 }

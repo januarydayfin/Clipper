@@ -4,6 +4,7 @@
     android:layout_height="wrap_content"
     android:background="@drawable/dialog_background"
     android:gravity="center_horizontal"
+    android:padding="16dp"
     android:orientation="vertical">
 
 
@@ -44,6 +45,14 @@
             android:tag="LIGHT"
             android:text="@string/light_theme" />
     </com.google.android.material.button.MaterialButtonToggleGroup>
+
+    <CheckBox
+        android:id="@+id/openCardAfterScanBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:checked="true"
+        android:text="@string/show_card_after_scan" />
 
     <Button
         android:id="@+id/close"

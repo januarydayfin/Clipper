@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.transition.TransitionInflater
 import com.gun0912.tedpermission.normal.TedPermission
 import com.krayapp.buffercompanion.bargen.BargenViewModel
+import com.krayapp.buffercompanion.bargen.ClipperApp
 import com.krayapp.buffercompanion.bargen.R
 import com.krayapp.buffercompanion.bargen.addTextWatcher
 import com.krayapp.buffercompanion.bargen.databinding.FragmentMainBinding
@@ -221,7 +222,10 @@ class MainFragment : Fragment() {
                         viewmodel.createBarcodeRecord(
                             text = result.text,
                             format = result.barcodeFormat,
-                            onCreated = ::showBarcodeInfo
+                            onCreated = {
+                                if (ClipperApp.getPrefs().openCardAfterScan)
+                                    showBarcodeInfo(it)
+                            }
                         )
                 }.show(childFragmentManager, "")
             }, onDenied = { _ ->

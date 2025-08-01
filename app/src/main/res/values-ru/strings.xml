@@ -61,4 +61,5 @@
     <string name="tag_font_color">Цвет текста тега</string>
     <string name="found_tags">Найденные теги:</string>
     <string name="tag_longtap_hint">Долгое нажатие на тег открывает меню</string>
+    <string name="show_card_after_scan">Показывать окно редактирования сразу после сканирования</string>
 </resources>
