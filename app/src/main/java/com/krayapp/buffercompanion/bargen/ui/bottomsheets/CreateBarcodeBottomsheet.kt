@@ -1,15 +1,19 @@
 package com.krayapp.buffercompanion.bargen.ui.bottomsheets
 
+import android.graphics.Bitmap
 import android.os.Bundle
+import android.os.Environment
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout.LayoutParams
+import androidx.core.view.isVisible
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.zxing.BarcodeFormat
 import com.krayapp.buffercompanion.bargen.ClipperApp
+import com.krayapp.buffercompanion.bargen.R
 import com.krayapp.buffercompanion.bargen.addTextWatcher
 import com.krayapp.buffercompanion.bargen.bargenCore.BarGenerator
 import com.krayapp.buffercompanion.bargen.bargenCore.generator.BarcodeGenerator
@@ -25,6 +29,10 @@ import com.krayapp.buffercompanion.bargen.utils.currentBarcodeFormat
 import com.krayapp.buffercompanion.bargen.utils.decodedSize
 import com.krayapp.buffercompanion.bargen.utils.filterChip
 import com.krayapp.buffercompanion.bargen.utils.runOnUi
+import com.krayapp.buffercompanion.bargen.utils.savePictureInStorage
+import com.krayapp.buffercompanion.bargen.utils.toReadableTime
+import com.krayapp.buffercompanion.bargen.utils.toast
+import java.util.Date
 import java.util.UUID
 
 class CreateBarcodeBottomsheet(
@@ -46,7 +54,7 @@ class CreateBarcodeBottomsheet(
 
 
     private val newTags = mutableListOf<TagUiModel>()
-
+    private var generatedBitmap: Bitmap? = null
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -82,6 +90,17 @@ class CreateBarcodeBottomsheet(
                 dismiss()
             }
 
+            saveImage.setOnClickListener {
+                it.context.savePictureInStorage(
+                    bmp = generatedBitmap,
+                    filename = "${nameEdit.text.toString()}_${Date().time.toReadableTime()}"
+                ) {
+                    toast("${getString(R.string.saved_to)}_${Environment.DIRECTORY_PICTURES}/Bargen")
+                }
+            }
+            shareImage.setOnClickListener {
+
+            }
             tagEdit.addTextWatcher {
                 renderTagsEditText(it)
             }.onImeAction {
@@ -180,12 +199,14 @@ class CreateBarcodeBottomsheet(
     private fun generatePreview(text: String, view: ImageView) {
         runCatching {
             runOnUi {
-                val preview = bitmapGenerator?.generate(
+                generatedBitmap = bitmapGenerator?.generate(
                     content = text,
                     type = barcodeFormat,
                 )
 
-                view.setImageBitmap(preview)
+                view.setImageBitmap(generatedBitmap)
+
+                vb?.imageInteraction?.isVisible = generatedBitmap != null
             }
         }
     }

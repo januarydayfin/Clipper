@@ -1,8 +1,13 @@
 package com.krayapp.buffercompanion.bargen.utils
 
+import android.content.ContentValues
 import android.content.Context
 import android.content.res.ColorStateList
+import android.graphics.Bitmap
+import android.net.Uri
 import android.nfc.Tag
+import android.os.Environment
+import android.provider.MediaStore
 import android.view.Gravity
 import android.widget.FrameLayout
 import androidx.fragment.app.DialogFragment
@@ -12,6 +17,8 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.krayapp.buffercompanion.bargen.ClipperApp
 import com.krayapp.buffercompanion.bargen.R
 import com.krayapp.buffercompanion.bargen.ui.models.TagUiModel
+import java.io.IOException
+import java.io.OutputStream
 
 
 val decodedSize = ClipperApp.displayWidth to ClipperApp.displayWidth / 2
@@ -76,6 +83,35 @@ fun Context.showDeleteConfirmationDialog(onDelete: () -> Unit) {
             dialog.dismiss()
         }
         .show()
+}
+
+fun Context.savePictureInStorage(bmp: Bitmap?, filename: String, onSaved: (String) -> Unit) {
+    val contentResolver = contentResolver
+    val collection: Uri = MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
+
+    val contentValues = ContentValues().apply {
+        put(MediaStore.MediaColumns.DISPLAY_NAME, filename)
+        put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
+        put(MediaStore.MediaColumns.RELATIVE_PATH, "${Environment.DIRECTORY_PICTURES}/Bargen")
+    }
+
+    var imageUri: Uri? = null
+    var outputStream: OutputStream? = null
+
+    try {
+        imageUri = contentResolver.insert(collection, contentValues) ?: return
+        outputStream = contentResolver.openOutputStream(imageUri) ?: return
+        bmp?.compress(Bitmap.CompressFormat.JPEG, 100, outputStream) ?: return
+        outputStream.flush()
+        onSaved(filename)
+    } catch (e: IOException) {
+        e.printStackTrace()
+        if (imageUri != null) {
+            contentResolver.delete(imageUri, null, null)
+        }
+    } finally {
+        outputStream?.close()
+    }
 }
 
 

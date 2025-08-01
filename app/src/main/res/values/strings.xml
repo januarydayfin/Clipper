@@ -66,4 +66,6 @@
     <string name="found_tags">Found tags:</string>
     <string name="tag_longtap_hint">Long tap on a tag to open a menu</string>
     <string name="show_card_after_scan">Show editing window immediately after scanning</string>
+    <string name="share">Share</string>
+    <string name="saved_to">Saved into</string>
 </resources>

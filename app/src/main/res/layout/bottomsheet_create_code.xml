@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:padding="16dp">
 
@@ -43,6 +44,35 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center" />
 
+            <LinearLayout
+                android:layout_marginTop="8dp"
+                android:id="@+id/imageInteraction"
+                android:visibility="gone"
+                tools:visibility="visible"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/saveImage"
+                    style="@style/Widget.Material3.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|end"
+                    android:text="@string/save"
+                    app:icon="@drawable/ic_plus" />
+
+                <Button
+                    android:id="@+id/shareImage"
+                    style="@style/Widget.Material3.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|end"
+                    android:layout_marginStart="8dp"
+                    android:text="@string/share"
+                    app:icon="@drawable/ic_plus" />
+            </LinearLayout>
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chosenFormat"
