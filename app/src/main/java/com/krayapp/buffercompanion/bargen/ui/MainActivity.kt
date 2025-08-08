@@ -5,6 +5,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
+import com.google.android.play.core.review.ReviewManagerFactory
 import com.krayapp.buffercompanion.bargen.R
 import com.krayapp.buffercompanion.bargen.databinding.MainActivityBinding
 
@@ -22,4 +23,21 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun calledFromShortcut() = intent.action == "bargen.create.qr.buffer"
+
+    override fun onResume() {
+        super.onResume()
+        showInAppPreviewWindow()
+    }
+
+    private fun showInAppPreviewWindow() {
+        val manager = ReviewManagerFactory.create(this)
+        val request = manager.requestReviewFlow()
+        request.addOnCompleteListener { task ->
+
+            if (task.isSuccessful) {
+                val reviewInfo = task.result
+                manager.launchReviewFlow(this,reviewInfo)
+            }
+        }
+    }
 }
