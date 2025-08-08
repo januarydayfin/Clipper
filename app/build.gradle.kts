@@ -12,8 +12,8 @@ android {
         applicationId = "com.krayapp.buffercompanion.bargen"
         minSdk = 30
         targetSdk = 35
-        versionCode = 209
-        versionName = "2.0.9"
+        versionCode = 210
+        versionName = "2.1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -42,6 +42,7 @@ android {
 
 dependencies {
     implementation("androidx.compose.ui:ui-unit-android:1.8.3")
+    implementation("com.google.android.play:review-ktx:2.0.2")
     val roomVersion = "2.7.2"
     implementation("androidx.navigation:navigation-fragment-ktx:2.9.2")
     implementation("androidx.navigation:navigation-ui-ktx:2.9.2")
