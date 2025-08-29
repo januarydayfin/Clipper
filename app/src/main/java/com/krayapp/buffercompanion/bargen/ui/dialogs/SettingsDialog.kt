@@ -35,70 +35,82 @@ class SettingsDialog : DialogFragment() {
         super.onViewCreated(view, savedInstanceState)
         binding?.run {
             setupDialogWidth()
-
-            val themeCurrentCheckId = findCurrentThemeButtonId()
-            if (themeCurrentCheckId != null)
-                themeToggleGroup.check(themeCurrentCheckId)
-
-            binding?.run {
-                darkTheme.setOnClickListener { v ->
-                    uncheckExcept(v, themeToggleGroup)
-                    setMode(AppTheme.valueOf(v.tag.toString()))
-                }
-                systemTheme.setOnClickListener { v ->
-                    uncheckExcept(v, themeToggleGroup)
-                    setMode(AppTheme.valueOf(v.tag.toString()))
-
-                }
-                lightTheme.setOnClickListener { v ->
-                    uncheckExcept(v, themeToggleGroup)
-                    setMode(AppTheme.valueOf(v.tag.toString()))
-                }
-
-                openCardAfterScanBox.isChecked = ClipperApp.getPrefs().openCardAfterScan
-                openCardAfterScanBox.setOnCheckedChangeListener { _, isChecked ->
-                    setOpenAfterScan(isChecked)
-                }
-            }
-
+            setupThemePicked(this)
+            setupOpenCardCheckbox(this)
+            setupVolumeScannerCheckbox(this)
             close.setOnClickListener {
                 dismiss()
             }
         }
     }
 
-
-    private fun uncheckExcept(except: View, group: MaterialButtonToggleGroup) {
-        group.run {
-            val toUncheck = children.filter { it.id != except.id }
-            toUncheck.forEach {
-                uncheck(it.id)
+    private fun setupThemePicked(binding: DialogSettingsBinding) {
+        fun uncheckExcept(except: View, group: MaterialButtonToggleGroup) {
+            group.run {
+                val toUncheck = children.filter { it.id != except.id }
+                toUncheck.forEach {
+                    uncheck(it.id)
+                }
+                check(except.id)
             }
-            check(except.id)
+        }
+
+
+        fun findCurrentThemeButtonId(): Int? {
+            var id: Int? = null
+
+            binding.run {
+                themeToggleGroup.children.forEach {
+                    val parsed = AppTheme.valueOf(it.tag.toString())
+                    if (parsed.value == ClipperApp.getPrefs().theme)
+                        id = it.id
+                }
+            }
+            return id
+        }
+
+        fun setMode(theme: AppTheme) {
+            setDefaultNightMode(theme.value)
+            ClipperApp.getPrefs().theme = theme.value
+        }
+
+        with(binding) {
+            val themeCurrentCheckId = findCurrentThemeButtonId()
+            if (themeCurrentCheckId != null)
+                themeToggleGroup.check(themeCurrentCheckId)
+
+            darkTheme.setOnClickListener { v ->
+                uncheckExcept(v, themeToggleGroup)
+                setMode(AppTheme.valueOf(v.tag.toString()))
+            }
+            systemTheme.setOnClickListener { v ->
+                uncheckExcept(v, themeToggleGroup)
+                setMode(AppTheme.valueOf(v.tag.toString()))
+
+            }
+            lightTheme.setOnClickListener { v ->
+                uncheckExcept(v, themeToggleGroup)
+                setMode(AppTheme.valueOf(v.tag.toString()))
+            }
         }
     }
 
-
-    private fun findCurrentThemeButtonId(): Int? {
-        var id: Int? = null
-
-        binding?.run {
-            themeToggleGroup.children.forEach {
-                val parsed = AppTheme.valueOf(it.tag.toString())
-                if (parsed.value == ClipperApp.getPrefs().theme)
-                    id = it.id
+    private fun setupOpenCardCheckbox(binding: DialogSettingsBinding) {
+        with(binding) {
+            openCardAfterScanBox.isChecked = ClipperApp.getPrefs().openCardAfterScan
+            openCardAfterScanBox.setOnCheckedChangeListener { _, isChecked ->
+                ClipperApp.getPrefs().openCardAfterScan = isChecked
             }
         }
-        return id
     }
 
-    private fun setMode(theme: AppTheme) {
-        setDefaultNightMode(theme.value)
-        ClipperApp.getPrefs().theme = theme.value
-    }
-
-    private fun setOpenAfterScan(needOpen: Boolean) {
-        ClipperApp.getPrefs().openCardAfterScan = needOpen
+    private fun setupVolumeScannerCheckbox(binding: DialogSettingsBinding) {
+        with(binding) {
+            volumeScannerCheckbox.isChecked = ClipperApp.getPrefs().scanOnVolume
+            volumeScannerCheckbox.setOnCheckedChangeListener { _, isChecked ->
+                ClipperApp.getPrefs().scanOnVolume = isChecked
+            }
+        }
     }
 
     override fun onDismiss(dialog: DialogInterface) {

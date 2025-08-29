@@ -62,6 +62,7 @@
     <string name="found_tags">Найденные теги:</string>
     <string name="tag_longtap_hint">Долгое нажатие на тег открывает меню</string>
     <string name="show_card_after_scan">Показывать окно редактирования сразу после сканирования</string>
+    <string name="volume_button_open_scanner">Кнопка громкости открывает сканер</string>
     <string name="share">Поделиться</string>
     <string name="saved_to">Сохранено в</string>
 </resources>

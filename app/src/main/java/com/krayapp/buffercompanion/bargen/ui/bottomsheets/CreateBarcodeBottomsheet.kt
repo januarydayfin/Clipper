@@ -185,6 +185,7 @@ class CreateBarcodeBottomsheet(
         }
     }
 
+    //todo при сохранении сбрасывается количество использований и дата создания
     private fun collectInfoAndSave() {
         vb?.run {
             val entity = BarcodeEntity(

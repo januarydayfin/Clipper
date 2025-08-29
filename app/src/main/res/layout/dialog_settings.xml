@@ -54,6 +54,14 @@
         android:checked="true"
         android:text="@string/show_card_after_scan" />
 
+    <CheckBox
+        android:id="@+id/volumeScannerCheckbox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:checked="true"
+        android:text="@string/volume_button_open_scanner" />
+
     <Button
         android:id="@+id/close"
         style="@style/Widget.Material3.Button.TextButton"

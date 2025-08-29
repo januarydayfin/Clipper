@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.ClipboardManager
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -87,8 +88,15 @@ class MainFragment : Fragment() {
         observeDataFlow()
         setupSortPopup()
         setupToolbar()
+        setupVolumeButtonControl()
     }
 
+    private fun setupVolumeButtonControl() {
+        val mainActivity = activity as? MainActivity
+        mainActivity?.updateVolumeButtonHandler {
+            startScannerDialog()
+        }
+    }
     private fun setupSortPopup() {
         vb?.run {
             sortDirection.setOnClickListener { v ->
@@ -227,7 +235,7 @@ class MainFragment : Fragment() {
                                     showBarcodeInfo(it)
                             }
                         )
-                }.show(childFragmentManager, "")
+                }.show(childFragmentManager, "scanDialog")
             }, onDenied = { _ ->
                 toast(R.string.camera_required)
             })
