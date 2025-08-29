@@ -250,7 +250,8 @@ class MainFragment : Fragment() {
             viewmodel.createBarcodeRecord(barcode)
         }, tagFounder = { name ->
             viewmodel.findTagWithName(name)
-        }).show(childFragmentManager, "")
+        }, entityFounder = { id -> if (id != null) viewmodel.findBarcodeById(id) else null }
+        ).show(childFragmentManager, "")
     }
 
     private fun startTagBottomSheet() {

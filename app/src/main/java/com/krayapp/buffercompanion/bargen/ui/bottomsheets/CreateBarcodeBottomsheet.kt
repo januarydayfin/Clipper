@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout.LayoutParams
 import androidx.core.view.isVisible
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.zxing.BarcodeFormat
 import com.krayapp.buffercompanion.bargen.ClipperApp
@@ -33,6 +34,8 @@ import com.krayapp.buffercompanion.bargen.utils.savePictureInStorage
 import com.krayapp.buffercompanion.bargen.utils.shareBitmap
 import com.krayapp.buffercompanion.bargen.utils.toReadableTime
 import com.krayapp.buffercompanion.bargen.utils.toast
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.Date
 import java.util.UUID
 
@@ -41,7 +44,8 @@ class CreateBarcodeBottomsheet(
     private val saveBarcodeAndTags: (
         barcode: BarcodeEntity, tags: List<TagUiModel>
     ) -> Unit,
-    private val tagFounder: suspend (name: String) -> List<TagUiModel>
+    private val tagFounder: suspend (name: String) -> List<TagUiModel>,
+    private val entityFounder: suspend (id: String?) -> BarcodeEntity?
 ) :
     BottomSheetDialogFragment() {
     private var vb: BottomsheetCreateCodeBinding? = null
@@ -185,20 +189,27 @@ class CreateBarcodeBottomsheet(
         }
     }
 
-    //todo при сохранении сбрасывается количество использований и дата создания
     private fun collectInfoAndSave() {
-        vb?.run {
-            val entity = BarcodeEntity(
-                id = existModel?.id ?: UUID.randomUUID().toString(),
-                content = contentEdit.text.toString(),
-                name = nameEdit.text.toString(),
-                description = descriptionEdit.text.toString(),
-                type = barcodeFormat.toString(),
-                tags = newTags.map { it.id }
-            )
+        lifecycleScope.launch(Dispatchers.IO) {
+            vb?.run {
+                val entity = entityFounder(existModel?.id)?.copy(
+                    content = contentEdit.text.toString(),
+                    name = nameEdit.text.toString(),
+                    description = descriptionEdit.text.toString(),
+                    type = barcodeFormat.toString(),
+                    tags = newTags.map { it.id }
+                ) ?: BarcodeEntity(
+                    id = existModel?.id ?: UUID.randomUUID().toString(),
+                    content = contentEdit.text.toString(),
+                    name = nameEdit.text.toString(),
+                    description = descriptionEdit.text.toString(),
+                    type = barcodeFormat.toString(),
+                    tags = newTags.map { it.id }
+                )
 
-            saveBarcodeAndTags(entity, newTags)
-            dismiss()
+                saveBarcodeAndTags(entity, newTags)
+                dismiss()
+            }
         }
     }
 

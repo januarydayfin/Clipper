@@ -71,6 +71,10 @@ class BargenViewModel : ViewModel() {
             repo.findTagWithName(name).map { it.toTagUiModel() }
         }
 
+    suspend fun findBarcodeById(id: String) =
+        withContext(Dispatchers.IO) {
+            repo.getBarcodeById(id)
+        }
 
     fun removeTagById(id: String) {
         launchInIO {
