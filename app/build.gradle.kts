@@ -66,6 +66,7 @@ dependencies {
     implementation(libs.tedpermission.normal)
     implementation(libs.skydoves.colorpickerview)
     implementation(libs.androidx.ui.text.google.fonts)
+    implementation(libs.androidx.paging.common.android)
 
     // --- Процессоры аннотаций/KSP ---
     // Room compiler используется для обоих

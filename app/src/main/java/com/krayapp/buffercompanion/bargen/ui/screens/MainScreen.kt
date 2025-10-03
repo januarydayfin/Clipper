@@ -1,16 +1,26 @@
 package com.krayapp.buffercompanion.bargen.ui.screens
 
+import android.util.Log
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.animateIntAsState
+import androidx.compose.animation.core.animateIntOffsetAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.input.rememberTextFieldState
@@ -23,38 +33,66 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.krayapp.buffercompanion.bargen.R
+import com.krayapp.buffercompanion.bargen.testBarcodeUiModel
+import com.krayapp.buffercompanion.bargen.theme.defaultAnimationDuration
 import com.krayapp.buffercompanion.bargen.theme.lPadding
 import com.krayapp.buffercompanion.bargen.theme.mPadding
 import com.krayapp.buffercompanion.bargen.theme.sPadding
+import com.krayapp.buffercompanion.bargen.ui.adapter.BarcodeCard
+import com.krayapp.buffercompanion.bargen.ui.models.BarcodeUiModel
 import com.krayapp.buffercompanion.bargen.ui.screens.BottomButton.CREATE
 import com.krayapp.buffercompanion.bargen.ui.screens.BottomButton.SCAN
 import com.krayapp.buffercompanion.bargen.ui.screens.BottomButton.TAGS
 
 @Preview(showBackground = true)
 @Composable
-fun MainScreen(onSearchTextChanged: (String) -> Unit = { }) {
+fun MainScreen(
+    data: List<BarcodeUiModel> = testBarcodeUiModel,
+    onSearchTextChanged: (String) -> Unit = { }
+) {
+    val lazyListState = rememberLazyListState()
     Scaffold {
-        Column(Modifier.padding(it)) {
+        Column(
+            Modifier
+                .padding(it)
+                .fillMaxSize()
+        ) {
             MainTopBar(onTextChanged = onSearchTextChanged)
             Box(
-                contentAlignment = Alignment.BottomCenter
+                modifier = Modifier.fillMaxSize(),
             ) {
-                LazyColumn(modifier = Modifier.fillMaxSize()) {
-
+                LazyColumn(
+                    state = lazyListState,
+                    modifier = Modifier
+                        .wrapContentHeight()
+                        .padding(top = mPadding, start = mPadding, end = mPadding)
+                ) {
+                    items(
+                        count = data.size
+                    ) { index ->
+                        BarcodeCard(data[index])
+                        Spacer(Modifier.height(mPadding))
+                    }
                 }
-                BottomButtonGroup(modifier = Modifier.align(Alignment.BottomCenter))
+                BottomButtonGroup(
+                    modifier = Modifier.align(Alignment.BottomCenter),
+                    hideState = lazyListState.lastScrolledForward
+                )
             }
         }
     }
@@ -128,14 +166,23 @@ private fun SearchBar(modifier: Modifier = Modifier, onTextChanged: (String) -> 
 @Composable
 private fun BottomButtonGroup(
     modifier: Modifier = Modifier,
+    hideState: Boolean = false,
     onScanClicked: () -> Unit = {},
     onCreateClicked: () -> Unit = {},
     onTagsClicked: () -> Unit = {},
 ) {
+
+    val offsetState = animateIntAsState(
+        if (hideState) 200 else 0,
+        animationSpec = tween(defaultAnimationDuration)
+    )
     Row(
         horizontalArrangement = Arrangement.Center,
         modifier = modifier
             .wrapContentWidth()
+            .offset {
+                IntOffset(y = offsetState.value, x = 0)
+            }
             .padding(bottom = mPadding)
     ) {
         val buttons = BottomButton.entries.toList()
