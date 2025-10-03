@@ -9,7 +9,8 @@ import com.krayapp.buffercompanion.bargen.data.room.bargen.entity.TagEntity
 
 @Database(
     entities = [BarcodeEntity::class, TagEntity::class],
-    version = 1
+    version = 1,
+    exportSchema = false
 )
 abstract class BargenDB : RoomDatabase() {
     abstract fun barcodeDao(): BarcodeDao

@@ -2,16 +2,17 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp") version "2.0.21-1.0.25"
+    id("org.jetbrains.kotlin.plugin.compose")
 }
 
 android {
     namespace = "com.krayapp.buffercompanion.bargen"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.krayapp.buffercompanion.bargen"
         minSdk = 30
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 211
         versionName = "2.1.1"
 
@@ -30,6 +31,7 @@ android {
 
     buildFeatures {
         viewBinding = true
+        compose = true
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -41,30 +43,40 @@ android {
 }
 
 dependencies {
-    implementation("androidx.compose.ui:ui-unit-android:1.8.3")
-    implementation("com.google.android.play:review-ktx:2.0.2")
-    val roomVersion = "2.7.2"
-    implementation("androidx.navigation:navigation-fragment-ktx:2.9.2")
-    implementation("androidx.navigation:navigation-ui-ktx:2.9.2")
-    implementation("androidx.activity:activity-ktx:1.10.1")
-    implementation("androidx.room:room-runtime:$roomVersion")
-    annotationProcessor("androidx.room:room-compiler:$roomVersion")
-    implementation("androidx.room:room-ktx:$roomVersion")
+    // --- Основные зависимости (implementation) ---
+    implementation(libs.androidx.activity.ktx)
+    implementation(libs.kotlin.reflect)
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.google.play.review.ktx)
 
-    implementation("com.journeyapps:zxing-android-embedded:4.3.0")
+    // Core/UI
+    implementation(libs.bundles.core) // Включает core-ktx, appcompat, recyclerview, material
 
-    implementation("io.github.ParkSangGwon:tedpermission-normal:3.4.2")
-    implementation(kotlin("reflect"))
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1")
-    ksp("androidx.room:room-compiler:$roomVersion")
-    implementation("androidx.core:core-ktx:1.16.0")
-    implementation("com.github.skydoves:colorpickerview:2.3.0")
-    implementation("androidx.appcompat:appcompat:1.7.1")
-    implementation("androidx.recyclerview:recyclerview:1.4.0")
-    implementation("com.github.skydoves:colorpickerview:2.3.0")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.2")
-    implementation("com.google.android.material:material:1.14.0-alpha02")
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.2.1")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
+    // Navigation
+    implementation(libs.bundles.navigation)
+
+    // Room
+    implementation(libs.bundles.room) // Включает room-runtime и room-ktx
+
+    // Compose (Material3, UI, Activity, ViewModel)
+    implementation(libs.bundles.compose)
+
+    // Сторонние
+    implementation(libs.zxing.android.embedded)
+    implementation(libs.tedpermission.normal)
+    implementation(libs.skydoves.colorpickerview)
+    implementation(libs.androidx.ui.text.google.fonts)
+
+    // --- Процессоры аннотаций/KSP ---
+    // Room compiler используется для обоих
+    annotationProcessor(libs.androidx.room.compiler)
+    ksp(libs.androidx.room.compiler)
+
+    // --- Debug ---
+    debugImplementation(libs.androidx.compose.ui.tooling)
+
+    // --- Тестирование ---
+    testImplementation(libs.junit.junit)
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.androidx.test.espresso.core)
 }

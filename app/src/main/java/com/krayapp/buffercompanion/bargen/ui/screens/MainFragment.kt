@@ -1,10 +1,9 @@
-package com.krayapp.buffercompanion.bargen.ui.fragments
+package com.krayapp.buffercompanion.bargen.ui.screens
 
 import android.Manifest
 import android.content.ClipboardManager
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
