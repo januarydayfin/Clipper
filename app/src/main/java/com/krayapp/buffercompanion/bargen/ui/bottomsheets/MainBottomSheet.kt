@@ -16,8 +16,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
@@ -44,6 +42,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.zxing.BarcodeFormat
 import com.krayapp.buffercompanion.bargen.R
 import com.krayapp.buffercompanion.bargen.bargenCore.generator.BarcodeGenerator
@@ -55,6 +54,8 @@ import com.krayapp.buffercompanion.bargen.ui.BargenChip
 import com.krayapp.buffercompanion.bargen.ui.dialogs.BarcodeFormatDialog
 import com.krayapp.buffercompanion.bargen.ui.models.BarcodeUiModel
 import com.krayapp.buffercompanion.bargen.ui.models.TagUiModel
+import com.krayapp.buffercompanion.bargen.ui.mvi.BargenViewModel
+import com.krayapp.buffercompanion.bargen.utils.toBarcodeEntity
 import kotlinx.coroutines.launch
 
 
@@ -63,12 +64,12 @@ import kotlinx.coroutines.launch
 fun MainBottomSheet(
     model: BarcodeUiModel,
     onDismiss: () -> Unit = {},
-    onSaveModel: (BarcodeUiModel) -> Unit = {},
     onSharePicture: () -> Unit = {},
     onSaveStoragePicture: () -> Unit = {},
     tagFounder: suspend (name: String) -> List<TagUiModel> = { emptyList() },
     entityFounder: suspend (id: String?) -> BarcodeEntity? = { null }
 ) {
+    val viewmodel: BargenViewModel = viewModel()
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val modelState = remember { mutableStateOf(model) }
     val scrollState = rememberScrollState()
@@ -105,8 +106,10 @@ fun MainBottomSheet(
             Spacer(modifier = Modifier.weight(1f))
 
             TextButton(onClick = {
-                hideBottomsheet()
-                onSaveModel(model)
+                scope.launch {
+                    viewmodel.createBarcodeRecord(modelState.value.toBarcodeEntity())
+                }
+
             }) { Text(text = stringResource(R.string.apply)) }
         }
 
@@ -148,7 +151,7 @@ private fun BarcodeFormatBlock(state: State<BarcodeUiModel>, openDialog: () -> U
             openDialog()
         }) {
             Icon(
-                Icons.Filled.KeyboardArrowDown,
+                ImageVector.vectorResource(R.drawable.ic_arrow_down),
                 modifier =
                     Modifier.size(SplitButtonDefaults.TrailingIconSize),
                 contentDescription = "Localized description",

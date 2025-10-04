@@ -44,8 +44,6 @@ class MainActivity : AppCompatActivity() {
     private fun ShowMainBottomSheet(data: BottomSheetStateData) {
         MainBottomSheet(model = data.model, onDismiss = {
             viewmodel.recycleEffect(data)
-        }, onSaveModel = {
-
         })
     }
 

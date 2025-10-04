@@ -19,6 +19,7 @@ class BargenRepo {
     suspend fun upsertTag(tag: TagEntity) {
         withIO { tags.upsertTag(tag) }
     }
+
     suspend fun upsertTags(list: List<TagEntity>) {
         withIO { tags.upsertTags(list) }
     }
@@ -38,6 +39,7 @@ class BargenRepo {
     suspend fun findTagWithName(name: String) = withContext(Dispatchers.IO) {
         tags.findTagByName(name)
     }
+
     suspend fun searchWithFilter(filter: String) = withContext(Dispatchers.IO) {
         barcodes.getFilteredBarcodes(filter)
     }
@@ -57,12 +59,14 @@ class BargenRepo {
     suspend fun getBarcodeById(id: String) = withContext(Dispatchers.IO) {
         barcodes.getBarcodeById(id)
     }
+
     suspend fun incrementUsageCount(id: String) = withContext(Dispatchers.IO) {
         val entity = barcodes.getBarcodeById(id)
 
         if (entity != null)
             upsertBarcode(entity.copy(usageCount = entity.usageCount + 1))
     }
+
     suspend fun filterBarcodesWithTags(
         tags: List<String>,
         sort: SortType,
@@ -87,7 +91,7 @@ class BargenRepo {
     }
 
 
-    suspend fun getAllBarcodes(sort: SortType) = withContext(Dispatchers.IO) {
+    private suspend fun getAllBarcodes(sort: SortType) = withContext(Dispatchers.IO) {
         when (sort) {
             SortType.NAME -> barcodes.getBarcodesByName()
             SortType.DATE_ASC -> barcodes.getBarcodesByDateAsc()
@@ -96,4 +100,11 @@ class BargenRepo {
         }
     }
 
+    fun getAllBarcodesPaging(sort: SortType) =
+        when (sort) {
+            SortType.NAME -> barcodes.getBarcodesByNamePaging()
+            SortType.DATE_ASC -> barcodes.getBarcodesByDateAscPaging()
+            SortType.DATE_DESC -> barcodes.getBarcodesByDateDescPaging()
+            SortType.USAGE -> barcodes.getBarcodesByUsagePaging()
+        }
 }

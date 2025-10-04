@@ -68,7 +68,6 @@ dependencies {
     implementation(libs.androidx.ui.text.google.fonts)
     implementation(libs.androidx.paging.common.android)
 
-    implementation(libs.androidx.material.icons.core)
     // --- Процессоры аннотаций/KSP ---
     // Room compiler используется для обоих
     annotationProcessor(libs.androidx.room.compiler)

@@ -1,5 +1,6 @@
 package com.krayapp.buffercompanion.bargen.data.room.bargen.dao
 
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Upsert
@@ -36,4 +37,18 @@ interface BarcodeDao {
 
     @Query("SELECT * FROM barcodes ORDER BY name DESC")
     suspend fun getBarcodesByName(): List<BarcodeEntity>
+
+    @Query("SELECT * FROM barcodes ORDER BY modificationTime ASC")
+    fun getBarcodesByDateAscPaging(): PagingSource<Int, BarcodeEntity>
+
+    @Query("SELECT * FROM barcodes ORDER BY modificationTime DESC")
+    fun getBarcodesByDateDescPaging(): PagingSource<Int, BarcodeEntity>
+
+    @Query("SELECT * FROM barcodes ORDER BY usageCount DESC")
+    fun getBarcodesByUsagePaging(): PagingSource<Int, BarcodeEntity>
+
+    @Query("SELECT * FROM barcodes ORDER BY name DESC")
+    fun getBarcodesByNamePaging(): PagingSource<Int, BarcodeEntity>
+
+
 }

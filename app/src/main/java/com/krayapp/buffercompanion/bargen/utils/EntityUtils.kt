@@ -32,6 +32,23 @@ suspend fun BarcodeEntity.toBarcodeUiModel(cachedTags: List<TagEntity>? = null):
         )
     }
 
+suspend fun BarcodeUiModel.toBarcodeEntity(): BarcodeEntity {
+    return withContext(Dispatchers.IO) {
+        val model = this@toBarcodeEntity
+        val existBarcode = provideDatabase<BargenDB>().barcodeDao().getBarcodeById(model.id)
+
+        BarcodeEntity(
+            id = model.id,
+            usageCount = existBarcode?.usageCount ?: 0,
+            content = model.content,
+            name = model.name,
+            description = model.description,
+            tags = model.tags.map { it.id },
+            type = model.barcodeType
+        )
+    }
+}
+
 fun BottomSheetDialogFragment.colorNavBar(
     color: Int = MaterialColors.getColor(
         requireContext(),

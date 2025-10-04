@@ -21,8 +21,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.input.rememberTextFieldState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
+
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -87,7 +86,7 @@ fun MainScreen(
                     items(
                         count = data.size
                     ) { index ->
-                        BarcodeCard(uiModel = data[index], onEditClick = {
+                        BarcodeCard(uiModel = data[index], onCardClick = {
                             viewmodel.onIntent(MainIntent.ShowBottomsheet(it))
                         })
                         Spacer(Modifier.height(mSize))
@@ -197,7 +196,7 @@ private fun BottomButtonGroup(
         SplitButtonLayout(leadingButton = {
             SplitButtonDefaults.LeadingButton(onClick = onCreateClicked) {
                 Icon(
-                    Icons.Filled.Add,
+                    ImageVector.vectorResource(R.drawable.ic_plus),
                     modifier = Modifier.size(SplitButtonDefaults.LeadingIconSize),
                     contentDescription = "Add new",
                 )
