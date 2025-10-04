@@ -23,7 +23,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
-import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -43,7 +42,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.krayapp.buffercompanion.bargen.ui.mvi.BargenViewModel
 import com.krayapp.buffercompanion.bargen.R
 import com.krayapp.buffercompanion.bargen.testBarcodeUiModel
 import com.krayapp.buffercompanion.bargen.theme.defaultAnimationDuration
@@ -52,6 +50,7 @@ import com.krayapp.buffercompanion.bargen.theme.mSize
 import com.krayapp.buffercompanion.bargen.theme.sSize
 import com.krayapp.buffercompanion.bargen.ui.adapter.BarcodeCard
 import com.krayapp.buffercompanion.bargen.ui.models.BarcodeUiModel
+import com.krayapp.buffercompanion.bargen.ui.mvi.BargenViewModel
 import com.krayapp.buffercompanion.bargen.ui.mvi.MainIntent
 import com.krayapp.buffercompanion.bargen.ui.screens.BottomButton.CREATE
 import com.krayapp.buffercompanion.bargen.ui.screens.BottomButton.SCAN
@@ -92,7 +91,10 @@ fun MainScreen(
                 }
                 BottomButtonGroup(
                     modifier = Modifier.align(Alignment.BottomCenter),
-                    hideState = lazyListState.lastScrolledForward
+                    hideState = lazyListState.lastScrolledForward,
+                    onCreateClicked = {
+                        viewmodel.onIntent(MainIntent.CreateNewBarcode)
+                    }
                 )
             }
         }

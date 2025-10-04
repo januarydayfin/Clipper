@@ -1,5 +1,6 @@
 package com.krayapp.buffercompanion.bargen.ui.mvi.stateManager
 
+import com.krayapp.buffercompanion.bargen.ui.models.BarcodeUiModel
 import com.krayapp.buffercompanion.bargen.ui.mvi.BottomSheetStateData
 import com.krayapp.buffercompanion.bargen.ui.mvi.MainIntent
 import com.krayapp.buffercompanion.bargen.ui.mvi.MviState
@@ -19,6 +20,7 @@ class StateManager(private val scope: CoroutineScope) {
         scope.launch {
             when (intent) {
                 is MainIntent.ShowBottomsheet -> showBottomSheet(intent)
+                is MainIntent.CreateNewBarcode -> createNewBarcode()
             }
         }
     }
@@ -28,6 +30,15 @@ class StateManager(private val scope: CoroutineScope) {
             val currentState = _state.value
             val newState =
                 currentState.copy(bottomSheetData = BottomSheetStateData(model = intent.uiModel))
+            _state.emit(newState)
+        }
+    }
+
+    private suspend fun createNewBarcode() {
+        withIO {
+            val currentState = _state.value
+            val newState =
+                currentState.copy(bottomSheetData = BottomSheetStateData(model = BarcodeUiModel.UNDEFINED))
             _state.emit(newState)
         }
     }

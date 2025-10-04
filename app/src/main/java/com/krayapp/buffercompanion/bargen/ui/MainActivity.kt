@@ -7,13 +7,14 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import com.krayapp.buffercompanion.bargen.ClipperApp
 import com.krayapp.buffercompanion.bargen.theme.AppTheme
 import com.krayapp.buffercompanion.bargen.ui.bottomsheets.MainBottomSheet
 import com.krayapp.buffercompanion.bargen.ui.mvi.BargenViewModel
+import com.krayapp.buffercompanion.bargen.ui.mvi.BottomSheetStateData
+import com.krayapp.buffercompanion.bargen.ui.mvi.canShowMainBottomSheet
 import com.krayapp.buffercompanion.bargen.ui.screens.MainScreen
 
 
@@ -24,9 +25,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        window.navigationBarColor = Color.Transparent.toArgb()
-
-
         setContent {
             AppTheme {
                 val mviState = viewmodel.uiState.collectAsState()
@@ -35,15 +33,20 @@ class MainActivity : AppCompatActivity() {
 
                 }
 
-                val bottomsheetInfo = mviState.value.bottomSheetData
-                if (bottomsheetInfo != null)
-                    MainBottomSheet(model = bottomsheetInfo.model, onDismiss = {
-                        viewmodel.recycleEffect(bottomsheetInfo)
-                    }, onSaveModel = {
-
-                    })
+                when {
+                    mviState.value.canShowMainBottomSheet -> ShowMainBottomSheet(mviState.value.bottomSheetData!!)
+                }
             }
         }
+    }
+
+    @Composable
+    private fun ShowMainBottomSheet(data: BottomSheetStateData) {
+        MainBottomSheet(model = data.model, onDismiss = {
+            viewmodel.recycleEffect(data)
+        }, onSaveModel = {
+
+        })
     }
 
     override fun dispatchKeyEvent(event: KeyEvent): Boolean {

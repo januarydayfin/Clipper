@@ -17,7 +17,7 @@ val testBarcodeUiModel = listOf(
         id = UUID.randomUUID().toString(),
         name = "simpleName",
         barcodeType = PDF_417,
-        description = null,
+        description = "",
         tags = testTagUiModel,
         content = "123"
     ),
@@ -25,7 +25,7 @@ val testBarcodeUiModel = listOf(
         id = UUID.randomUUID().toString(),
         name = "simpleName",
         barcodeType = PDF_417,
-        description = null,
+        description = "",
         tags = testTagUiModel,
         content = "123"
     ),
@@ -33,7 +33,7 @@ val testBarcodeUiModel = listOf(
         id = UUID.randomUUID().toString(),
         name = "simpleName",
         barcodeType = PDF_417,
-        description = null,
+        description = "",
         tags = testTagUiModel,
         content = "123"
     ),
@@ -41,7 +41,7 @@ val testBarcodeUiModel = listOf(
         id = UUID.randomUUID().toString(),
         name = "simpleName",
         barcodeType = PDF_417,
-        description = null,
+        description = "",
         tags = testTagUiModel,
         content = "123"
     ),
@@ -49,14 +49,14 @@ val testBarcodeUiModel = listOf(
         id = UUID.randomUUID().toString(),
         name = "simpleName",
         barcodeType = PDF_417,
-        description = null,
+        description = "",
         tags = testTagUiModel,
         content = "123"
     ), BarcodeUiModel(
         id = UUID.randomUUID().toString(),
         name = "simpleName",
         barcodeType = PDF_417,
-        description = null,
+        description = "",
         tags = testTagUiModel,
         content = "123"
     ),
@@ -64,7 +64,7 @@ val testBarcodeUiModel = listOf(
         id = UUID.randomUUID().toString(),
         name = "simpleName",
         barcodeType = PDF_417,
-        description = null,
+        description = "",
         tags = testTagUiModel,
         content = "123"
     ),
@@ -72,7 +72,7 @@ val testBarcodeUiModel = listOf(
         id = UUID.randomUUID().toString(),
         name = "simpleName",
         barcodeType = PDF_417,
-        description = null,
+        description = "",
         tags = testTagUiModel,
         content = "123"
     ),
@@ -80,7 +80,7 @@ val testBarcodeUiModel = listOf(
         id = UUID.randomUUID().toString(),
         name = "simpleName",
         barcodeType = PDF_417,
-        description = null,
+        description = "",
         tags = testTagUiModel,
         content = "123"
     ),
@@ -88,14 +88,14 @@ val testBarcodeUiModel = listOf(
         id = UUID.randomUUID().toString(),
         name = "simpleName",
         barcodeType = PDF_417,
-        description = null,
+        description = "",
         tags = testTagUiModel,
         content = "123"
     ), BarcodeUiModel(
         id = UUID.randomUUID().toString(),
         name = "simpleName",
         barcodeType = PDF_417,
-        description = null,
+        description = "",
         tags = testTagUiModel,
         content = "123"
     ),
@@ -103,7 +103,7 @@ val testBarcodeUiModel = listOf(
         id = UUID.randomUUID().toString(),
         name = "simpleName",
         barcodeType = PDF_417,
-        description = null,
+        description = "",
         tags = testTagUiModel,
         content = "123"
     ),
@@ -111,7 +111,7 @@ val testBarcodeUiModel = listOf(
         id = UUID.randomUUID().toString(),
         name = "simpleName",
         barcodeType = PDF_417,
-        description = null,
+        description = "",
         tags = testTagUiModel,
         content = "123"
     ),
@@ -119,7 +119,7 @@ val testBarcodeUiModel = listOf(
         id = UUID.randomUUID().toString(),
         name = "simpleName",
         barcodeType = PDF_417,
-        description = null,
+        description = "",
         tags = testTagUiModel,
         content = "123"
     ),
@@ -127,7 +127,7 @@ val testBarcodeUiModel = listOf(
         id = UUID.randomUUID().toString(),
         name = "simpleName",
         barcodeType = PDF_417,
-        description = null,
+        description = "",
         tags = testTagUiModel,
         content = "123"
     ),
