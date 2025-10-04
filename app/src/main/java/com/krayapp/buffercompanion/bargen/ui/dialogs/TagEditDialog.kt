@@ -6,12 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
-import com.krayapp.buffercompanion.bargen.R
 import com.krayapp.buffercompanion.bargen.addTextWatcher
 import com.krayapp.buffercompanion.bargen.databinding.DialogTagEditBinding
 import com.krayapp.buffercompanion.bargen.ui.models.TagUiModel
 import com.krayapp.buffercompanion.bargen.utils.filterChip
-import com.krayapp.buffercompanion.bargen.utils.setCustomBackground
 import com.krayapp.buffercompanion.bargen.utils.setupDialogWidth
 
 class TagEditDialog(uiModel: TagUiModel, private val saveModel: (TagUiModel) -> Unit) :
@@ -32,7 +30,6 @@ class TagEditDialog(uiModel: TagUiModel, private val saveModel: (TagUiModel) -> 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         dialog?.setCanceledOnTouchOutside(false)
-        dialog.setCustomBackground(R.drawable.dialog_background)
         setupDialogWidth()
         binding?.run {
             tagName.setText(editedModel.name)

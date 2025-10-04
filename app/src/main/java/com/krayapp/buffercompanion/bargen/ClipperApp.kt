@@ -3,7 +3,6 @@ package com.krayapp.buffercompanion.bargen
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
 import com.google.android.material.color.DynamicColors
-import com.krayapp.buffercompanion.bargen.utils.displayWidth
 
 class ClipperApp : Application() {
 
@@ -19,7 +18,7 @@ class ClipperApp : Application() {
         }
 
         val displayWidth: Int
-            get() = getApplication().displayWidth()
+            get() = getApplication().resources.displayMetrics.widthPixels
     }
 
     override fun onCreate() {

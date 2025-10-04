@@ -23,6 +23,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -63,8 +64,6 @@ fun MainScreen(
     onSearchTextChanged: (String) -> Unit = { }
 ) {
     val viewmodel: BargenViewModel = viewModel()
-
-
     val lazyListState = rememberLazyListState()
     Scaffold {
         Column(
@@ -85,9 +84,7 @@ fun MainScreen(
                     items(
                         count = data.size
                     ) { index ->
-                        BarcodeCard(data[index], onContextMenuCalled = { offset, model ->
-                            viewmodel.onIntent(MainIntent.ShowPopup(intOffset = offset, model))
-                        })
+                        BarcodeCard(data[index])
                         Spacer(Modifier.height(mSize))
                     }
                 }

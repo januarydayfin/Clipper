@@ -2,7 +2,6 @@ package com.krayapp.buffercompanion.bargen.ui.dialogs
 
 import android.content.Context
 import com.krayapp.buffercompanion.bargen.R
-import com.krayapp.buffercompanion.bargen.utils.setCustomBackground
 import com.skydoves.colorpickerview.ColorEnvelope
 import com.skydoves.colorpickerview.ColorPickerDialog
 import com.skydoves.colorpickerview.listeners.ColorEnvelopeListener
@@ -29,5 +28,4 @@ fun Context.showColorPickerDialog(
                 if (initialColor != null)
                     colorPickerView.setInitialColor(initialColor)
             }.show()
-    dialog.setCustomBackground(R.drawable.dialog_background)
 }

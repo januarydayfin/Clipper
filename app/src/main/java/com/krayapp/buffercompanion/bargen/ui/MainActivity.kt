@@ -42,8 +42,6 @@ class MainActivity : AppCompatActivity() {
                 LaunchedEffect(Unit) {
                     lifecycleScope.launch {
                         viewmodel.uiState.collectLatest {
-                            Log.d("FATA", String.format("%s", it))
-
                             showContextMenu.value = it.popupShowInfo
                         }
                     }
@@ -51,13 +49,6 @@ class MainActivity : AppCompatActivity() {
 
                 MainScreen {
 
-                }
-                if (showContextMenu.value != null) {
-                    val value = showContextMenu.value ?: return@AppTheme
-                    ContextMenu(offset = value.coordinates, uiModel = value.uiModel) {
-                        showContextMenu.value = null
-                        viewmodel.recycleEffect(Effect.SHOW_POPUP)
-                    }
                 }
             }
         }
