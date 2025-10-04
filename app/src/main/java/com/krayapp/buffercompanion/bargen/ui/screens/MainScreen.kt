@@ -1,9 +1,6 @@
 package com.krayapp.buffercompanion.bargen.ui.screens
 
-import android.util.Log
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.animateIntAsState
-import androidx.compose.animation.core.animateIntOffsetAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -33,11 +30,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -47,14 +41,17 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.krayapp.buffercompanion.bargen.ui.mvi.BargenViewModel
 import com.krayapp.buffercompanion.bargen.R
 import com.krayapp.buffercompanion.bargen.testBarcodeUiModel
 import com.krayapp.buffercompanion.bargen.theme.defaultAnimationDuration
-import com.krayapp.buffercompanion.bargen.theme.lPadding
-import com.krayapp.buffercompanion.bargen.theme.mPadding
-import com.krayapp.buffercompanion.bargen.theme.sPadding
+import com.krayapp.buffercompanion.bargen.theme.lSize
+import com.krayapp.buffercompanion.bargen.theme.mSize
+import com.krayapp.buffercompanion.bargen.theme.sSize
 import com.krayapp.buffercompanion.bargen.ui.adapter.BarcodeCard
 import com.krayapp.buffercompanion.bargen.ui.models.BarcodeUiModel
+import com.krayapp.buffercompanion.bargen.ui.mvi.MainIntent
 import com.krayapp.buffercompanion.bargen.ui.screens.BottomButton.CREATE
 import com.krayapp.buffercompanion.bargen.ui.screens.BottomButton.SCAN
 import com.krayapp.buffercompanion.bargen.ui.screens.BottomButton.TAGS
@@ -65,6 +62,9 @@ fun MainScreen(
     data: List<BarcodeUiModel> = testBarcodeUiModel,
     onSearchTextChanged: (String) -> Unit = { }
 ) {
+    val viewmodel: BargenViewModel = viewModel()
+
+
     val lazyListState = rememberLazyListState()
     Scaffold {
         Column(
@@ -80,13 +80,15 @@ fun MainScreen(
                     state = lazyListState,
                     modifier = Modifier
                         .wrapContentHeight()
-                        .padding(top = mPadding, start = mPadding, end = mPadding)
+                        .padding(top = mSize, start = mSize, end = mSize)
                 ) {
                     items(
                         count = data.size
                     ) { index ->
-                        BarcodeCard(data[index])
-                        Spacer(Modifier.height(mPadding))
+                        BarcodeCard(data[index], onContextMenuCalled = { offset, model ->
+                            viewmodel.onIntent(MainIntent.ShowPopup(intOffset = offset, model))
+                        })
+                        Spacer(Modifier.height(mSize))
                     }
                 }
                 BottomButtonGroup(
@@ -106,7 +108,7 @@ private fun MainTopBar(onTextChanged: (String) -> Unit = {}) {
     ) {
         Image(
             modifier = Modifier
-                .padding(horizontal = sPadding)
+                .padding(horizontal = sSize)
                 .size(25.dp),
             imageVector = ImageVector.vectorResource(R.drawable.ic_settings),
             contentDescription = "settings_icon",
@@ -117,7 +119,7 @@ private fun MainTopBar(onTextChanged: (String) -> Unit = {}) {
 
         Image(
             modifier = Modifier
-                .padding(horizontal = sPadding)
+                .padding(horizontal = sSize)
                 .size(25.dp),
             imageVector = ImageVector.vectorResource(R.drawable.ic_sort),
             contentDescription = "sort_icon",
@@ -136,7 +138,7 @@ private fun SearchBar(modifier: Modifier = Modifier, onTextChanged: (String) -> 
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(horizontal = lPadding)
+            modifier = Modifier.padding(horizontal = lSize)
         ) {
             Image(
                 modifier = Modifier.size(25.dp),
@@ -150,7 +152,7 @@ private fun SearchBar(modifier: Modifier = Modifier, onTextChanged: (String) -> 
                 state = textFieldState,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = mPadding),
+                    .padding(start = mSize),
                 colors = TextFieldDefaults.colors().copy(
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
@@ -183,7 +185,7 @@ private fun BottomButtonGroup(
             .offset {
                 IntOffset(y = offsetState.value, x = 0)
             }
-            .padding(bottom = mPadding)
+            .padding(bottom = mSize)
     ) {
         val buttons = BottomButton.entries.toList()
 

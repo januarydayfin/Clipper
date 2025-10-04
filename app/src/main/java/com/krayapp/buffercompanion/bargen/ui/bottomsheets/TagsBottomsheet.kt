@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.Chip
-import com.krayapp.buffercompanion.bargen.BargenViewModel
+import com.krayapp.buffercompanion.bargen.ui.mvi.BargenViewModel
 import com.krayapp.buffercompanion.bargen.databinding.BottomsheetTagsBinding
 import com.krayapp.buffercompanion.bargen.expand
 import com.krayapp.buffercompanion.bargen.justVibrateABit

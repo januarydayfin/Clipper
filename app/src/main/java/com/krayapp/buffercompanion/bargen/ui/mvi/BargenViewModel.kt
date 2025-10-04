@@ -1,13 +1,17 @@
-package com.krayapp.buffercompanion.bargen
+package com.krayapp.buffercompanion.bargen.ui.mvi
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.google.zxing.BarcodeFormat
+import com.krayapp.buffercompanion.bargen.ClipperApp
 import com.krayapp.buffercompanion.bargen.data.BargenRepo
 import com.krayapp.buffercompanion.bargen.data.FilterState
 import com.krayapp.buffercompanion.bargen.data.SortType
 import com.krayapp.buffercompanion.bargen.data.room.bargen.entity.BarcodeEntity
 import com.krayapp.buffercompanion.bargen.ui.models.BarcodeUiModel
 import com.krayapp.buffercompanion.bargen.ui.models.TagUiModel
+import com.krayapp.buffercompanion.bargen.ui.mvi.stateManager.Effect
+import com.krayapp.buffercompanion.bargen.ui.mvi.stateManager.StateManager
 import com.krayapp.buffercompanion.bargen.utils.currentSortType
 import com.krayapp.buffercompanion.bargen.utils.launchInIO
 import com.krayapp.buffercompanion.bargen.utils.toBarcodeUiModel
@@ -26,6 +30,10 @@ class BargenViewModel : ViewModel() {
     val barcodeFlow = _barcodeFlow.asStateFlow()
     val tagFilterFlow = _tagsFilterFlow.asStateFlow()
 
+    private val stateManager = StateManager(viewModelScope)
+
+    val uiState = stateManager.state
+
     private var sortType: SortType
         get() = currentSortType
         set(value) {
@@ -42,6 +50,14 @@ class BargenViewModel : ViewModel() {
 
     init {
         updateBarcodeFlow()
+    }
+
+    fun onIntent(intent: MainIntent) {
+        stateManager.onIntent(intent)
+    }
+
+    fun recycleEffect(effect: Effect) {
+        stateManager.recycleEffect(effect)
     }
 
     fun loadAllTags(onLoaded: suspend (List<TagUiModel>) -> Unit) {
