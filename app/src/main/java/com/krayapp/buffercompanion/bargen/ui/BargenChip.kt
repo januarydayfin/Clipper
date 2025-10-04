@@ -12,7 +12,7 @@ import com.krayapp.buffercompanion.bargen.theme.xxsSize
 import com.krayapp.buffercompanion.bargen.ui.models.TagUiModel
 
 @Composable
-fun BargenChip(tagUiModel: TagUiModel, onClick: () -> Unit = {}) {
+fun BargenChip(tagUiModel: TagUiModel, selectable: Boolean = true, onClick: () -> Unit = {}) {
     val containerColor =
         if (tagUiModel.backgroundColor != null) Color(tagUiModel.backgroundColor) else Color.Unspecified
     val labelColor =
@@ -26,9 +26,12 @@ fun BargenChip(tagUiModel: TagUiModel, onClick: () -> Unit = {}) {
             containerColor = containerColor,
             selectedContainerColor = containerColor,
             labelColor = labelColor,
-            selectedLabelColor = labelColor
+            selectedLabelColor = labelColor,
+            disabledLabelColor = labelColor,
+            disabledContainerColor = containerColor
         ),
-        selected = tagUiModel.checked,
+        enabled = selectable,
+        selected = if (selectable) tagUiModel.checked else false,
         onClick = onClick,
         label = { Text(text = tagUiModel.name) },
     )

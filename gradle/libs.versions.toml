@@ -44,6 +44,7 @@ androidx-activity-compose = { group = "androidx.activity", name = "activity-comp
 # App Compat & Core
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-material-icons-core = { module = "androidx.compose.material:material-icons-core" }
 androidx-recyclerview = { group = "androidx.recyclerview", name = "recyclerview", version.ref = "recyclerview" }
 google-material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 google-play-review-ktx = { group = "com.google.android.play", name = "review-ktx", version.ref = "playReview" }

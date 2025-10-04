@@ -1,8 +1,8 @@
 package com.krayapp.buffercompanion.bargen.ui.mvi.stateManager
 
+import com.krayapp.buffercompanion.bargen.ui.mvi.BottomSheetStateData
 import com.krayapp.buffercompanion.bargen.ui.mvi.MainIntent
 import com.krayapp.buffercompanion.bargen.ui.mvi.MviState
-import com.krayapp.buffercompanion.bargen.ui.mvi.PopupShowInfo
 import com.krayapp.buffercompanion.bargen.utils.withIO
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -18,19 +18,17 @@ class StateManager(private val scope: CoroutineScope) {
     fun onIntent(intent: MainIntent) {
         scope.launch {
             when (intent) {
-                is MainIntent.ShowPopup -> updatePopupShowState(intent)
+                is MainIntent.ShowBottomsheet -> showBottomSheet(intent)
             }
         }
     }
 
-    private suspend fun updatePopupShowState(
-        intent: MainIntent.ShowPopup
-    ) {
+    private suspend fun showBottomSheet(intent: MainIntent.ShowBottomsheet) {
         withIO {
-            val newInfo = PopupShowInfo(intent.intOffset, intent.uiModel)
-            val currentValue = _state.value
-
-            _state.emit(currentValue.copy(popupShowInfo = newInfo))
+            val currentState = _state.value
+            val newState =
+                currentState.copy(bottomSheetData = BottomSheetStateData(model = intent.uiModel))
+            _state.emit(newState)
         }
     }
 

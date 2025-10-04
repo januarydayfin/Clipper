@@ -1,6 +1,7 @@
 package com.krayapp.buffercompanion.bargen.ui.adapter
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
@@ -63,6 +64,9 @@ fun BarcodeCard(
                 popupOffset.value = it
                 showPopup.value = true
             }
+            .clickable {
+                onEditClick(uiModel)
+            }
     ) {
         Row(
             modifier = Modifier
@@ -123,7 +127,7 @@ private fun ContentInfo(
         Text(text = name, style = textStyle)
 
         FlowRow(Modifier.fillMaxWidth()) {
-            tags.forEach { BargenChip(it) }
+            tags.forEach { BargenChip(it, selectable = false) }
         }
     }
 }

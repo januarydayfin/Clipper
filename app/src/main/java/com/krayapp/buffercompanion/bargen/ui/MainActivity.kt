@@ -1,28 +1,20 @@
 package com.krayapp.buffercompanion.bargen.ui
 
 import android.os.Bundle
-import android.util.Log
 import android.view.KeyEvent
 import android.view.MotionEvent
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import androidx.lifecycle.lifecycleScope
 import com.krayapp.buffercompanion.bargen.ClipperApp
 import com.krayapp.buffercompanion.bargen.theme.AppTheme
-import com.krayapp.buffercompanion.bargen.ui.menu.ContextMenu
+import com.krayapp.buffercompanion.bargen.ui.bottomsheets.MainBottomSheet
 import com.krayapp.buffercompanion.bargen.ui.mvi.BargenViewModel
-import com.krayapp.buffercompanion.bargen.ui.mvi.PopupShowInfo
-import com.krayapp.buffercompanion.bargen.ui.mvi.stateManager.Effect
 import com.krayapp.buffercompanion.bargen.ui.screens.MainScreen
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 
 
 class MainActivity : AppCompatActivity() {
@@ -36,20 +28,20 @@ class MainActivity : AppCompatActivity() {
 
 
         setContent {
-            val showContextMenu = remember { mutableStateOf<PopupShowInfo?>(null) }
             AppTheme {
-
-                LaunchedEffect(Unit) {
-                    lifecycleScope.launch {
-                        viewmodel.uiState.collectLatest {
-                            showContextMenu.value = it.popupShowInfo
-                        }
-                    }
-                }
+                val mviState = viewmodel.uiState.collectAsState()
 
                 MainScreen {
 
                 }
+
+                val bottomsheetInfo = mviState.value.bottomSheetData
+                if (bottomsheetInfo != null)
+                    MainBottomSheet(model = bottomsheetInfo.model, onDismiss = {
+                        viewmodel.recycleEffect(bottomsheetInfo)
+                    }, onSaveModel = {
+
+                    })
             }
         }
     }

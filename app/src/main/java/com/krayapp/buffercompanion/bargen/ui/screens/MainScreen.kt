@@ -84,7 +84,9 @@ fun MainScreen(
                     items(
                         count = data.size
                     ) { index ->
-                        BarcodeCard(data[index])
+                        BarcodeCard(uiModel = data[index], onEditClick = {
+                            viewmodel.onIntent(MainIntent.ShowBottomsheet(it))
+                        })
                         Spacer(Modifier.height(mSize))
                     }
                 }

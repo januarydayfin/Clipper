@@ -30,13 +30,9 @@ fun Modifier.onTapScreenOffset(result: (Offset) -> Unit): Modifier {
     var globalOffset = Offset(0f, 0f)
     var viewHeight = 0
     return this
-        .onSizeChanged {
-            viewHeight = it.height
-        }
         .onGloballyPositioned {
+            globalOffset = it.positionOnScreen()
             viewHeight = it.size.height
-
-
         }
         .pointerInput(true) {
             detectTapGestures(onTap = { touchOffset ->
