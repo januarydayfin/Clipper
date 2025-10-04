@@ -1,7 +1,6 @@
 package com.krayapp.buffercompanion.bargen.ui.bottomsheets
 
 import android.graphics.Bitmap
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -32,7 +31,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -54,6 +52,7 @@ import com.krayapp.buffercompanion.bargen.testTagUiModel
 import com.krayapp.buffercompanion.bargen.theme.lSize
 import com.krayapp.buffercompanion.bargen.theme.mSize
 import com.krayapp.buffercompanion.bargen.ui.BargenChip
+import com.krayapp.buffercompanion.bargen.ui.dialogs.BarcodeFormatDialog
 import com.krayapp.buffercompanion.bargen.ui.models.BarcodeUiModel
 import com.krayapp.buffercompanion.bargen.ui.models.TagUiModel
 import kotlinx.coroutines.launch
@@ -76,6 +75,14 @@ fun MainBottomSheet(
     val scope = rememberCoroutineScope()
     val formatDialogOpened = remember { mutableStateOf(false) }
 
+    if (formatDialogOpened.value)
+        BarcodeFormatDialog(
+            initialState = modelState.value.barcodeType,
+            onPicked = {
+                modelState.value = modelState.value.copy(barcodeType = it)
+            }, onDismiss = {
+                formatDialogOpened.value = false
+            })
 
     ModalBottomSheet(
         sheetState = sheetState,
@@ -261,7 +268,8 @@ private fun TagBlock(
 
     Column(
         modifier = Modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.Start) {
+        horizontalAlignment = Alignment.Start
+    ) {
         OutlinedTextField(
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
             modifier = Modifier.fillMaxWidth(),
@@ -279,7 +287,10 @@ private fun TagBlock(
             }
         }
 
-        Text(text = stringResource(R.string.found_tags), style = MaterialTheme.typography.labelMedium)
+        Text(
+            text = stringResource(R.string.found_tags),
+            style = MaterialTheme.typography.labelMedium
+        )
         //превью
         FlowRow(
             horizontalArrangement = Arrangement.Start
@@ -287,7 +298,8 @@ private fun TagBlock(
             previewTags.toList().distinct().forEach {
                 BargenChip(it) {
                     val prevName = it.name
-                    val substringed = tagsTextFieldState.text.toString().removeSuffix(nameList.last())
+                    val substringed =
+                        tagsTextFieldState.text.toString().removeSuffix(nameList.last())
                     tagsTextFieldState.setTextAndPlaceCursorAtEnd(substringed + prevName)
                 }
             }
