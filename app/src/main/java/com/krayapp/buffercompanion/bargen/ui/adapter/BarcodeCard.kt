@@ -40,6 +40,7 @@ import com.krayapp.buffercompanion.bargen.ui.BargenChip
 import com.krayapp.buffercompanion.bargen.ui.menu.ContextMenu
 import com.krayapp.buffercompanion.bargen.ui.models.BarcodeUiModel
 import com.krayapp.buffercompanion.bargen.ui.models.TagUiModel
+import com.krayapp.buffercompanion.bargen.utils.Space
 import com.krayapp.buffercompanion.bargen.utils.modifiers.onLongTapScreenOffset
 
 @Preview
@@ -81,7 +82,7 @@ fun BarcodeCard(
                 barcodeTypeText = uiModel.barcodeType
             )
 
-            Spacer(Modifier.width(sSize))
+            Space(width = sSize)
             ContentInfo(
                 modifier = Modifier
                     .weight(1f),

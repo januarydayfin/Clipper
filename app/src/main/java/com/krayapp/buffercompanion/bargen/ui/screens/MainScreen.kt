@@ -21,11 +21,17 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.input.rememberTextFieldState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SplitButtonDefaults
+import androidx.compose.material3.SplitButtonLayout
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -52,9 +58,7 @@ import com.krayapp.buffercompanion.bargen.ui.adapter.BarcodeCard
 import com.krayapp.buffercompanion.bargen.ui.models.BarcodeUiModel
 import com.krayapp.buffercompanion.bargen.ui.mvi.BargenViewModel
 import com.krayapp.buffercompanion.bargen.ui.mvi.MainIntent
-import com.krayapp.buffercompanion.bargen.ui.screens.BottomButton.CREATE
-import com.krayapp.buffercompanion.bargen.ui.screens.BottomButton.SCAN
-import com.krayapp.buffercompanion.bargen.ui.screens.BottomButton.TAGS
+import com.krayapp.buffercompanion.bargen.utils.Space
 
 @Preview(showBackground = true)
 @Composable
@@ -165,6 +169,7 @@ private fun SearchBar(modifier: Modifier = Modifier, onTextChanged: (String) -> 
     }
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Preview()
 @Composable
 private fun BottomButtonGroup(
@@ -188,42 +193,49 @@ private fun BottomButtonGroup(
             }
             .padding(bottom = mSize)
     ) {
-        val buttons = BottomButton.entries.toList()
 
-        buttons.forEach { buttonInfo ->
-            val click = when (buttonInfo) {
-                SCAN -> onScanClicked
-                CREATE -> onCreateClicked
-                TAGS -> onTagsClicked
+        SplitButtonLayout(leadingButton = {
+            SplitButtonDefaults.LeadingButton(onClick = onCreateClicked) {
+                Icon(
+                    Icons.Filled.Add,
+                    modifier = Modifier.size(SplitButtonDefaults.LeadingIconSize),
+                    contentDescription = "Add new",
+                )
+                Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+                Text(stringResource(R.string.create))
+            }
+        }, trailingButton = {
+            SplitButtonDefaults.TrailingButton(onClick = onScanClicked) {
+                Icon(
+                    imageVector = ImageVector.vectorResource(R.drawable.ic_camera),
+                    modifier =
+                        Modifier.size(SplitButtonDefaults.TrailingIconSize),
+                    contentDescription = "Localized description",
+                )
+            }
+        })
+
+        Space(width = sSize)
+        Button(
+            modifier = Modifier
+                .wrapContentWidth()
+                .padding(horizontal = 1.dp),
+            onClick = {
+                onTagsClicked()
             }
 
-            Button(
-                modifier = Modifier
-                    .wrapContentWidth()
-                    .padding(horizontal = 1.dp),
-                onClick = {
-                    click()
-                }
-
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        modifier = Modifier.padding(end = 4.dp),
-                        imageVector = ImageVector.vectorResource(buttonInfo.drawableRes),
-                        contentDescription = stringResource(buttonInfo.labelRes),
-                    )
-                    Text(
-                        text = stringResource(buttonInfo.labelRes),
-                        style = MaterialTheme.typography.bodySmall
-                    )
-                }
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    modifier = Modifier.padding(end = 4.dp),
+                    imageVector = ImageVector.vectorResource(R.drawable.ic_label),
+                    contentDescription = stringResource(R.string.tags),
+                )
+                Text(
+                    text = stringResource(R.string.tags),
+                    style = MaterialTheme.typography.bodySmall
+                )
             }
         }
     }
-}
-
-enum class BottomButton(val labelRes: Int, val drawableRes: Int) {
-    SCAN(labelRes = R.string.scan, drawableRes = R.drawable.qr_example),
-    CREATE(labelRes = R.string.create, drawableRes = R.drawable.ic_plus),
-    TAGS(labelRes = R.string.tags, drawableRes = R.drawable.ic_label)
 }
