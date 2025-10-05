@@ -6,7 +6,7 @@ data class MviState(
     val bottomSheetData: BottomSheetStateData? = null,
     val showTagBottomSheet: ShowTagsBottomsheet = ShowTagsBottomsheet(),
     val showSettingsBottomSheet: ShowSettingsBottomsheet = ShowSettingsBottomsheet(),
-    val showSortBottomSheet: ShowSortBottomsheet = ShowSortBottomsheet()
+    val showSortBottomSheet: ShowSortBottomsheet = ShowSortBottomsheet(),
 )
 
 data class BottomSheetStateData(val model: BarcodeUiModel) : Effect

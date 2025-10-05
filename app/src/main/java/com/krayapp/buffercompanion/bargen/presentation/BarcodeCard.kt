@@ -15,12 +15,15 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,6 +40,7 @@ import com.journeyapps.barcodescanner.ScanOptions.DATA_MATRIX
 import com.journeyapps.barcodescanner.ScanOptions.PDF_417
 import com.journeyapps.barcodescanner.ScanOptions.QR_CODE
 import com.krayapp.buffercompanion.bargen.R
+import com.krayapp.buffercompanion.bargen.presentation.dialogs.DeleteConfirmationDialog
 import com.krayapp.buffercompanion.bargen.theme.barcodePreviewSize
 import com.krayapp.buffercompanion.bargen.theme.mSize
 import com.krayapp.buffercompanion.bargen.theme.sSize
@@ -50,22 +54,32 @@ import kotlinx.coroutines.launch
 @Composable
 fun BarcodeCard(
     uiModel: BarcodeUiModel,
-    onDeleteClick: (BarcodeUiModel) -> Unit = {},
+    inSelectionMode: Boolean,
+    isCheckedForDeletion: Boolean,
+    onDeleteClicked: (String) -> Unit = {},
     onCardClick: (BarcodeUiModel) -> Unit = {},
     onSelectClick: (BarcodeUiModel) -> Unit = {},
 ) {
     val scope = rememberCoroutineScope()
     val haptic = LocalHapticFeedback.current
     val dismissState = rememberSwipeToDismissBoxState()
+    val deleteDialogShowState = remember { mutableStateOf("") }
 
+    if (deleteDialogShowState.value.isNotEmpty()) {
+        DeleteConfirmationDialog(onDismiss = {
+            deleteDialogShowState.value = ""
+        }) {
+            onDeleteClicked(deleteDialogShowState.value)
+        }
+    }
     SwipeToDismissBox(
         enableDismissFromStartToEnd = false,
         state = dismissState,
         onDismiss = {
             scope.launch {
                 dismissState.reset()
-                onDeleteClick(uiModel)
             }
+            deleteDialogShowState.value = uiModel.id
         },
         backgroundContent = {
             RemoveCardBackground()
@@ -106,6 +120,11 @@ fun BarcodeCard(
                     content = uiModel.content,
                     tags = uiModel.tags
                 )
+
+                if (inSelectionMode)
+                    Checkbox(checked = isCheckedForDeletion, onCheckedChange = {
+                        onCardClick(uiModel)
+                    })
             }
         }
     }

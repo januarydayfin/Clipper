@@ -14,11 +14,13 @@ import com.krayapp.buffercompanion.bargen.data.FilterState
 import com.krayapp.buffercompanion.bargen.data.SortType
 import com.krayapp.buffercompanion.bargen.data.TagsRepo
 import com.krayapp.buffercompanion.bargen.data.room.bargen.entity.BarcodeEntity
+import com.krayapp.buffercompanion.bargen.presentation.selector.CardSelector
 import com.krayapp.buffercompanion.bargen.presentation.mvi.Effect
 import com.krayapp.buffercompanion.bargen.presentation.mvi.MainIntent
+import com.krayapp.buffercompanion.bargen.presentation.mvi.stateManager.StateManager
+import com.krayapp.buffercompanion.bargen.presentation.selector.TagSelector
 import com.krayapp.buffercompanion.bargen.presentation.uiModels.BarcodeUiModel
 import com.krayapp.buffercompanion.bargen.presentation.uiModels.TagUiModel
-import com.krayapp.buffercompanion.bargen.presentation.mvi.stateManager.StateManager
 import com.krayapp.buffercompanion.bargen.utils.currentSortType
 import com.krayapp.buffercompanion.bargen.utils.launchInIO
 import com.krayapp.buffercompanion.bargen.utils.toBarcodeUiModel
@@ -28,6 +30,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
@@ -38,10 +41,10 @@ class BargenViewModel : ViewModel() {
     private val barcodeRepo = BarcodeRepo()
     private val tagsRepo = TagsRepo()
 
-    private val _tagsFilterFlow = MutableStateFlow<List<TagUiModel>>(emptyList())
-    val tagFilterFlow = _tagsFilterFlow.asStateFlow()
-
     private val stateManager = StateManager(viewModelScope)
+
+    val cardSelector = CardSelector(viewModelScope, barcodeRepo)
+    val tagSelector = TagSelector()
 
     val uiState = stateManager.state
 
@@ -50,6 +53,8 @@ class BargenViewModel : ViewModel() {
 
     private val filterState = MutableStateFlow(FilterState())
 
+    val inSelection
+        get() = cardSelector.selectedBarcodes.value.isNotEmpty()
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val barcodePagingData: Flow<PagingData<BarcodeUiModel>> =
@@ -82,12 +87,20 @@ class BargenViewModel : ViewModel() {
                     page.map { it.toBarcodeUiModel() }
                 }
         }
-            // Сохраняем результат в кэше ViewModel для обработки конфигурационных изменений
             .cachedIn(viewModelScope)
+
+    init {
+        launchInIO {
+            tagSelector.tagFilterFlow.collectLatest {
+                filterState.value = filterState.value.copy(tagIds = it.map { tag -> tag.id })
+            }
+        }
+    }
 
     fun onIntent(intent: MainIntent) {
         stateManager.onIntent(intent)
     }
+
 
     fun recycleEffect(effect: Effect) {
         stateManager.recycleEffect(effect)
@@ -120,13 +133,6 @@ class BargenViewModel : ViewModel() {
         }
 
 
-    fun removeTagById(id: String) {
-        launchInIO {
-            tagsRepo.removeTagById(id)
-            barcodeRepo.removeTagFromBarcodes(id)
-        }
-    }
-
     fun changeSort(sortType: SortType) {
         this._sortType.value = sortType
         ClipperApp.getPrefs().sortType = sortType.toString()
@@ -138,12 +144,12 @@ class BargenViewModel : ViewModel() {
         }
     }
 
-    fun removeBarcodes(vararg ids: String) {
+    fun deleteBarcodes(vararg ids: String) {
         launchInIO {
             barcodeRepo.removeBarcodesByIds(ids.toList())
+            updatePager()
         }
     }
-
 
     fun createBarcodeRecord(
         entity: BarcodeEntity,
@@ -173,22 +179,11 @@ class BargenViewModel : ViewModel() {
             val withoutTag = filterState.value.tagIds.filter { it != id }
             filterState.emit(filterState.value.copy(tagIds = withoutTag))
         }
-
     }
 
     fun updateNameFilter(name: String) {
         launchInIO {
             filterState.emit(filterState.value.copy(searchFilter = name))
-        }
-    }
-
-    private fun updateTagsFlow() {
-        launchInIO {
-            val tags = filterState.value.tagIds.run {
-                tagsRepo.getTagsWithIds(this)
-            }.map { it.toTagUiModel() }
-
-            _tagsFilterFlow.emit(tags)
         }
     }
 }

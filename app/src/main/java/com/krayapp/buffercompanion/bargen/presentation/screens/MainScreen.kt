@@ -32,14 +32,17 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SplitButtonDefaults
 import androidx.compose.material3.SplitButtonLayout
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
@@ -56,11 +59,11 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import com.krayapp.buffercompanion.bargen.R
 import com.krayapp.buffercompanion.bargen.presentation.BarcodeCard
+import com.krayapp.buffercompanion.bargen.presentation.dialogs.DeleteConfirmationDialog
 import com.krayapp.buffercompanion.bargen.presentation.menus.SortDropdownMenu
 import com.krayapp.buffercompanion.bargen.presentation.mvi.MainIntent
 import com.krayapp.buffercompanion.bargen.presentation.viewmodels.BargenViewModel
 import com.krayapp.buffercompanion.bargen.theme.defaultAnimationDuration
-import com.krayapp.buffercompanion.bargen.theme.lSize
 import com.krayapp.buffercompanion.bargen.theme.mSize
 import com.krayapp.buffercompanion.bargen.theme.sSize
 import com.krayapp.buffercompanion.bargen.utils.Space
@@ -71,6 +74,14 @@ fun MainScreen(
     onScanClicked: () -> Unit
 ) {
     val viewmodel: BargenViewModel = viewModel()
+    val cardSelector = viewmodel.cardSelector
+    val selectedIdsState = cardSelector.selectedBarcodes.collectAsState()
+
+    val selectionMode = remember {
+        derivedStateOf {
+            selectedIdsState.value.isNotEmpty()
+        }
+    }
     val lazyItems = viewmodel.barcodePagingData.collectAsLazyPagingItems()
     val lazyListState = rememberLazyListState()
 
@@ -81,6 +92,7 @@ fun MainScreen(
                 .fillMaxSize()
         ) {
             MainTopBar(
+                inSelectionMode = selectionMode,
                 onTextChanged = { text ->
                     viewmodel.updateNameFilter(text)
                 },
@@ -102,9 +114,20 @@ fun MainScreen(
                         val item = lazyItems[index]
                         if (item != null) {
                             BarcodeCard(
+                                inSelectionMode = selectionMode.value,
+                                isCheckedForDeletion = item.id in selectedIdsState.value,
                                 uiModel = item,
+                                onSelectClick = { model ->
+                                    cardSelector.checkBarcodeForSelection(model.id)
+                                },
                                 onCardClick = { model ->
-                                    viewmodel.onIntent(MainIntent.ShowBottomsheet(model))
+                                    if (selectionMode.value)
+                                        cardSelector.checkBarcodeForSelection(model.id)
+                                    else
+                                        viewmodel.onIntent(MainIntent.ShowBottomsheet(model))
+                                },
+                                onDeleteClicked = { id ->
+                                    viewmodel.deleteBarcodes(id)
                                 })
                             Space(height = mSize)
                         }
@@ -125,7 +148,73 @@ fun MainScreen(
 }
 
 @Composable
-private fun MainTopBar(onTextChanged: (String) -> Unit = {}, viewModel: BargenViewModel) {
+private fun MainTopBar(
+    inSelectionMode: State<Boolean>,
+    viewModel: BargenViewModel,
+    onTextChanged: (String) -> Unit = {}
+) {
+    val cardSelector = viewModel.cardSelector
+    if (inSelectionMode.value)
+        SelectionTopBar(
+            undoSelectionMode = {
+                cardSelector.cleanSelection()
+            }, selectAll = {
+                cardSelector.selectAll()
+            },
+            delete = {
+                cardSelector.deleteAllSelected {
+                    viewModel.updatePager()
+                }
+            }
+        )
+    else
+        BasicTopBar(viewModel = viewModel, onTextChanged = onTextChanged)
+}
+
+@Composable
+private fun SelectionTopBar(
+    undoSelectionMode: () -> Unit,
+    selectAll: () -> Unit,
+    delete: () -> Unit
+) {
+    val confirmationDialogShowState = remember { mutableStateOf(false) }
+
+    if (confirmationDialogShowState.value)
+        DeleteConfirmationDialog(onDismiss = {
+            confirmationDialogShowState.value = false
+        }) {
+            delete()
+        }
+
+    Row(modifier = Modifier.fillMaxWidth()) {
+        TextButton(onClick = {
+            undoSelectionMode()
+        }) {
+            Text(text = stringResource(R.string.cancel))
+        }
+        Spacer(modifier = Modifier.weight(1f))
+        TextButton(onClick = {
+            selectAll()
+        }) {
+            Text(text = stringResource(R.string.check_all))
+        }
+
+        TextButton(onClick = {
+            confirmationDialogShowState.value = true
+        }) {
+            Text(
+                text = stringResource(R.string.delete),
+                color = MaterialTheme.colorScheme.error
+            )
+        }
+    }
+}
+
+@Composable
+private fun BasicTopBar(
+    viewModel: BargenViewModel,
+    onTextChanged: (String) -> Unit = {}
+) {
     val showSortMenu = remember { mutableStateOf<Offset?>(null) }
 
     if (showSortMenu.value != null)

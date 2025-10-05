@@ -62,6 +62,7 @@ fun SetupTagDialog(
                     modifier = Modifier.fillMaxWidth(),
                     value = modelState.value.name,
                     placeholder = { Text(text = stringResource(R.string.name)) },
+                    label = { Text(text = stringResource(R.string.name)) },
                     onValueChange = {
                         modelState.value = modelState.value.copy(name = it)
                     })
@@ -107,7 +108,7 @@ fun SetupTagDialog(
 private fun PickColorItem(titleRes: Int, pickedColor: Int?, onColorPicked: (Int) -> Unit) {
     val colorPickerShown = remember { mutableStateOf(false) }
     Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-        Text(text = stringResource(titleRes), style = MaterialTheme.typography.labelMedium)
+        Text(text = stringResource(titleRes), style = MaterialTheme.typography.labelLarge)
         Spacer(Modifier.weight(1f))
 
         if (colorPickerShown.value)

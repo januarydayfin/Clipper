@@ -25,7 +25,6 @@ class BarcodeRepo {
     }
 
 
-
     suspend fun searchWithFilter(filter: String) = withContext(Dispatchers.IO) {
         barcodes.getFilteredBarcodes(filter)
     }
@@ -65,7 +64,7 @@ class BarcodeRepo {
     }
 
 
-    private suspend fun getAllBarcodes(sort: SortType) = withContext(Dispatchers.IO) {
+     suspend fun getAllBarcodes(sort: SortType = SortType.NAME) = withContext(Dispatchers.IO) {
         when (sort) {
             SortType.NAME -> barcodes.getBarcodesByName()
             SortType.DATE_ASC -> barcodes.getBarcodesByDateAsc()

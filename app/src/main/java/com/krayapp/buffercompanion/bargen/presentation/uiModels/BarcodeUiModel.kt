@@ -9,8 +9,6 @@ data class BarcodeUiModel(
     val description: String,
     val tags: List<TagUiModel>,
     val content: String,
-    val selectionMode: Boolean = false,
-    val checkedForDeletion: Boolean = false
 ) {
     companion object {
         val UNDEFINED
