@@ -177,8 +177,8 @@ private fun ContentInfo(
 ) {
     Column(modifier = modifier.padding(vertical = sSize)) {
         val textStyle = MaterialTheme.typography.titleMedium
-        Text(text = content, style = textStyle)
-        Text(text = name, style = textStyle)
+        Text(text = content, style = textStyle, maxLines = 2)
+        Text(text = name, style = textStyle, maxLines = 2)
 
         FlowRow(Modifier.fillMaxWidth()) {
             tags.forEach { BargenChip(model = it, selectable = false) }

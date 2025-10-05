@@ -59,6 +59,7 @@ import com.krayapp.buffercompanion.bargen.utils.Space
 
 @Composable
 fun MainScreen(
+    onScanClicked: () -> Unit
 ) {
     val viewmodel: BargenViewModel = viewModel()
     val lazyItems = viewmodel.barcodePagingData.collectAsLazyPagingItems()
@@ -103,7 +104,8 @@ fun MainScreen(
                     onCreateClicked = {
                         viewmodel.onIntent(MainIntent.CreateNewBarcode)
                     },
-                    onTagsClicked = { viewmodel.onIntent(MainIntent.ShowTagsMenu) }
+                    onTagsClicked = { viewmodel.onIntent(MainIntent.ShowTagsMenu) },
+                    onScanClicked = onScanClicked
                 )
             }
         }
@@ -175,7 +177,6 @@ private fun SearchBar(modifier: Modifier = Modifier, onTextChanged: (String) -> 
 }
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
-@Preview()
 @Composable
 private fun BottomButtonGroup(
     modifier: Modifier = Modifier,

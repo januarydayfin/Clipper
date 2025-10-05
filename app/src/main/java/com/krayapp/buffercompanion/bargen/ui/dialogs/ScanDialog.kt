@@ -1,5 +1,6 @@
 package com.krayapp.buffercompanion.bargen.ui.dialogs
 
+import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -40,6 +41,8 @@ class ScanDialog(private val onScanned: (BarcodeResult?) -> Unit) : DialogFragme
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        dialog?.setTransparent()
         binding?.run {
             root.layoutParams = FrameLayout.LayoutParams(dialogWidth, dialogWidth)
             scanner.barcodeView.framingRectSize = Size(dialogWidth, dialogWidth)
@@ -58,4 +61,8 @@ class ScanDialog(private val onScanned: (BarcodeResult?) -> Unit) : DialogFragme
             }
         }
     }
+}
+
+private fun Dialog?.setTransparent() {
+    this?.window?.setBackgroundDrawableResource(R.drawable.dialog_background)
 }

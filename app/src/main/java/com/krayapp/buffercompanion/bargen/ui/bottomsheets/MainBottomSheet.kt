@@ -230,6 +230,7 @@ private fun StringedInfo(
         onValueChange = {
             onUpdate(model.copy(content = it))
         },
+        maxLines = 2,
         label = {
             Text(text = stringResource(R.string.content))
         })

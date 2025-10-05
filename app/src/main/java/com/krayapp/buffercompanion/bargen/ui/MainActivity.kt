@@ -9,13 +9,14 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import com.krayapp.buffercompanion.bargen.ClipperApp
 import com.krayapp.buffercompanion.bargen.theme.AppTheme
 import com.krayapp.buffercompanion.bargen.ui.bottomsheets.MainBottomSheet
 import com.krayapp.buffercompanion.bargen.ui.bottomsheets.TagsBottomSheet
+import com.krayapp.buffercompanion.bargen.ui.dialogs.ScanDialog
 import com.krayapp.buffercompanion.bargen.ui.mvi.BargenViewModel
 import com.krayapp.buffercompanion.bargen.ui.mvi.BottomSheetStateData
+import com.krayapp.buffercompanion.bargen.ui.mvi.MainIntent
 import com.krayapp.buffercompanion.bargen.ui.mvi.ShowTagsBottomsheet
 import com.krayapp.buffercompanion.bargen.ui.mvi.canShowMainBottomSheet
 import com.krayapp.buffercompanion.bargen.ui.mvi.canShowTagBottomSheet
@@ -33,7 +34,17 @@ class MainActivity : AppCompatActivity() {
             AppTheme {
                 val mviState = viewmodel.uiState.collectAsState()
 
-                MainScreen()
+                MainScreen {
+                    ScanDialog {
+                        it ?: return@ScanDialog
+                        viewmodel.createBarcodeRecord(
+                            text = it.text,
+                            format = it.barcodeFormat
+                        ) { model ->
+                            viewmodel.onIntent(MainIntent.ShowBottomsheet(model))
+                        }
+                    }.show(supportFragmentManager, "")
+                }
 
                 when {
                     mviState.value.canShowMainBottomSheet -> ShowMainBottomSheet(mviState.value.bottomSheetData!!)
@@ -51,7 +62,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     @Composable
-    private fun ShowTagBottomsheet(data: ShowTagsBottomsheet){
+    private fun ShowTagBottomsheet(data: ShowTagsBottomsheet) {
         TagsBottomSheet {
             viewmodel.recycleEffect(data)
             viewmodel.updatePager()
