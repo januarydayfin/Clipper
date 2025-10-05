@@ -9,7 +9,7 @@
         android:shortcutShortLabel="@string/create_from_buffer">
         <intent
             android:action="bargen.create.qr.buffer"
-            android:targetClass="com.krayapp.buffercompanion.bargen.ui.MainActivity"
+            android:targetClass="com.krayapp.buffercompanion.bargen.presentation.MainActivity"
             android:targetPackage="com.krayapp.buffercompanion.bargen" />
         <!-- If your shortcut is associated with multiple intents, include them
              here. The last intent in the list determines what the user sees when

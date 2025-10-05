@@ -1,6 +1,6 @@
-package com.krayapp.buffercompanion.bargen.ui.mvi
+package com.krayapp.buffercompanion.bargen.presentation.mvi
 
-import com.krayapp.buffercompanion.bargen.ui.models.BarcodeUiModel
+import com.krayapp.buffercompanion.bargen.presentation.uiModels.BarcodeUiModel
 
 sealed class MainIntent {
     data class ShowBottomsheet(val uiModel: BarcodeUiModel) : MainIntent()

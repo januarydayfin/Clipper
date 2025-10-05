@@ -1,4 +1,4 @@
-package com.krayapp.buffercompanion.bargen.ui.mvi
+package com.krayapp.buffercompanion.bargen.presentation.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -14,15 +14,15 @@ import com.krayapp.buffercompanion.bargen.data.FilterState
 import com.krayapp.buffercompanion.bargen.data.SortType
 import com.krayapp.buffercompanion.bargen.data.TagsRepo
 import com.krayapp.buffercompanion.bargen.data.room.bargen.entity.BarcodeEntity
-import com.krayapp.buffercompanion.bargen.ui.models.BarcodeUiModel
-import com.krayapp.buffercompanion.bargen.ui.models.TagUiModel
-import com.krayapp.buffercompanion.bargen.ui.mvi.stateManager.StateManager
+import com.krayapp.buffercompanion.bargen.presentation.mvi.Effect
+import com.krayapp.buffercompanion.bargen.presentation.mvi.MainIntent
+import com.krayapp.buffercompanion.bargen.presentation.uiModels.BarcodeUiModel
+import com.krayapp.buffercompanion.bargen.presentation.uiModels.TagUiModel
+import com.krayapp.buffercompanion.bargen.presentation.mvi.stateManager.StateManager
 import com.krayapp.buffercompanion.bargen.utils.currentSortType
 import com.krayapp.buffercompanion.bargen.utils.launchInIO
 import com.krayapp.buffercompanion.bargen.utils.toBarcodeUiModel
-import com.krayapp.buffercompanion.bargen.utils.toEntity
 import com.krayapp.buffercompanion.bargen.utils.toTagUiModel
-import com.krayapp.buffercompanion.bargen.utils.withIO
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow

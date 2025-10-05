@@ -1,4 +1,4 @@
-package com.krayapp.buffercompanion.bargen.ui
+package com.krayapp.buffercompanion.bargen.presentation
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -22,7 +22,7 @@ import com.krayapp.buffercompanion.bargen.R
 import com.krayapp.buffercompanion.bargen.theme.labelIconSize
 import com.krayapp.buffercompanion.bargen.theme.sSize
 import com.krayapp.buffercompanion.bargen.theme.xsSize
-import com.krayapp.buffercompanion.bargen.ui.models.TagUiModel
+import com.krayapp.buffercompanion.bargen.presentation.uiModels.TagUiModel
 import com.krayapp.buffercompanion.bargen.utils.Space
 import com.krayapp.buffercompanion.bargen.utils.modifiers.onCombinedTapScreenOffset
 

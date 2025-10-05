@@ -1,11 +1,11 @@
-package com.krayapp.buffercompanion.bargen.ui.mvi.stateManager
+package com.krayapp.buffercompanion.bargen.presentation.mvi.stateManager
 
-import com.krayapp.buffercompanion.bargen.ui.models.BarcodeUiModel
-import com.krayapp.buffercompanion.bargen.ui.mvi.BottomSheetStateData
-import com.krayapp.buffercompanion.bargen.ui.mvi.Effect
-import com.krayapp.buffercompanion.bargen.ui.mvi.MainIntent
-import com.krayapp.buffercompanion.bargen.ui.mvi.MviState
-import com.krayapp.buffercompanion.bargen.ui.mvi.ShowTagsBottomsheet
+import com.krayapp.buffercompanion.bargen.presentation.uiModels.BarcodeUiModel
+import com.krayapp.buffercompanion.bargen.presentation.mvi.BottomSheetStateData
+import com.krayapp.buffercompanion.bargen.presentation.mvi.Effect
+import com.krayapp.buffercompanion.bargen.presentation.mvi.MainIntent
+import com.krayapp.buffercompanion.bargen.presentation.mvi.MviState
+import com.krayapp.buffercompanion.bargen.presentation.mvi.ShowTagsBottomsheet
 import com.krayapp.buffercompanion.bargen.utils.withIO
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

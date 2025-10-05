@@ -1,4 +1,4 @@
-package com.krayapp.buffercompanion.bargen.ui.bottomsheets
+package com.krayapp.buffercompanion.bargen.presentation.bottomsheets
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
@@ -19,13 +19,12 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.journeyapps.barcodescanner.CompoundBarcodeView
 import com.krayapp.buffercompanion.bargen.R
 import com.krayapp.buffercompanion.bargen.theme.mSize
-import com.krayapp.buffercompanion.bargen.ui.BargenChip
-import com.krayapp.buffercompanion.bargen.ui.dialogs.SetupTagDialog
-import com.krayapp.buffercompanion.bargen.ui.models.TagUiModel
-import com.krayapp.buffercompanion.bargen.ui.mvi.TagsViewModel
+import com.krayapp.buffercompanion.bargen.presentation.BargenChip
+import com.krayapp.buffercompanion.bargen.presentation.dialogs.SetupTagDialog
+import com.krayapp.buffercompanion.bargen.presentation.uiModels.TagUiModel
+import com.krayapp.buffercompanion.bargen.presentation.viewmodels.TagsViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)

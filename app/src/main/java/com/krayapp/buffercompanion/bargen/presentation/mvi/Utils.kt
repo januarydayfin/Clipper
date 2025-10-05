@@ -1,4 +1,4 @@
-package com.krayapp.buffercompanion.bargen.ui.mvi
+package com.krayapp.buffercompanion.bargen.presentation.mvi
 
 val MviState.canShowMainBottomSheet
     get() = bottomSheetData != null

@@ -1,4 +1,4 @@
-package com.krayapp.buffercompanion.bargen.ui.dialogs
+package com.krayapp.buffercompanion.bargen.presentation.dialogs
 
 import android.content.DialogInterface
 import android.os.Bundle

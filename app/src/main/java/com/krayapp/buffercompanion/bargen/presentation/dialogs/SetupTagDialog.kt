@@ -1,4 +1,4 @@
-package com.krayapp.buffercompanion.bargen.ui.dialogs
+package com.krayapp.buffercompanion.bargen.presentation.dialogs
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -38,8 +38,8 @@ import com.krayapp.buffercompanion.bargen.R
 import com.krayapp.buffercompanion.bargen.theme.barcodePreviewSize
 import com.krayapp.buffercompanion.bargen.theme.mSize
 import com.krayapp.buffercompanion.bargen.theme.sSize
-import com.krayapp.buffercompanion.bargen.ui.BargenChip
-import com.krayapp.buffercompanion.bargen.ui.models.TagUiModel
+import com.krayapp.buffercompanion.bargen.presentation.BargenChip
+import com.krayapp.buffercompanion.bargen.presentation.uiModels.TagUiModel
 import com.krayapp.buffercompanion.bargen.utils.Space
 
 @OptIn(ExperimentalMaterial3Api::class)

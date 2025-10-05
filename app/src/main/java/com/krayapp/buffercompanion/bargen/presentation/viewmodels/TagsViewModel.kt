@@ -1,8 +1,8 @@
-package com.krayapp.buffercompanion.bargen.ui.mvi
+package com.krayapp.buffercompanion.bargen.presentation.viewmodels
 
 import androidx.lifecycle.ViewModel
 import com.krayapp.buffercompanion.bargen.data.TagsRepo
-import com.krayapp.buffercompanion.bargen.ui.models.TagUiModel
+import com.krayapp.buffercompanion.bargen.presentation.uiModels.TagUiModel
 import com.krayapp.buffercompanion.bargen.utils.launchInIO
 import com.krayapp.buffercompanion.bargen.utils.toEntity
 import com.krayapp.buffercompanion.bargen.utils.toTagUiModel

@@ -1,4 +1,4 @@
-package com.krayapp.buffercompanion.bargen.ui.adapter
+package com.krayapp.buffercompanion.bargen.presentation
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -41,9 +41,8 @@ import com.krayapp.buffercompanion.bargen.theme.barcodePreviewSize
 import com.krayapp.buffercompanion.bargen.theme.mSize
 import com.krayapp.buffercompanion.bargen.theme.sSize
 import com.krayapp.buffercompanion.bargen.theme.xsSize
-import com.krayapp.buffercompanion.bargen.ui.BargenChip
-import com.krayapp.buffercompanion.bargen.ui.models.BarcodeUiModel
-import com.krayapp.buffercompanion.bargen.ui.models.TagUiModel
+import com.krayapp.buffercompanion.bargen.presentation.uiModels.BarcodeUiModel
+import com.krayapp.buffercompanion.bargen.presentation.uiModels.TagUiModel
 import com.krayapp.buffercompanion.bargen.utils.Space
 import com.krayapp.buffercompanion.bargen.utils.modifiers.onCombinedTapScreenOffset
 import kotlinx.coroutines.launch

@@ -1,4 +1,4 @@
-package com.krayapp.buffercompanion.bargen.ui
+package com.krayapp.buffercompanion.bargen.presentation
 
 import android.os.Bundle
 import android.view.KeyEvent
@@ -11,16 +11,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import com.krayapp.buffercompanion.bargen.ClipperApp
 import com.krayapp.buffercompanion.bargen.theme.AppTheme
-import com.krayapp.buffercompanion.bargen.ui.bottomsheets.MainBottomSheet
-import com.krayapp.buffercompanion.bargen.ui.bottomsheets.TagsBottomSheet
-import com.krayapp.buffercompanion.bargen.ui.dialogs.ScanDialog
-import com.krayapp.buffercompanion.bargen.ui.mvi.BargenViewModel
-import com.krayapp.buffercompanion.bargen.ui.mvi.BottomSheetStateData
-import com.krayapp.buffercompanion.bargen.ui.mvi.MainIntent
-import com.krayapp.buffercompanion.bargen.ui.mvi.ShowTagsBottomsheet
-import com.krayapp.buffercompanion.bargen.ui.mvi.canShowMainBottomSheet
-import com.krayapp.buffercompanion.bargen.ui.mvi.canShowTagBottomSheet
-import com.krayapp.buffercompanion.bargen.ui.screens.MainScreen
+import com.krayapp.buffercompanion.bargen.presentation.bottomsheets.MainBottomSheet
+import com.krayapp.buffercompanion.bargen.presentation.bottomsheets.TagsBottomSheet
+import com.krayapp.buffercompanion.bargen.presentation.dialogs.ScanDialog
+import com.krayapp.buffercompanion.bargen.presentation.viewmodels.BargenViewModel
+import com.krayapp.buffercompanion.bargen.presentation.mvi.BottomSheetStateData
+import com.krayapp.buffercompanion.bargen.presentation.mvi.MainIntent
+import com.krayapp.buffercompanion.bargen.presentation.mvi.ShowTagsBottomsheet
+import com.krayapp.buffercompanion.bargen.presentation.mvi.canShowMainBottomSheet
+import com.krayapp.buffercompanion.bargen.presentation.mvi.canShowTagBottomSheet
+import com.krayapp.buffercompanion.bargen.presentation.screens.MainScreen
 
 
 class MainActivity : AppCompatActivity() {

@@ -34,7 +34,7 @@
 
 		<activity
 			android:windowSoftInputMode="adjustResize"
-			android:name="com.krayapp.buffercompanion.bargen.ui.MainActivity"
+			android:name="com.krayapp.buffercompanion.bargen.presentation.MainActivity"
 			android:exported="true">
 
 			<intent-filter>

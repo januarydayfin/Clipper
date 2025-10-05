@@ -1,4 +1,4 @@
-package com.krayapp.buffercompanion.bargen.ui.screens
+package com.krayapp.buffercompanion.bargen.presentation.screens
 
 import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.animation.core.tween
@@ -52,9 +52,9 @@ import com.krayapp.buffercompanion.bargen.theme.defaultAnimationDuration
 import com.krayapp.buffercompanion.bargen.theme.lSize
 import com.krayapp.buffercompanion.bargen.theme.mSize
 import com.krayapp.buffercompanion.bargen.theme.sSize
-import com.krayapp.buffercompanion.bargen.ui.adapter.BarcodeCard
-import com.krayapp.buffercompanion.bargen.ui.mvi.BargenViewModel
-import com.krayapp.buffercompanion.bargen.ui.mvi.MainIntent
+import com.krayapp.buffercompanion.bargen.presentation.BarcodeCard
+import com.krayapp.buffercompanion.bargen.presentation.viewmodels.BargenViewModel
+import com.krayapp.buffercompanion.bargen.presentation.mvi.MainIntent
 import com.krayapp.buffercompanion.bargen.utils.Space
 
 @Composable

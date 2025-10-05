@@ -1,4 +1,4 @@
-package com.krayapp.buffercompanion.bargen.ui.models
+package com.krayapp.buffercompanion.bargen.presentation.uiModels
 
 import java.util.UUID
 

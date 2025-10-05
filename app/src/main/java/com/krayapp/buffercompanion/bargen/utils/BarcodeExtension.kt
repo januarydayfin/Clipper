@@ -17,7 +17,7 @@ import com.google.android.material.chip.ChipDrawable
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.krayapp.buffercompanion.bargen.ClipperApp
 import com.krayapp.buffercompanion.bargen.R
-import com.krayapp.buffercompanion.bargen.ui.models.TagUiModel
+import com.krayapp.buffercompanion.bargen.presentation.uiModels.TagUiModel
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
