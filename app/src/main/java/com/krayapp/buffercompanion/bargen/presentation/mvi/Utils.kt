@@ -5,3 +5,6 @@ val MviState.canShowMainBottomSheet
 
 val MviState.canShowTagBottomSheet
     get() = showTagBottomSheet.show
+
+val MviState.canShowSettingsBottomsheet
+    get() = showSettingsBottomSheet.show

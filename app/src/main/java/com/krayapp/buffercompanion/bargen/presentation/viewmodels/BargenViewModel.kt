@@ -45,14 +45,15 @@ class BargenViewModel : ViewModel() {
 
     val uiState = stateManager.state
 
-    private var sortType = MutableStateFlow(currentSortType)
+    private val _sortType = MutableStateFlow(currentSortType)
+    val sortType = _sortType.asStateFlow()
 
     private val filterState = MutableStateFlow(FilterState())
 
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val barcodePagingData: Flow<PagingData<BarcodeUiModel>> =
-        filterState.combine(sortType) { filter, sort ->
+        filterState.combine(_sortType) { filter, sort ->
             filter to sort
         }.flatMapLatest { filterSort ->
             val filterState = filterSort.first
@@ -127,7 +128,7 @@ class BargenViewModel : ViewModel() {
     }
 
     fun changeSort(sortType: SortType) {
-        this.sortType.value = sortType
+        this._sortType.value = sortType
         ClipperApp.getPrefs().sortType = sortType.toString()
     }
 

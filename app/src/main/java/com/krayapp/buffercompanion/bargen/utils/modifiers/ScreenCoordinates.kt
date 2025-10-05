@@ -13,19 +13,15 @@ fun Modifier.onCombinedTapScreenOffset(
     onLong: (Offset) -> Unit = {}
 ): Modifier {
     var globalOffset = Offset(0f, 0f)
-    var viewHeight = 0
     return this
         .onGloballyPositioned {
             globalOffset = it.positionOnScreen()
-            viewHeight = it.size.height
         }
         .pointerInput(true) {
             detectTapGestures(onTap = {
-                val summ = globalOffset + it
-                onTap(summ.copy(y = summ.y - viewHeight))
+                onTap(globalOffset + it)
             }, onLongPress = { touchOffset ->
-                val summ = globalOffset + touchOffset
-                onLong(summ.copy(y = summ.y - viewHeight))
+                onLong(globalOffset + touchOffset)
             })
         }
 }

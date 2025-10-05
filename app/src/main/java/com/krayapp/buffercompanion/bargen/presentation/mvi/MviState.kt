@@ -5,7 +5,7 @@ import com.krayapp.buffercompanion.bargen.presentation.uiModels.BarcodeUiModel
 data class MviState(
     val bottomSheetData: BottomSheetStateData? = null,
     val showTagBottomSheet: ShowTagsBottomsheet = ShowTagsBottomsheet(),
-    val showSettingsBottomSheet: ShowSettingsBottomsheet = ShowSettingsBottomsheet()
+    val showSettingsBottomSheet: ShowSettingsBottomsheet = ShowSettingsBottomsheet(),
     val showSortBottomSheet: ShowSortBottomsheet = ShowSortBottomsheet()
 )
 

@@ -75,7 +75,10 @@ fun SetupTagDialog(
                 }
                 Space(height = sSize)
 
-                PickColorItem(titleRes = R.string.tag_font_color, pickedColor = modelState.value.fontColor) {
+                PickColorItem(
+                    titleRes = R.string.tag_font_color,
+                    pickedColor = modelState.value.fontColor
+                ) {
                     modelState.value = modelState.value.copy(fontColor = it)
                 }
 
