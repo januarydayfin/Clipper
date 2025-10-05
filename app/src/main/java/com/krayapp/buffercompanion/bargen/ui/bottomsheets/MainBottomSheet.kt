@@ -1,6 +1,8 @@
 package com.krayapp.buffercompanion.bargen.ui.bottomsheets
 
 import android.graphics.Bitmap
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -34,6 +36,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
@@ -46,8 +49,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.zxing.BarcodeFormat
 import com.krayapp.buffercompanion.bargen.R
 import com.krayapp.buffercompanion.bargen.bargenCore.generator.BarcodeGenerator
-import com.krayapp.buffercompanion.bargen.data.room.bargen.entity.BarcodeEntity
-import com.krayapp.buffercompanion.bargen.testTagUiModel
 import com.krayapp.buffercompanion.bargen.theme.lSize
 import com.krayapp.buffercompanion.bargen.theme.mSize
 import com.krayapp.buffercompanion.bargen.ui.BargenChip
@@ -64,10 +65,8 @@ import kotlinx.coroutines.launch
 fun MainBottomSheet(
     model: BarcodeUiModel,
     onDismiss: () -> Unit = {},
-    onSharePicture: () -> Unit = {},
-    onSaveStoragePicture: () -> Unit = {},
-    tagFounder: suspend (name: String) -> List<TagUiModel> = { emptyList() },
-    entityFounder: suspend (id: String?) -> BarcodeEntity? = { null }
+    onSharePicture: (Bitmap) -> Unit = {},
+    onSaveStoragePicture: (Bitmap) -> Unit = {},
 ) {
     val viewmodel: BargenViewModel = viewModel()
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -91,7 +90,7 @@ fun MainBottomSheet(
             onDismiss()
         }) {
 
-        fun hideBottomsheet() {
+        fun dismissBottomSheet() {
             scope.launch {
                 sheetState.hide()
             }
@@ -99,7 +98,7 @@ fun MainBottomSheet(
 
         Row {
             TextButton(onClick = {
-                hideBottomsheet()
+                dismissBottomSheet()
             }) {
                 Text(text = stringResource(R.string.cancel))
             }
@@ -108,6 +107,8 @@ fun MainBottomSheet(
             TextButton(onClick = {
                 scope.launch {
                     viewmodel.createBarcodeRecord(modelState.value.toBarcodeEntity())
+                    viewmodel.recordTags(modelState.value.tags)
+                    dismissBottomSheet()
                 }
 
             }) { Text(text = stringResource(R.string.apply)) }
@@ -126,13 +127,17 @@ fun MainBottomSheet(
             StringedInfo(modelState) {
                 modelState.value = it
             }
-            TagBlock(foundTagsInDb = {
-                testTagUiModel
-            }) {
-                scope.launch {
-                    scrollState.scrollTo(scrollState.maxValue)
-                }
-            }
+            TagBlock(
+                initialValue = model.tags,
+                viewModel = viewModel(),
+                onScrollToBottom = {
+                    scope.launch {
+                        scrollState.scrollTo(scrollState.maxValue)
+                    }
+                },
+                onTagsAdded = { tags ->
+                    modelState.value = modelState.value.copy(tags = tags)
+                })
         }
 
     }
@@ -249,23 +254,41 @@ private fun StringedInfo(
 
 @Composable
 private fun TagBlock(
-    foundTagsInDb: (String) -> List<TagUiModel>,
-    onScrollToBottom: () -> Unit = {}
+    initialValue: List<TagUiModel> = emptyList(),
+    viewModel: BargenViewModel,
+    onScrollToBottom: () -> Unit = {},
+    onTagsAdded: (List<TagUiModel>) -> Unit
 ) {
-    val tagsTextFieldState = rememberTextFieldState()
-
-    val newTags = mutableListOf<TagUiModel>()
-    val previewTags = mutableListOf<TagUiModel>()
+    val tagsTextFieldState =
+        rememberTextFieldState(initialText = initialValue.joinToString { it.name })
+    val scope = rememberCoroutineScope()
+    val newTags = mutableListOf<TagUiModel>().toMutableStateList()
+    val previewTags = mutableListOf<TagUiModel>().toMutableStateList()
 
     val nameList = tagsTextFieldState.text.splitRawTagsForNames()
 
+    val flowRowAnimate = Modifier.animateContentSize(
+        animationSpec = tween(
+            durationMillis = 200,
+            delayMillis = 50
+        )
+    ) { _, _ -> }
 
-    nameList.forEach { stringName ->
-        if (stringName.isNotEmpty()) {
-            val foundTags = foundTagsInDb(stringName)
-            val exactTag = runCatching { foundTags.first { stringName == it.name } }.getOrNull()
-            newTags.add(exactTag ?: TagUiModel(name = stringName))
-            previewTags.addAll(foundTags.filter { it !in newTags })
+    suspend fun foundTagsInDb(name: String) = viewModel.findTagWithName(name)
+
+
+    SideEffect {
+        scope.launch {
+            nameList.forEach { stringName ->
+                if (stringName.isNotEmpty()) {
+                    val foundTags = foundTagsInDb(stringName)
+                    val exactTag =
+                        runCatching { foundTags.first { stringName == it.name } }.getOrNull()
+                    newTags.add(exactTag ?: TagUiModel(name = stringName))
+                    previewTags.addAll(foundTags.filter { it !in newTags })
+                    onTagsAdded(newTags.toList())
+                }
+            }
         }
     }
 
@@ -283,7 +306,8 @@ private fun TagBlock(
 
         //добавляемые теги
         FlowRow(
-            horizontalArrangement = Arrangement.Start
+            horizontalArrangement = Arrangement.Start,
+            modifier = flowRowAnimate
         ) {
             newTags.toList().forEach {
                 BargenChip(it)
@@ -296,7 +320,8 @@ private fun TagBlock(
         )
         //превью
         FlowRow(
-            horizontalArrangement = Arrangement.Start
+            modifier = flowRowAnimate,
+            horizontalArrangement = Arrangement.Start,
         ) {
             previewTags.toList().distinct().forEach {
                 BargenChip(it) {

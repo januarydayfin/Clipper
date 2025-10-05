@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -21,7 +20,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.input.rememberTextFieldState
-
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -47,33 +45,34 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
 import com.krayapp.buffercompanion.bargen.R
-import com.krayapp.buffercompanion.bargen.testBarcodeUiModel
 import com.krayapp.buffercompanion.bargen.theme.defaultAnimationDuration
 import com.krayapp.buffercompanion.bargen.theme.lSize
 import com.krayapp.buffercompanion.bargen.theme.mSize
 import com.krayapp.buffercompanion.bargen.theme.sSize
 import com.krayapp.buffercompanion.bargen.ui.adapter.BarcodeCard
-import com.krayapp.buffercompanion.bargen.ui.models.BarcodeUiModel
 import com.krayapp.buffercompanion.bargen.ui.mvi.BargenViewModel
 import com.krayapp.buffercompanion.bargen.ui.mvi.MainIntent
 import com.krayapp.buffercompanion.bargen.utils.Space
 
-@Preview(showBackground = true)
 @Composable
 fun MainScreen(
-    data: List<BarcodeUiModel> = testBarcodeUiModel,
-    onSearchTextChanged: (String) -> Unit = { }
 ) {
     val viewmodel: BargenViewModel = viewModel()
+    val lazyItems = viewmodel.barcodePagingData.collectAsLazyPagingItems()
     val lazyListState = rememberLazyListState()
+
     Scaffold {
         Column(
             Modifier
                 .padding(it)
                 .fillMaxSize()
         ) {
-            MainTopBar(onTextChanged = onSearchTextChanged)
+            MainTopBar(onTextChanged = { text ->
+                viewmodel.updateNameFilter(text)
+            })
             Box(
                 modifier = Modifier.fillMaxSize(),
             ) {
@@ -84,12 +83,18 @@ fun MainScreen(
                         .padding(top = mSize, start = mSize, end = mSize)
                 ) {
                     items(
-                        count = data.size
+                        count = lazyItems.itemCount,
+                        key = lazyItems.itemKey { item -> item.id }
                     ) { index ->
-                        BarcodeCard(uiModel = data[index], onCardClick = {
-                            viewmodel.onIntent(MainIntent.ShowBottomsheet(it))
-                        })
-                        Spacer(Modifier.height(mSize))
+                        val item = lazyItems[index]
+                        if (item != null) {
+                            BarcodeCard(
+                                uiModel = item,
+                                onCardClick = { model ->
+                                    viewmodel.onIntent(MainIntent.ShowBottomsheet(model))
+                                })
+                            Space(height = mSize)
+                        }
                     }
                 }
                 BottomButtonGroup(
@@ -132,6 +137,7 @@ private fun MainTopBar(onTextChanged: (String) -> Unit = {}) {
     }
 }
 
+@Preview
 @Composable
 private fun SearchBar(modifier: Modifier = Modifier, onTextChanged: (String) -> Unit = {}) {
     val textFieldState = rememberTextFieldState()
@@ -155,8 +161,7 @@ private fun SearchBar(modifier: Modifier = Modifier, onTextChanged: (String) -> 
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                 state = textFieldState,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = mSize),
+                    .fillMaxWidth(),
                 colors = TextFieldDefaults.colors().copy(
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,

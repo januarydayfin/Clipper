@@ -50,5 +50,7 @@ interface BarcodeDao {
     @Query("SELECT * FROM barcodes ORDER BY name DESC")
     fun getBarcodesByNamePaging(): PagingSource<Int, BarcodeEntity>
 
+    @Query("SELECT * FROM barcodes WHERE name LIKE '%' || :filter || '%' OR content LIKE '%' || :filter || '%'")
+    fun getFilteredBarcodesPaging(filter: String): PagingSource<Int, BarcodeEntity>
 
 }

@@ -29,9 +29,7 @@ class MainActivity : AppCompatActivity() {
             AppTheme {
                 val mviState = viewmodel.uiState.collectAsState()
 
-                MainScreen {
-
-                }
+                MainScreen()
 
                 when {
                     mviState.value.canShowMainBottomSheet -> ShowMainBottomSheet(mviState.value.bottomSheetData!!)

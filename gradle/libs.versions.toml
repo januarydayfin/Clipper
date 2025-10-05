@@ -19,6 +19,7 @@ composeUi = "1.9.2" # Для ui-unit-android
 composeUiTooling = "1.9.2" # Часто используется для ui-tooling
 composeMaterial3 = "1.5.0-alpha04" # Обновил до более общей версии для Material3
 adaptive = "1.1.0"
+composePaging = "3.3.6"
 
 # Сторонние библиотеки
 colorpicker = "2.3.0"
@@ -49,6 +50,7 @@ google-material = { group = "com.google.android.material", name = "material", ve
 google-play-review-ktx = { group = "com.google.android.play", name = "review-ktx", version.ref = "playReview" }
 
 # Compose UI/Material
+androidx-compose-paging = { group = "androidx.paging", name = "paging-compose", version.ref = "composePaging" }
 androidx-compose-ui-unit-android = { group = "androidx.compose.ui", name = "ui-unit-android", version.ref = "composeUi" }
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "composeMaterial3" }
 androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
@@ -89,4 +91,4 @@ androidx-paging-common-android = { group = "androidx.paging", name = "paging-com
 room = ["androidx-room-paging", "androidx-room-runtime", "androidx-room-ktx"]
 navigation = ["androidx-navigation-fragment-ktx", "androidx-navigation-ui-ktx"]
 core = ["androidx-core-ktx", "androidx-appcompat", "androidx-recyclerview", "google-material", "androidx-lifecycle-viewmodel-ktx"]
-compose = ["androidx-activity-compose", "androidx-compose-ui-unit-android", "androidx-compose-material3", "androidx-compose-ui-tooling-preview", "androidx-compose-material3-adaptive", "androidx-lifecycle-viewmodel-compose"]
+compose = ["androidx-compose-paging", "androidx-activity-compose", "androidx-compose-ui-unit-android", "androidx-compose-material3", "androidx-compose-ui-tooling-preview", "androidx-compose-material3-adaptive", "androidx-lifecycle-viewmodel-compose"]

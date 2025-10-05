@@ -4,12 +4,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import androidx.paging.map
 import com.google.zxing.BarcodeFormat
 import com.krayapp.buffercompanion.bargen.ClipperApp
-import com.krayapp.buffercompanion.bargen.data.BargenRepo
+import com.krayapp.buffercompanion.bargen.data.BarcodeRepo
 import com.krayapp.buffercompanion.bargen.data.FilterState
 import com.krayapp.buffercompanion.bargen.data.SortType
+import com.krayapp.buffercompanion.bargen.data.TagsRepo
 import com.krayapp.buffercompanion.bargen.data.room.bargen.entity.BarcodeEntity
 import com.krayapp.buffercompanion.bargen.ui.models.BarcodeUiModel
 import com.krayapp.buffercompanion.bargen.ui.models.TagUiModel
@@ -21,12 +24,18 @@ import com.krayapp.buffercompanion.bargen.utils.toBarcodeUiModel
 import com.krayapp.buffercompanion.bargen.utils.toEntity
 import com.krayapp.buffercompanion.bargen.utils.toTagUiModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
 class BargenViewModel : ViewModel() {
-    private val repo = BargenRepo()
+    private val barcodeRepo = BarcodeRepo()
+    private val tagsRepo = TagsRepo()
 
     private val _tagsFilterFlow = MutableStateFlow<List<TagUiModel>>(emptyList())
     val tagFilterFlow = _tagsFilterFlow.asStateFlow()
@@ -35,27 +44,44 @@ class BargenViewModel : ViewModel() {
 
     val uiState = stateManager.state
 
-    private var sortType: SortType
-        get() = currentSortType
-        set(value) {
-            ClipperApp.getPrefs().sortType = value.toString()
+    private var sortType = MutableStateFlow(currentSortType)
+
+    private val filterState = MutableStateFlow(FilterState())
+
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val barcodePagingData: Flow<PagingData<BarcodeUiModel>> =
+        filterState.combine(sortType) { filter, sort ->
+            filter to sort
+        }.flatMapLatest { filterSort ->
+            val filterState = filterSort.first
+            val sort = filterSort.second
+            // Создаём новый Pager при каждом изменении filterState
+            Pager(
+                config = PagingConfig(
+                    pageSize = 25,
+                    prefetchDistance = 10,
+                    enablePlaceholders = true
+                ),
+                pagingSourceFactory = {
+                    when {
+                        filterState.searchFilter.isNotEmpty() -> {
+                            barcodeRepo.getFilteredBarcodesByNamePaging(filterState.searchFilter)
+                        }
+//                            currentFilterState.tagIds.isNotEmpty() -> {
+//                                barcodeRepo.getfi
+//                            }
+                        else -> barcodeRepo.getAllBarcodesPaging(sort)
+                    }
+                }
+            )
+                .flow
+                .map { page ->
+                    page.map { it.toBarcodeUiModel() }
+                }
         }
-
-    private var filterState = FilterState()
-        set(value) {
-            field = value
-            updateTagsFlow()
-        }
-
-    init {
-    }
-
-    fun barcodePagingData() =
-        Pager(
-            config = PagingConfig(pageSize = 25, prefetchDistance = 10, enablePlaceholders = true),
-            pagingSourceFactory = {
-                repo.getAllBarcodesPaging(sortType)
-            }).flow.cachedIn(viewModelScope)
+            // Сохраняем результат в кэше ViewModel для обработки конфигурационных изменений
+            .cachedIn(viewModelScope)
 
     fun onIntent(intent: MainIntent) {
         stateManager.onIntent(intent)
@@ -67,7 +93,7 @@ class BargenViewModel : ViewModel() {
 
     fun loadAllTags(onLoaded: suspend (List<TagUiModel>) -> Unit) {
         launchInIO {
-            onLoaded(repo.getAllTags().map { it.toTagUiModel() })
+            onLoaded(tagsRepo.getAllTags().map { it.toTagUiModel() })
         }
     }
 
@@ -81,47 +107,48 @@ class BargenViewModel : ViewModel() {
                 content = text,
                 type = format.toString()
             )
-            repo.upsertBarcode(entity)
+            barcodeRepo.upsertBarcode(entity)
             onCreated(entity.toBarcodeUiModel())
         }
     }
 
     suspend fun findTagWithName(name: String): List<TagUiModel> =
         withContext(Dispatchers.IO) {
-            repo.findTagWithName(name).map { it.toTagUiModel() }
+            tagsRepo.findTagWithName(name).map { it.toTagUiModel() }
         }
 
     suspend fun findBarcodeById(id: String) =
         withContext(Dispatchers.IO) {
-            repo.getBarcodeById(id)
+            barcodeRepo.getBarcodeById(id)
         }
 
     fun removeTagById(id: String) {
         launchInIO {
-            repo.removeTagById(id)
-            repo.removeTagFromBarcodes(id)
+            tagsRepo.removeTagById(id)
+            barcodeRepo.removeTagFromBarcodes(id)
         }
     }
 
     fun changeSort(sortType: SortType) {
-        this.sortType = sortType
+        this.sortType.value = sortType
+        ClipperApp.getPrefs().sortType = sortType.toString()
     }
 
     fun clearTagFilter() {
         launchInIO {
-            filterState = filterState.copy(tagIds = emptyList())
+            filterState.emit(filterState.value.copy(tagIds = emptyList()))
         }
     }
 
     fun removeBarcode(id: String) {
         launchInIO {
-            repo.removeBarcodeById(id)
+            barcodeRepo.removeBarcodeById(id)
         }
     }
 
     fun removeBarcodes(ids: List<String>) {
         launchInIO {
-            repo.removeBarcodesByIds(ids)
+            barcodeRepo.removeBarcodesByIds(ids)
         }
     }
 
@@ -131,34 +158,42 @@ class BargenViewModel : ViewModel() {
         onCreated: (BarcodeUiModel) -> Unit = { }
     ) {
         launchInIO {
-            repo.upsertBarcode(entity)
+            barcodeRepo.upsertBarcode(entity)
             onCreated(entity.toBarcodeUiModel())
         }
     }
 
     fun incrementUsageCount(id: String) {
         launchInIO {
-            repo.incrementUsageCount(id)
+            barcodeRepo.incrementUsageCount(id)
         }
     }
 
     fun updateTagFilter(tagIds: List<String>) {
-        filterState = filterState.copy(tagIds = tagIds)
+        launchInIO {
+            filterState.emit(filterState.value.copy(tagIds = tagIds))
+
+        }
     }
 
     fun removeChipFromFilter(id: String) {
-        val withoutTag = filterState.tagIds.filter { it != id }
-        filterState = filterState.copy(tagIds = withoutTag)
+        launchInIO {
+            val withoutTag = filterState.value.tagIds.filter { it != id }
+            filterState.emit(filterState.value.copy(tagIds = withoutTag))
+        }
+
     }
 
     fun updateNameFilter(name: String) {
-        filterState = filterState.copy(searchFilter = name)
+        launchInIO {
+            filterState.emit(filterState.value.copy(searchFilter = name))
+        }
     }
 
     private fun updateTagsFlow() {
         launchInIO {
-            val tags = filterState.tagIds.run {
-                repo.getTagsWithIds(this)
+            val tags = filterState.value.tagIds.run {
+                tagsRepo.getTagsWithIds(this)
             }.map { it.toTagUiModel() }
 
             _tagsFilterFlow.emit(tags)
@@ -167,13 +202,13 @@ class BargenViewModel : ViewModel() {
 
     fun recordTags(tags: List<TagUiModel>) {
         launchInIO {
-            repo.upsertTags(tags.map { it.toEntity() })
+            tagsRepo.upsertTags(tags.map { it.toEntity() })
         }
     }
 
     fun recordTag(tag: TagUiModel) {
         launchInIO {
-            repo.upsertTag(tag.toEntity())
+            tagsRepo.upsertTag(tag.toEntity())
         }
     }
 

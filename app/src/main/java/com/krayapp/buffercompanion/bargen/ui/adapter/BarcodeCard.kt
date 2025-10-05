@@ -1,7 +1,6 @@
 package com.krayapp.buffercompanion.bargen.ui.adapter
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -41,8 +40,6 @@ import com.journeyapps.barcodescanner.ScanOptions.DATA_MATRIX
 import com.journeyapps.barcodescanner.ScanOptions.PDF_417
 import com.journeyapps.barcodescanner.ScanOptions.QR_CODE
 import com.krayapp.buffercompanion.bargen.R
-import com.krayapp.buffercompanion.bargen.testBarcodeUiModel
-import com.krayapp.buffercompanion.bargen.testTagUiModel
 import com.krayapp.buffercompanion.bargen.theme.barcodePreviewSize
 import com.krayapp.buffercompanion.bargen.theme.mSize
 import com.krayapp.buffercompanion.bargen.theme.sSize
@@ -55,10 +52,9 @@ import com.krayapp.buffercompanion.bargen.utils.Space
 import com.krayapp.buffercompanion.bargen.utils.modifiers.onCombinedTapScreenOffset
 import kotlinx.coroutines.launch
 
-@Preview
 @Composable
 fun BarcodeCard(
-    uiModel: BarcodeUiModel = testBarcodeUiModel.first(),
+    uiModel: BarcodeUiModel,
     onDeleteClick: (BarcodeUiModel) -> Unit = {},
     onCardClick: (BarcodeUiModel) -> Unit = {},
     onSelectClick: (BarcodeUiModel) -> Unit = {},
@@ -101,7 +97,7 @@ fun BarcodeCard(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = sSize),
+                    .padding(all = sSize),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
@@ -116,7 +112,8 @@ fun BarcodeCard(
                     modifier = Modifier
                         .weight(1f),
                     name = uiModel.name,
-                    content = uiModel.content
+                    content = uiModel.content,
+                    tags = uiModel.tags
                 )
             }
         }
@@ -185,13 +182,12 @@ private fun BarcodeInfo(
     }
 }
 
-@Preview(showBackground = true)
 @Composable
 private fun ContentInfo(
     modifier: Modifier = Modifier,
     content: String = "content",
     name: String = "name",
-    tags: List<TagUiModel> = testTagUiModel
+    tags: List<TagUiModel>
 ) {
     Column(modifier = modifier.padding(vertical = sSize)) {
         val textStyle = MaterialTheme.typography.titleMedium

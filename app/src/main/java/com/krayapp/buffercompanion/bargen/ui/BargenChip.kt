@@ -30,7 +30,6 @@ fun BargenChip(tagUiModel: TagUiModel, selectable: Boolean = true, onClick: () -
             disabledLabelColor = labelColor,
             disabledContainerColor = containerColor
         ),
-        enabled = selectable,
         selected = if (selectable) tagUiModel.checked else false,
         onClick = onClick,
         label = { Text(text = tagUiModel.name) },
