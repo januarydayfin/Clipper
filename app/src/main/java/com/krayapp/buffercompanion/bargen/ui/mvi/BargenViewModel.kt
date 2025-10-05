@@ -23,6 +23,7 @@ import com.krayapp.buffercompanion.bargen.utils.launchInIO
 import com.krayapp.buffercompanion.bargen.utils.toBarcodeUiModel
 import com.krayapp.buffercompanion.bargen.utils.toEntity
 import com.krayapp.buffercompanion.bargen.utils.toTagUiModel
+import com.krayapp.buffercompanion.bargen.utils.withIO
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -32,6 +33,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
+import java.util.UUID
 
 class BargenViewModel : ViewModel() {
     private val barcodeRepo = BarcodeRepo()
@@ -91,12 +93,12 @@ class BargenViewModel : ViewModel() {
         stateManager.recycleEffect(effect)
     }
 
-    fun loadAllTags(onLoaded: suspend (List<TagUiModel>) -> Unit) {
-        launchInIO {
-            onLoaded(tagsRepo.getAllTags().map { it.toTagUiModel() })
+    private suspend fun manualUpdatePager() {
+        withIO {
+            filterState.emit(filterState.value.copy(manualUpdate = UUID.randomUUID().toString()))
         }
     }
-
+    
     fun createBarcodeRecord(
         text: String,
         format: BarcodeFormat = BarcodeFormat.QR_CODE,
@@ -117,10 +119,6 @@ class BargenViewModel : ViewModel() {
             tagsRepo.findTagWithName(name).map { it.toTagUiModel() }
         }
 
-    suspend fun findBarcodeById(id: String) =
-        withContext(Dispatchers.IO) {
-            barcodeRepo.getBarcodeById(id)
-        }
 
     fun removeTagById(id: String) {
         launchInIO {
@@ -140,15 +138,9 @@ class BargenViewModel : ViewModel() {
         }
     }
 
-    fun removeBarcode(id: String) {
+    fun removeBarcodes(vararg ids : String) {
         launchInIO {
-            barcodeRepo.removeBarcodeById(id)
-        }
-    }
-
-    fun removeBarcodes(ids: List<String>) {
-        launchInIO {
-            barcodeRepo.removeBarcodesByIds(ids)
+            barcodeRepo.removeBarcodesByIds(ids.toList())
         }
     }
 
@@ -166,13 +158,13 @@ class BargenViewModel : ViewModel() {
     fun incrementUsageCount(id: String) {
         launchInIO {
             barcodeRepo.incrementUsageCount(id)
+            manualUpdatePager()
         }
     }
 
     fun updateTagFilter(tagIds: List<String>) {
         launchInIO {
             filterState.emit(filterState.value.copy(tagIds = tagIds))
-
         }
     }
 
@@ -200,16 +192,10 @@ class BargenViewModel : ViewModel() {
         }
     }
 
-    fun recordTags(tags: List<TagUiModel>) {
+    fun recordTags(vararg tags: TagUiModel) {
         launchInIO {
             tagsRepo.upsertTags(tags.map { it.toEntity() })
+            manualUpdatePager()
         }
     }
-
-    fun recordTag(tag: TagUiModel) {
-        launchInIO {
-            tagsRepo.upsertTag(tag.toEntity())
-        }
-    }
-
 }

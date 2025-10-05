@@ -107,7 +107,7 @@ fun MainBottomSheet(
             TextButton(onClick = {
                 scope.launch {
                     viewmodel.createBarcodeRecord(modelState.value.toBarcodeEntity())
-                    viewmodel.recordTags(modelState.value.tags)
+                    viewmodel.recordTags(*modelState.value.tags.toTypedArray())
                     dismissBottomSheet()
                 }
 
