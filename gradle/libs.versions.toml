@@ -22,7 +22,7 @@ adaptive = "1.1.0"
 composePaging = "3.3.6"
 
 # Сторонние библиотеки
-colorpicker = "2.3.0"
+colorpicker = "1.1.2"
 kotlinSerialization = "1.8.1"
 tedpermission = "3.4.2"
 zxing = "4.3.0"
@@ -76,7 +76,7 @@ kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinSerialization" }
 tedpermission-normal = { group = "io.github.ParkSangGwon", name = "tedpermission-normal", version.ref = "tedpermission" }
 zxing-android-embedded = { group = "com.journeyapps", name = "zxing-android-embedded", version.ref = "zxing" }
-skydoves-colorpickerview = { group = "com.github.skydoves", name = "colorpickerview", version.ref = "colorpicker" }
+skydoves-colorpickerview = { group = "com.github.skydoves", name = "colorpicker-compose", version.ref = "colorpicker" }
 
 # --- Тестирование ---
 junit-junit = { group = "junit", name = "junit", version.ref = "junit" }

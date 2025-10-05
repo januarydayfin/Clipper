@@ -102,7 +102,8 @@ fun MainScreen(
                     hideState = lazyListState.lastScrolledForward,
                     onCreateClicked = {
                         viewmodel.onIntent(MainIntent.CreateNewBarcode)
-                    }
+                    },
+                    onTagsClicked = { viewmodel.onIntent(MainIntent.ShowTagsMenu) }
                 )
             }
         }

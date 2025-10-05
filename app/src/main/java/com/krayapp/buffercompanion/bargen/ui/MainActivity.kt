@@ -9,12 +9,16 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import com.krayapp.buffercompanion.bargen.ClipperApp
 import com.krayapp.buffercompanion.bargen.theme.AppTheme
 import com.krayapp.buffercompanion.bargen.ui.bottomsheets.MainBottomSheet
+import com.krayapp.buffercompanion.bargen.ui.bottomsheets.TagsBottomSheet
 import com.krayapp.buffercompanion.bargen.ui.mvi.BargenViewModel
 import com.krayapp.buffercompanion.bargen.ui.mvi.BottomSheetStateData
+import com.krayapp.buffercompanion.bargen.ui.mvi.ShowTagsBottomsheet
 import com.krayapp.buffercompanion.bargen.ui.mvi.canShowMainBottomSheet
+import com.krayapp.buffercompanion.bargen.ui.mvi.canShowTagBottomSheet
 import com.krayapp.buffercompanion.bargen.ui.screens.MainScreen
 
 
@@ -33,6 +37,7 @@ class MainActivity : AppCompatActivity() {
 
                 when {
                     mviState.value.canShowMainBottomSheet -> ShowMainBottomSheet(mviState.value.bottomSheetData!!)
+                    mviState.value.canShowTagBottomSheet -> ShowTagBottomsheet(mviState.value.showTagBottomSheet)
                 }
             }
         }
@@ -43,6 +48,14 @@ class MainActivity : AppCompatActivity() {
         MainBottomSheet(model = data.model, onDismiss = {
             viewmodel.recycleEffect(data)
         })
+    }
+
+    @Composable
+    private fun ShowTagBottomsheet(data: ShowTagsBottomsheet){
+        TagsBottomSheet {
+            viewmodel.recycleEffect(data)
+            viewmodel.updatePager()
+        }
     }
 
     override fun dispatchKeyEvent(event: KeyEvent): Boolean {

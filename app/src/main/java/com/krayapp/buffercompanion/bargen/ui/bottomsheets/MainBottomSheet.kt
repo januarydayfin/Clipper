@@ -41,6 +41,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.ImeAction
@@ -56,6 +57,7 @@ import com.krayapp.buffercompanion.bargen.ui.dialogs.BarcodeFormatDialog
 import com.krayapp.buffercompanion.bargen.ui.models.BarcodeUiModel
 import com.krayapp.buffercompanion.bargen.ui.models.TagUiModel
 import com.krayapp.buffercompanion.bargen.ui.mvi.BargenViewModel
+import com.krayapp.buffercompanion.bargen.ui.mvi.TagsViewModel
 import com.krayapp.buffercompanion.bargen.utils.toBarcodeEntity
 import kotlinx.coroutines.launch
 
@@ -69,6 +71,7 @@ fun MainBottomSheet(
     onSaveStoragePicture: (Bitmap) -> Unit = {},
 ) {
     val viewmodel: BargenViewModel = viewModel()
+    val tagsViewModel: TagsViewModel = viewModel()
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val modelState = remember { mutableStateOf(model) }
     val scrollState = rememberScrollState()
@@ -89,9 +92,11 @@ fun MainBottomSheet(
         onDismissRequest = {
             onDismiss()
         }) {
+        val keyboard = LocalSoftwareKeyboardController.current
 
         fun dismissBottomSheet() {
             scope.launch {
+                keyboard?.hide()
                 sheetState.hide()
             }
         }
@@ -107,7 +112,7 @@ fun MainBottomSheet(
             TextButton(onClick = {
                 scope.launch {
                     viewmodel.createBarcodeRecord(modelState.value.toBarcodeEntity())
-                    viewmodel.recordTags(*modelState.value.tags.toTypedArray())
+                    tagsViewModel.saveTags(modelState.value.tags)
                     dismissBottomSheet()
                 }
 
@@ -324,12 +329,12 @@ private fun TagBlock(
             horizontalArrangement = Arrangement.Start,
         ) {
             previewTags.toList().distinct().forEach {
-                BargenChip(it) {
+                BargenChip(onClick = {
                     val prevName = it.name
                     val substringed =
                         tagsTextFieldState.text.toString().removeSuffix(nameList.last())
                     tagsTextFieldState.setTextAndPlaceCursorAtEnd(substringed + prevName)
-                }
+                }, model = it)
             }
         }
         onScrollToBottom()

@@ -16,7 +16,6 @@ import com.krayapp.buffercompanion.bargen.data.TagsRepo
 import com.krayapp.buffercompanion.bargen.data.room.bargen.entity.BarcodeEntity
 import com.krayapp.buffercompanion.bargen.ui.models.BarcodeUiModel
 import com.krayapp.buffercompanion.bargen.ui.models.TagUiModel
-import com.krayapp.buffercompanion.bargen.ui.mvi.stateManager.Effect
 import com.krayapp.buffercompanion.bargen.ui.mvi.stateManager.StateManager
 import com.krayapp.buffercompanion.bargen.utils.currentSortType
 import com.krayapp.buffercompanion.bargen.utils.launchInIO
@@ -93,12 +92,12 @@ class BargenViewModel : ViewModel() {
         stateManager.recycleEffect(effect)
     }
 
-    private suspend fun manualUpdatePager() {
-        withIO {
+    fun updatePager() {
+        launchInIO {
             filterState.emit(filterState.value.copy(manualUpdate = UUID.randomUUID().toString()))
         }
     }
-    
+
     fun createBarcodeRecord(
         text: String,
         format: BarcodeFormat = BarcodeFormat.QR_CODE,
@@ -138,7 +137,7 @@ class BargenViewModel : ViewModel() {
         }
     }
 
-    fun removeBarcodes(vararg ids : String) {
+    fun removeBarcodes(vararg ids: String) {
         launchInIO {
             barcodeRepo.removeBarcodesByIds(ids.toList())
         }
@@ -158,7 +157,7 @@ class BargenViewModel : ViewModel() {
     fun incrementUsageCount(id: String) {
         launchInIO {
             barcodeRepo.incrementUsageCount(id)
-            manualUpdatePager()
+            updatePager()
         }
     }
 
@@ -189,13 +188,6 @@ class BargenViewModel : ViewModel() {
             }.map { it.toTagUiModel() }
 
             _tagsFilterFlow.emit(tags)
-        }
-    }
-
-    fun recordTags(vararg tags: TagUiModel) {
-        launchInIO {
-            tagsRepo.upsertTags(tags.map { it.toEntity() })
-            manualUpdatePager()
         }
     }
 }

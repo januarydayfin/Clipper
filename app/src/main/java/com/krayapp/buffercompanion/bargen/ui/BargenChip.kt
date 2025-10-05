@@ -1,37 +1,79 @@
 package com.krayapp.buffercompanion.bargen.ui
 
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.FilterChip
-import androidx.compose.material3.FilterChipDefaults
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import com.krayapp.buffercompanion.bargen.theme.xxsSize
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.unit.dp
+import com.krayapp.buffercompanion.bargen.R
+import com.krayapp.buffercompanion.bargen.theme.labelIconSize
+import com.krayapp.buffercompanion.bargen.theme.sSize
+import com.krayapp.buffercompanion.bargen.theme.xsSize
 import com.krayapp.buffercompanion.bargen.ui.models.TagUiModel
+import com.krayapp.buffercompanion.bargen.utils.Space
+import com.krayapp.buffercompanion.bargen.utils.modifiers.onCombinedTapScreenOffset
 
 @Composable
-fun BargenChip(tagUiModel: TagUiModel, selectable: Boolean = true, onClick: () -> Unit = {}) {
+fun BargenChip(
+    model: TagUiModel,
+    modifier: Modifier = Modifier,
+    selectable: Boolean = true,
+    onClick: () -> Unit = {},
+    onLongClick: (Offset) -> Unit = {}
+) {
     val containerColor =
-        if (tagUiModel.backgroundColor != null) Color(tagUiModel.backgroundColor) else Color.Unspecified
+        if (model.backgroundColor != null) Color(model.backgroundColor) else MaterialTheme.colorScheme.tertiaryContainer
     val labelColor =
-        if (tagUiModel.fontColor != null) Color(tagUiModel.fontColor) else Color.Unspecified
+        if (model.fontColor != null) Color(model.fontColor) else MaterialTheme.colorScheme.onTertiaryContainer
 
-    FilterChip(
-        modifier = Modifier
-            .padding(horizontal = xxsSize)
-            .minimumInteractiveComponentSize(),
-        colors = FilterChipDefaults.filterChipColors().copy(
-            containerColor = containerColor,
-            selectedContainerColor = containerColor,
-            labelColor = labelColor,
-            selectedLabelColor = labelColor,
-            disabledLabelColor = labelColor,
-            disabledContainerColor = containerColor
-        ),
-        selected = if (selectable) tagUiModel.checked else false,
-        onClick = onClick,
-        label = { Text(text = tagUiModel.name) },
-    )
+    val haptic = LocalHapticFeedback.current
+
+    Surface(
+        color = containerColor,
+        contentColor = labelColor,
+        shape = RoundedCornerShape(size = 8.dp),
+        modifier = modifier
+            .onCombinedTapScreenOffset(onLong = {
+                if (selectable) {
+                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                    onLongClick(it)
+                }
+
+            }, onTap = {
+                if (selectable)
+                    onClick()
+            })
+            .padding(horizontal = xsSize, vertical = sSize)
+    ) {
+        Row(
+            modifier = Modifier.padding(vertical = xsSize, horizontal = sSize),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            if (model.checked && selectable) {
+                Icon(
+                    modifier = Modifier.size(size = labelIconSize),
+                    imageVector = ImageVector.vectorResource(R.drawable.outline_check_24),
+                    contentDescription = null,
+                )
+                Space(width = xsSize)
+            }
+            Text(
+                text = model.name,
+                style = MaterialTheme.typography.labelLarge,
+            )
+        }
+    }
 }

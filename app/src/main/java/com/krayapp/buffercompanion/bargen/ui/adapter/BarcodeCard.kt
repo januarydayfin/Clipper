@@ -21,12 +21,9 @@ import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
@@ -45,7 +42,6 @@ import com.krayapp.buffercompanion.bargen.theme.mSize
 import com.krayapp.buffercompanion.bargen.theme.sSize
 import com.krayapp.buffercompanion.bargen.theme.xsSize
 import com.krayapp.buffercompanion.bargen.ui.BargenChip
-import com.krayapp.buffercompanion.bargen.ui.menu.ContextMenu
 import com.krayapp.buffercompanion.bargen.ui.models.BarcodeUiModel
 import com.krayapp.buffercompanion.bargen.ui.models.TagUiModel
 import com.krayapp.buffercompanion.bargen.utils.Space
@@ -60,8 +56,6 @@ fun BarcodeCard(
     onSelectClick: (BarcodeUiModel) -> Unit = {},
 ) {
     val scope = rememberCoroutineScope()
-    val showPopup = remember { mutableStateOf(false) }
-    val popupOffset = remember { mutableStateOf(Offset(0f, 0f)) }
     val haptic = LocalHapticFeedback.current
     val dismissState = rememberSwipeToDismissBoxState()
 
@@ -85,8 +79,6 @@ fun BarcodeCard(
                 .onCombinedTapScreenOffset(
                     onLong = {
                         haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                        popupOffset.value = it
-                        showPopup.value = true
                         onSelectClick(uiModel)
                     },
 
@@ -118,12 +110,6 @@ fun BarcodeCard(
             }
         }
     }
-
-
-    if (showPopup.value)
-        ContextMenu(offset = popupOffset.value, uiModel) {
-            showPopup.value = false
-        }
 }
 
 @Composable
@@ -195,7 +181,7 @@ private fun ContentInfo(
         Text(text = name, style = textStyle)
 
         FlowRow(Modifier.fillMaxWidth()) {
-            tags.forEach { BargenChip(it, selectable = false) }
+            tags.forEach { BargenChip(model = it, selectable = false) }
         }
     }
 }

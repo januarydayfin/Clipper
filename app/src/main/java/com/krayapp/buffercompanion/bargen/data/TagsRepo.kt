@@ -32,7 +32,6 @@ class TagsRepo {
         tags.getTags().filter { it.id in list }
     }
 
-    suspend fun getAllTags() = withContext(Dispatchers.IO) {
+    suspend fun getAllTags() =
         tags.getTags()
-    }
 }

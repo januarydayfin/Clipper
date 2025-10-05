@@ -1,5 +1,6 @@
 package com.krayapp.buffercompanion.bargen.data.room.bargen.dao
 
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Upsert
@@ -21,6 +22,9 @@ interface TagDao {
 
     @Query("SELECT * FROM tags")
     suspend fun getTags(): List<TagEntity>
+
+    @Query("SELECT * FROM tags")
+    fun getTagsPaging(): PagingSource<Int, TagEntity>
 
     @Query("select * from tags where :id == id")
     suspend fun getTagById(id: String): TagEntity
