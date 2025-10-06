@@ -41,7 +41,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.ImeAction
@@ -72,7 +71,7 @@ fun MainBottomSheet(
 ) {
     val viewmodel: BargenViewModel = viewModel()
     val tagsViewModel: TagsViewModel = viewModel()
-    val sheetState = rememberModalBottomSheetState()
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val modelState = remember { mutableStateOf(model) }
     val scrollState = rememberScrollState()
     val scope = rememberCoroutineScope()
@@ -92,18 +91,12 @@ fun MainBottomSheet(
         onDismissRequest = {
             onDismiss()
         }) {
-        val keyboard = LocalSoftwareKeyboardController.current
-
-        fun dismissBottomSheet() {
-            scope.launch {
-                keyboard?.hide()
-                sheetState.hide()
-            }
-        }
 
         Row {
             TextButton(onClick = {
-                dismissBottomSheet()
+                scope.launch {
+                    sheetState.hide()
+                }
             }) {
                 Text(text = stringResource(R.string.cancel))
             }
@@ -113,7 +106,9 @@ fun MainBottomSheet(
                 scope.launch {
                     viewmodel.createBarcodeRecord(modelState.value.toBarcodeEntity())
                     tagsViewModel.saveTags(modelState.value.tags)
-                    dismissBottomSheet()
+                    scope.launch {
+                        sheetState.hide()
+                    }
                 }
 
             }) { Text(text = stringResource(R.string.apply)) }
