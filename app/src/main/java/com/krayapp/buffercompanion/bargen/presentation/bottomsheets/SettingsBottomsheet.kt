@@ -65,8 +65,8 @@ fun SettingsBottomSheet(
             AppThemeBlock(state, viewmodel)
             Space(height = mSize)
             CheckboxSection(state, viewmodel)
-            Space(height = mSize)
-            BackupSection(onRestoreClicked, onBackupClicked)
+//            Space(height = mSize)
+//            BackupSection(onRestoreClicked, onBackupClicked)
         }
     }
 }

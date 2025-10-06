@@ -50,15 +50,6 @@ suspend fun BarcodeUiModel.toBarcodeEntity(): BarcodeEntity {
     }
 }
 
-fun BottomSheetDialogFragment.colorNavBar(
-    color: Int = MaterialColors.getColor(
-        requireContext(),
-        R.attr.bottomSheetBottomColor,
-        Color.BLACK
-    )
-) {
-    dialog?.window?.navigationBarColor = color
-}
 
 fun TagEntity.toTagUiModel() =
     TagUiModel(
