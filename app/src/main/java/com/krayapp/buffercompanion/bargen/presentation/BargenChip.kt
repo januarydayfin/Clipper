@@ -1,5 +1,7 @@
 package com.krayapp.buffercompanion.bargen.presentation
 
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -11,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -32,7 +35,7 @@ fun BargenChip(
     modifier: Modifier = Modifier,
     selectable: Boolean = true,
     onClick: () -> Unit = {},
-    onLongClick: (Offset) -> Unit = {}
+    onLongClick: () -> Unit = {}
 ) {
     val containerColor =
         if (model.backgroundColor != null) Color(model.backgroundColor) else MaterialTheme.colorScheme.tertiaryContainer
@@ -41,39 +44,40 @@ fun BargenChip(
 
     val haptic = LocalHapticFeedback.current
 
-    Surface(
-        color = containerColor,
-        contentColor = labelColor,
-        shape = RoundedCornerShape(size = 8.dp),
-        modifier = modifier
-            .onCombinedTapScreenOffset(onLong = {
-                if (selectable) {
-                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                    onLongClick(it)
-                }
-
-            }, onTap = {
-                if (selectable)
-                    onClick()
-            })
-            .padding(horizontal = xsSize, vertical = sSize)
-    ) {
-        Row(
-            modifier = Modifier.padding(vertical = xsSize, horizontal = sSize),
-            verticalAlignment = Alignment.CenterVertically
+    Box(modifier = Modifier.padding(horizontal = xsSize, vertical = sSize)) {
+        Surface(
+            color = containerColor,
+            contentColor = labelColor,
+            shape = RoundedCornerShape(size = 8.dp),
+            modifier = modifier
+                .clip(RoundedCornerShape(size = 8.dp))
+                .combinedClickable(onClick = {
+                    if (selectable)
+                        onClick()
+                }, onLongClick = {
+                    if (selectable) {
+                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                        onLongClick()
+                    }
+                })
         ) {
-            if (model.checked && selectable) {
-                Icon(
-                    modifier = Modifier.size(size = labelIconSize),
-                    imageVector = ImageVector.vectorResource(R.drawable.outline_check_24),
-                    contentDescription = null,
+            Row(
+                modifier = Modifier.padding(vertical = xsSize, horizontal = sSize),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                if (model.checked && selectable) {
+                    Icon(
+                        modifier = Modifier.size(size = labelIconSize),
+                        imageVector = ImageVector.vectorResource(R.drawable.outline_check_24),
+                        contentDescription = null,
+                    )
+                    Space(width = xsSize)
+                }
+                Text(
+                    text = model.name,
+                    style = MaterialTheme.typography.labelLarge,
                 )
-                Space(width = xsSize)
             }
-            Text(
-                text = model.name,
-                style = MaterialTheme.typography.labelLarge,
-            )
         }
     }
 }

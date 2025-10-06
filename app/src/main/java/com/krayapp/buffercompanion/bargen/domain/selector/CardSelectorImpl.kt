@@ -1,31 +1,32 @@
-package com.krayapp.buffercompanion.bargen.presentation.selector
+package com.krayapp.buffercompanion.bargen.domain.selector
 
 import com.krayapp.buffercompanion.bargen.data.BarcodeRepo
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import com.krayapp.buffercompanion.bargen.utils.withIO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
 
-class CardSelector(private val scope: CoroutineScope, private val barcodeRepo: BarcodeRepo) {
+class CardSelectorImpl(private val barcodeRepo: BarcodeRepo) :
+    CardSelector {
     private val _selectedBarcodes = MutableStateFlow(emptyList<String>())
-    val selectedBarcodes = _selectedBarcodes.asStateFlow()
 
-    fun cleanSelection() {
-        launchInIO {
+    override val selectedBarcodes
+        get() = _selectedBarcodes.asStateFlow()
+
+    override suspend fun cleanSelection() {
+        withIO {
             _selectedBarcodes.value = emptyList()
         }
     }
 
-    fun selectAll() {
-        launchInIO {
+    override suspend fun selectAll() {
+        withIO {
             val list = barcodeRepo.getAllBarcodes().map { it.id }
             _selectedBarcodes.value = list
         }
     }
 
-    fun checkBarcodeForSelection(id: String) {
-        launchInIO {
+    override suspend fun checkBarcodeForSelection(id: String) {
+        withIO {
             val newList = mutableListOf<String>().apply {
                 addAll(_selectedBarcodes.value)
             }
@@ -40,15 +41,11 @@ class CardSelector(private val scope: CoroutineScope, private val barcodeRepo: B
         }
     }
 
-    fun deleteAllSelected(onDeleted: () -> Unit) {
-        launchInIO {
+    override suspend fun deleteAllSelected(onDeleted: () -> Unit) {
+        withIO {
             barcodeRepo.removeBarcodesByIds(_selectedBarcodes.value)
             onDeleted()
             cleanSelection()
         }
-    }
-
-    private fun launchInIO(block: suspend () -> Unit) {
-        scope.launch(Dispatchers.IO) { block() }
     }
 }

@@ -53,6 +53,7 @@ dependencies {
     // Core/UI
     implementation(libs.bundles.core) // Включает core-ktx, appcompat, recyclerview, material
 
+    implementation(libs.bundles.koin)
     // Navigation
     implementation(libs.bundles.navigation)
 

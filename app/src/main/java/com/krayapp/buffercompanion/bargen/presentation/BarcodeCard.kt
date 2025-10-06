@@ -41,12 +41,12 @@ import com.journeyapps.barcodescanner.ScanOptions.PDF_417
 import com.journeyapps.barcodescanner.ScanOptions.QR_CODE
 import com.krayapp.buffercompanion.bargen.R
 import com.krayapp.buffercompanion.bargen.presentation.dialogs.DeleteConfirmationDialog
+import com.krayapp.buffercompanion.bargen.presentation.uiModels.BarcodeUiModel
+import com.krayapp.buffercompanion.bargen.presentation.uiModels.TagUiModel
 import com.krayapp.buffercompanion.bargen.theme.barcodePreviewSize
 import com.krayapp.buffercompanion.bargen.theme.mSize
 import com.krayapp.buffercompanion.bargen.theme.sSize
 import com.krayapp.buffercompanion.bargen.theme.xsSize
-import com.krayapp.buffercompanion.bargen.presentation.uiModels.BarcodeUiModel
-import com.krayapp.buffercompanion.bargen.presentation.uiModels.TagUiModel
 import com.krayapp.buffercompanion.bargen.utils.Space
 import com.krayapp.buffercompanion.bargen.utils.modifiers.onCombinedTapScreenOffset
 import kotlinx.coroutines.launch
@@ -57,8 +57,8 @@ fun BarcodeCard(
     inSelectionMode: Boolean,
     isCheckedForDeletion: Boolean,
     onDeleteClicked: (String) -> Unit = {},
-    onCardClick: (BarcodeUiModel) -> Unit = {},
-    onSelectClick: (BarcodeUiModel) -> Unit = {},
+    onCardClick: () -> Unit = {},
+    onSelectClick: () -> Unit = {},
 ) {
     val scope = rememberCoroutineScope()
     val haptic = LocalHapticFeedback.current
@@ -92,11 +92,11 @@ fun BarcodeCard(
                 .onCombinedTapScreenOffset(
                     onLong = {
                         haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                        onSelectClick(uiModel)
+                        onSelectClick()
                     },
 
                     onTap = {
-                        onCardClick(uiModel)
+                        onCardClick()
                     })
         ) {
             Row(
@@ -123,7 +123,7 @@ fun BarcodeCard(
 
                 if (inSelectionMode)
                     Checkbox(checked = isCheckedForDeletion, onCheckedChange = {
-                        onCardClick(uiModel)
+                        onCardClick()
                     })
             }
         }

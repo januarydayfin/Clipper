@@ -10,6 +10,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.lifecycle.lifecycleScope
 import com.krayapp.buffercompanion.bargen.ClipperApp
 import com.krayapp.buffercompanion.bargen.presentation.bottomsheets.MainBottomSheet
 import com.krayapp.buffercompanion.bargen.presentation.bottomsheets.SettingsBottomSheet
@@ -22,19 +23,20 @@ import com.krayapp.buffercompanion.bargen.presentation.mvi.ShowTagsBottomsheet
 import com.krayapp.buffercompanion.bargen.presentation.mvi.canShowMainBottomSheet
 import com.krayapp.buffercompanion.bargen.presentation.mvi.canShowSettingsBottomsheet
 import com.krayapp.buffercompanion.bargen.presentation.mvi.canShowTagBottomSheet
-import com.krayapp.buffercompanion.bargen.presentation.screens.MainScreen
+import com.krayapp.buffercompanion.bargen.presentation.screens.mainScreen.MainScreen
 import com.krayapp.buffercompanion.bargen.presentation.viewmodels.BargenViewModel
 import com.krayapp.buffercompanion.bargen.theme.AppTheme
+import kotlinx.coroutines.launch
 
 
 class MainActivity : AppCompatActivity() {
-    private var onVolumeButtonHandler: () -> Unit = { }
     private val viewmodel: BargenViewModel by viewModels()
-
     private val onBackPressed = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             if (viewmodel.inSelection)
-                viewmodel.cardSelector.cleanSelection()
+                lifecycleScope.launch {
+                    viewmodel.cardSelector.cleanSelection()
+                }
             else
                 finish()
         }
@@ -50,15 +52,7 @@ class MainActivity : AppCompatActivity() {
                 val mviState = viewmodel.uiState.collectAsState()
 
                 MainScreen {
-                    ScanDialog {
-                        it ?: return@ScanDialog
-                        viewmodel.createBarcodeRecord(
-                            text = it.text,
-                            format = it.barcodeFormat
-                        ) { model ->
-                            viewmodel.onIntent(MainIntent.ShowBottomsheet(model))
-                        }
-                    }.show(supportFragmentManager, "")
+                    showScanDialog()
                 }
 
                 when {
@@ -71,11 +65,25 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    private fun showScanDialog() {
+        ScanDialog {
+            it ?: return@ScanDialog
+            viewmodel.createBarcodeRecord(
+                text = it.text,
+                format = it.barcodeFormat
+            ) { model ->
+                if (ClipperApp.getPrefs().openCardAfterScan)
+                    viewmodel.onIntent(MainIntent.ShowBottomsheet(model))
+            }
+        }.show(supportFragmentManager, "")
+    }
+
     @Composable
     private fun ShowMainBottomSheet(data: BottomSheetStateData) {
         viewmodel.incrementUsageCount(data.model.id)
         MainBottomSheet(model = data.model, onDismiss = {
             viewmodel.recycleEffect(data)
+            viewmodel.updatePager()
         })
     }
 
@@ -102,16 +110,12 @@ class MainActivity : AppCompatActivity() {
 
         return when (event.keyCode) {
             KeyEvent.KEYCODE_VOLUME_UP, KeyEvent.KEYCODE_VOLUME_DOWN -> {
-                onVolumeButtonHandler()
+                showScanDialog()
                 true
             }
 
             else -> super.dispatchKeyEvent(event)
         }
-    }
-
-    fun updateVolumeButtonHandler(block: () -> Unit) {
-        onVolumeButtonHandler = block
     }
 
     fun calledFromShortcut() = intent.action == "bargen.create.qr.buffer"

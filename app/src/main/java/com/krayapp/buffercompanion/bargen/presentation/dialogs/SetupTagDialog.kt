@@ -10,9 +10,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BasicAlertDialog
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
@@ -24,28 +28,33 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import com.github.skydoves.colorpicker.compose.AlphaSlider
 import com.github.skydoves.colorpicker.compose.BrightnessSlider
 import com.github.skydoves.colorpicker.compose.HsvColorPicker
 import com.github.skydoves.colorpicker.compose.rememberColorPickerController
 import com.krayapp.buffercompanion.bargen.R
-import com.krayapp.buffercompanion.bargen.theme.barcodePreviewSize
-import com.krayapp.buffercompanion.bargen.theme.mSize
-import com.krayapp.buffercompanion.bargen.theme.sSize
 import com.krayapp.buffercompanion.bargen.presentation.BargenChip
 import com.krayapp.buffercompanion.bargen.presentation.uiModels.TagUiModel
+import com.krayapp.buffercompanion.bargen.theme.barcodePreviewSize
+import com.krayapp.buffercompanion.bargen.theme.lSize
+import com.krayapp.buffercompanion.bargen.theme.mSize
+import com.krayapp.buffercompanion.bargen.theme.sSize
 import com.krayapp.buffercompanion.bargen.utils.Space
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SetupTagDialog(
     model: TagUiModel,
+    onRemoveTag: () -> Unit,
     onDismiss: () -> Unit,
     onComplete: (TagUiModel) -> Unit
 ) {
@@ -54,7 +63,7 @@ fun SetupTagDialog(
         Surface(shape = RoundedCornerShape(size = mSize)) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.padding(all = mSize)
+                modifier = Modifier.padding(all = lSize)
             ) {
                 BargenChip(model = modelState.value)
                 Space(height = sSize)
@@ -82,6 +91,26 @@ fun SetupTagDialog(
                 ) {
                     modelState.value = modelState.value.copy(fontColor = it)
                 }
+                Space(height = sSize)
+
+
+                TextButton(
+                    onClick = onRemoveTag,
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors()
+                        .copy(
+                            contentColor = MaterialTheme.colorScheme.onErrorContainer,
+                            containerColor = MaterialTheme.colorScheme.errorContainer
+                        )
+                ) {
+                    Icon(
+                        ImageVector.vectorResource(R.drawable.ic_delete),
+                        contentDescription = null
+                    )
+                    Text(text = stringResource(R.string.delete))
+                }
+
+                Space(height = sSize)
 
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                     TextButton(onClick = {
@@ -117,13 +146,15 @@ private fun PickColorItem(titleRes: Int, pickedColor: Int?, onColorPicked: (Int)
             }) {
                 onColorPicked(it)
             }
+
         if (pickedColor == null)
             Image(
                 modifier = Modifier
                     .size(barcodePreviewSize)
                     .clickable {
                         colorPickerShown.value = true
-                    },
+                    }
+                    .clip(CircleShape),
                 painter = painterResource(R.drawable.png_background),
                 contentDescription = null
             )
@@ -133,7 +164,8 @@ private fun PickColorItem(titleRes: Int, pickedColor: Int?, onColorPicked: (Int)
                     .size(barcodePreviewSize)
                     .clickable {
                         colorPickerShown.value = true
-                    },
+                    }
+                    .clip(CircleShape),
                 painter = ColorPainter(Color(pickedColor)),
                 contentDescription = null
             )

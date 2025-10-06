@@ -15,7 +15,6 @@ class BarcodeRepo {
     }
 
 
-
     suspend fun removeBarcodeById(id: String) {
         withIO { barcodes.removeBarcodeById(id) }
     }

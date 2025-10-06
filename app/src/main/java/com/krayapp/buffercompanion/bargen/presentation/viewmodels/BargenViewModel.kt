@@ -1,5 +1,6 @@
 package com.krayapp.buffercompanion.bargen.presentation.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
@@ -9,16 +10,17 @@ import androidx.paging.cachedIn
 import androidx.paging.map
 import com.google.zxing.BarcodeFormat
 import com.krayapp.buffercompanion.bargen.ClipperApp
+import com.krayapp.buffercompanion.bargen.data.BarcodeFilterTagsPagingSource
 import com.krayapp.buffercompanion.bargen.data.BarcodeRepo
 import com.krayapp.buffercompanion.bargen.data.FilterState
 import com.krayapp.buffercompanion.bargen.data.SortType
 import com.krayapp.buffercompanion.bargen.data.TagsRepo
 import com.krayapp.buffercompanion.bargen.data.room.bargen.entity.BarcodeEntity
-import com.krayapp.buffercompanion.bargen.presentation.selector.CardSelector
+import com.krayapp.buffercompanion.bargen.domain.selector.CardSelector
+import com.krayapp.buffercompanion.bargen.domain.selector.TagSelector
 import com.krayapp.buffercompanion.bargen.presentation.mvi.Effect
 import com.krayapp.buffercompanion.bargen.presentation.mvi.MainIntent
 import com.krayapp.buffercompanion.bargen.presentation.mvi.stateManager.StateManager
-import com.krayapp.buffercompanion.bargen.presentation.selector.TagSelector
 import com.krayapp.buffercompanion.bargen.presentation.uiModels.BarcodeUiModel
 import com.krayapp.buffercompanion.bargen.presentation.uiModels.TagUiModel
 import com.krayapp.buffercompanion.bargen.utils.currentSortType
@@ -35,16 +37,17 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import java.util.UUID
 
-class BargenViewModel : ViewModel() {
+class BargenViewModel : ViewModel(), KoinComponent {
     private val barcodeRepo = BarcodeRepo()
     private val tagsRepo = TagsRepo()
-
     private val stateManager = StateManager(viewModelScope)
 
-    val cardSelector = CardSelector(viewModelScope, barcodeRepo)
-    val tagSelector = TagSelector()
+    val cardSelector: CardSelector by inject()
+    val tagsSelector: TagSelector by inject()
 
     val uiState = stateManager.state
 
@@ -75,9 +78,11 @@ class BargenViewModel : ViewModel() {
                         filterState.searchFilter.isNotEmpty() -> {
                             barcodeRepo.getFilteredBarcodesByNamePaging(filterState.searchFilter)
                         }
-//                            currentFilterState.tagIds.isNotEmpty() -> {
-//                                barcodeRepo.getfi
-//                            }
+
+                        filterState.tagIds.isNotEmpty() -> {
+                            BarcodeFilterTagsPagingSource(filterState.tagIds)
+                        }
+
                         else -> barcodeRepo.getAllBarcodesPaging(sort)
                     }
                 }
@@ -91,8 +96,8 @@ class BargenViewModel : ViewModel() {
 
     init {
         launchInIO {
-            tagSelector.tagFilterFlow.collectLatest {
-                filterState.value = filterState.value.copy(tagIds = it.map { tag -> tag.id })
+            tagsSelector.tagFilterFlow.collectLatest {
+                filterState.value = filterState.value.copy(tagIds = it.map { tag -> tag })
             }
         }
     }
@@ -127,6 +132,12 @@ class BargenViewModel : ViewModel() {
         }
     }
 
+    fun loadTagsUiModelsByIds(ids: List<String>, onSuccess: (List<TagUiModel>) -> Unit) {
+        launchInIO {
+            onSuccess(tagsRepo.getTagsWithIds(ids).map { it.toTagUiModel() })
+        }
+    }
+
     suspend fun findTagWithName(name: String): List<TagUiModel> =
         withContext(Dispatchers.IO) {
             tagsRepo.findTagWithName(name).map { it.toTagUiModel() }
@@ -138,11 +149,6 @@ class BargenViewModel : ViewModel() {
         ClipperApp.getPrefs().sortType = sortType.toString()
     }
 
-    fun clearTagFilter() {
-        launchInIO {
-            filterState.emit(filterState.value.copy(tagIds = emptyList()))
-        }
-    }
 
     fun deleteBarcodes(vararg ids: String) {
         launchInIO {
@@ -165,19 +171,6 @@ class BargenViewModel : ViewModel() {
         launchInIO {
             barcodeRepo.incrementUsageCount(id)
             updatePager()
-        }
-    }
-
-    fun updateTagFilter(tagIds: List<String>) {
-        launchInIO {
-            filterState.emit(filterState.value.copy(tagIds = tagIds))
-        }
-    }
-
-    fun removeChipFromFilter(id: String) {
-        launchInIO {
-            val withoutTag = filterState.value.tagIds.filter { it != id }
-            filterState.emit(filterState.value.copy(tagIds = withoutTag))
         }
     }
 

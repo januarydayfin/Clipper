@@ -35,8 +35,16 @@ uiTextGoogleFonts = "1.9.2"
 composeMaterial3Version = "1.5.2"
 pagingCommonAndroid = "3.3.6"
 
+koin = "4.0.3"
+
+
 [libraries]
 # --- AndroidX/Google ---
+
+
+koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koin" }
+koin-android = { group = "io.insert-koin", name = "koin-android", version.ref = "koin" }
+koin-compose = { group = "io.insert-koin", name = "koin-androidx-compose", version.ref = "koin" }
 
 # Activity
 androidx-activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref = "activityKtx" }
@@ -88,6 +96,7 @@ androidx-paging-common-android = { group = "androidx.paging", name = "paging-com
 
 [bundles]
 # Бандлы для удобного импорта групп зависимостей
+koin = ["koin-core", "koin-android", "koin-compose"]
 room = ["androidx-room-paging", "androidx-room-runtime", "androidx-room-ktx"]
 navigation = ["androidx-navigation-fragment-ktx", "androidx-navigation-ui-ktx"]
 core = ["androidx-core-ktx", "androidx-appcompat", "androidx-recyclerview", "google-material", "androidx-lifecycle-viewmodel-ktx"]

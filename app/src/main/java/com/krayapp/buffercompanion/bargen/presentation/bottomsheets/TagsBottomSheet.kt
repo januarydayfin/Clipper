@@ -25,6 +25,7 @@ import com.krayapp.buffercompanion.bargen.presentation.BargenChip
 import com.krayapp.buffercompanion.bargen.presentation.dialogs.SetupTagDialog
 import com.krayapp.buffercompanion.bargen.presentation.uiModels.TagUiModel
 import com.krayapp.buffercompanion.bargen.presentation.viewmodels.TagsViewModel
+import com.krayapp.buffercompanion.bargen.utils.io
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -34,12 +35,16 @@ fun TagsBottomSheet(onDismiss: () -> Unit) {
     val viewmodel: TagsViewModel = viewModel()
     val tagsList = remember { mutableStateListOf<TagUiModel>() }
     val scope = rememberCoroutineScope()
-
+    val selector = viewmodel.tagSelector
     val showEditDialog = remember { mutableStateOf<TagUiModel?>(null) }
 
     LaunchedEffect(true) {
+        val checkedTags = viewmodel.tagSelector.tagFilterFlow.value
         viewmodel.getTags {
-            tagsList.addAll(it)
+            val newList = it.map { item ->
+                item.copy(checked = item.id in checkedTags)
+            }
+            tagsList.addAll(newList)
         }
     }
 
@@ -47,11 +52,13 @@ fun TagsBottomSheet(onDismiss: () -> Unit) {
         val dialogModel = showEditDialog.value ?: return
         SetupTagDialog(dialogModel, onDismiss = {
             showEditDialog.value = null
-        }) { changed ->
+        }, onComplete = { changed ->
             val position = tagsList.toList().indexOfFirst { it.id == dialogModel.id }
             tagsList[position] = changed
             viewmodel.saveTags(tagsList)
-        }
+        }, onRemoveTag = {
+
+        })
     }
 
 
@@ -73,6 +80,10 @@ fun TagsBottomSheet(onDismiss: () -> Unit) {
                         onClick = {
                             tagsList[index] =
                                 tagsList[index].copy(checked = !tagsList[index].checked)
+
+                            scope.io {
+                                selector.checkTag(tagsList[index].id)
+                            }
                         }
                     )
                 }

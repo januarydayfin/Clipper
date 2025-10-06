@@ -3,6 +3,7 @@ package com.krayapp.buffercompanion.bargen
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
 import com.google.android.material.color.DynamicColors
+import org.koin.core.context.startKoin
 
 class ClipperApp : Application() {
 
@@ -22,11 +23,16 @@ class ClipperApp : Application() {
     }
 
     override fun onCreate() {
+        super.onCreate()
+
         instance = this
         globalPrefs = GlobalPrefs()
 
         DynamicColors.applyToActivitiesIfAvailable(this)
         AppCompatDelegate.setDefaultNightMode(globalPrefs.theme)
-        super.onCreate()
+
+        startKoin {
+            modules(appModule)
+        }
     }
 }

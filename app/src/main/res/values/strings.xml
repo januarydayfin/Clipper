@@ -9,6 +9,7 @@
     <string name="refresh_widget">Refresh widget</string>
     <string name="sign_google">Sign in with Google</string>
     <string name="widget_settings">Widget settings</string>
+    <string name="filter">Filter</string>
 
     <string name="empty_hint">Empty</string>
     <string name="settings_title">Settings</string>

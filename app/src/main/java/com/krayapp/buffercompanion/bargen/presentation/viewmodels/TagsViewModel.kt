@@ -3,14 +3,18 @@ package com.krayapp.buffercompanion.bargen.presentation.viewmodels
 import androidx.lifecycle.ViewModel
 import com.krayapp.buffercompanion.bargen.data.BarcodeRepo
 import com.krayapp.buffercompanion.bargen.data.TagsRepo
+import com.krayapp.buffercompanion.bargen.domain.selector.TagSelector
 import com.krayapp.buffercompanion.bargen.presentation.uiModels.TagUiModel
 import com.krayapp.buffercompanion.bargen.utils.launchInIO
 import com.krayapp.buffercompanion.bargen.utils.toEntity
 import com.krayapp.buffercompanion.bargen.utils.toTagUiModel
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
-class TagsViewModel : ViewModel() {
-    private val tagsRepo = TagsRepo()
-    private val barcodeRepo = BarcodeRepo()
+class TagsViewModel : ViewModel(), KoinComponent {
+    val tagSelector: TagSelector by inject()
+    private val tagsRepo: TagsRepo by inject()
+    private val barcodeRepo: BarcodeRepo by inject()
 
     fun getTags(onLoaded: (List<TagUiModel>) -> Unit) {
         launchInIO {

@@ -1,6 +1,7 @@
 package com.krayapp.buffercompanion.bargen.utils
 
 import android.graphics.Color
+import android.util.Log
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.color.MaterialColors
 import com.krayapp.buffercompanion.bargen.R

@@ -52,7 +52,6 @@ class ScanDialog(private val onScanned: (BarcodeResult?) -> Unit) : DialogFragme
 
             lifecycleScope.launch {
                 reader.readerFlow().collectLatest {
-
                     if (it?.text != null) {
                         onScanned(it)
                         dismiss()
