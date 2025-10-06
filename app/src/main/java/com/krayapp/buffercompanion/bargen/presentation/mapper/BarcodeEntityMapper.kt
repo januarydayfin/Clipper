@@ -1,10 +1,10 @@
-package com.krayapp.buffercompanion.bargen.domain.mapper
+package com.krayapp.buffercompanion.bargen.presentation.mapper
 
 import com.krayapp.buffercompanion.bargen.data.room.bargen.BargenDB
 import com.krayapp.buffercompanion.bargen.data.room.bargen.entity.BarcodeEntity
 import com.krayapp.buffercompanion.bargen.data.room.bargen.entity.TagEntity
-import com.krayapp.buffercompanion.bargen.presentation.uiModels.BarcodeUiModel
-import com.krayapp.buffercompanion.bargen.presentation.uiModels.TagUiModel
+import com.krayapp.buffercompanion.bargen.presentation.models.BarcodeUiModel
+import com.krayapp.buffercompanion.bargen.presentation.models.TagUiModel
 import com.krayapp.buffercompanion.bargen.domain.provideDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

@@ -39,8 +39,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.krayapp.buffercompanion.bargen.R
-import com.krayapp.buffercompanion.bargen.presentation.dialogs.ConfirmationDialog
-import com.krayapp.buffercompanion.bargen.presentation.menus.SortDropdownMenu
+import com.krayapp.buffercompanion.bargen.presentation.ui.dialogs.ConfirmationDialog
+import com.krayapp.buffercompanion.bargen.presentation.ui.menus.SortDropdownMenu
 import com.krayapp.buffercompanion.bargen.presentation.mvi.MainIntent
 import com.krayapp.buffercompanion.bargen.presentation.viewmodels.BargenViewModel
 import com.krayapp.buffercompanion.bargen.theme.sSize

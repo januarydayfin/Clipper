@@ -18,25 +18,10 @@ class GlobalPrefs {
             prefs.edit { putString(SORT_TYPE, value) }
         }
 
-    var lastBarFormat: String
-        get() = prefs.getString(BARCODE_FORMAT, BarcodeFormat.QR_CODE.toString())
-            ?: BarcodeFormat.QR_CODE.toString()
-        set(value) {
-            prefs.edit { putString(BARCODE_FORMAT, value) }
-        }
-
-
     var theme: Int
         get() = prefs.getInt(KEY_THEME_MODE, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
         set(value) = prefs.edit { putInt(KEY_THEME_MODE, value) }
 
-
-    var searchType: String
-        get() = prefs.getString(SEARCH_TYPE, SearchType.NAME.toString())
-            ?: SearchType.NAME.toString()
-        set(value) {
-            prefs.edit { putString(SEARCH_TYPE, value) }
-        }
 
     var openCardAfterScan: Boolean
         get() = prefs.getBoolean(OPEN_AFTER_SCAN, true)
@@ -52,10 +37,8 @@ class GlobalPrefs {
         private const val PREFS_NAME = "mainSettings"
 
         private const val KEY_THEME_MODE = "KEY_THEME_MODE"
-        private const val SEARCH_TYPE = "SEARCH_TYPE"
         private const val SORT_TYPE = "SORT_TYPE"
         private const val VOLUME_BUTTON_SCAN = "VOLUME_BUTTON_SCAN "
-        private const val BARCODE_FORMAT = "BARCODE_FORMAT"
         private const val OPEN_AFTER_SCAN = "OPEN_AFTER_SCAN"
     }
 }

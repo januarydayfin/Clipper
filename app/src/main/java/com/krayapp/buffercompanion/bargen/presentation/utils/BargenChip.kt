@@ -24,7 +24,7 @@ import com.krayapp.buffercompanion.bargen.R
 import com.krayapp.buffercompanion.bargen.theme.labelIconSize
 import com.krayapp.buffercompanion.bargen.theme.sSize
 import com.krayapp.buffercompanion.bargen.theme.xsSize
-import com.krayapp.buffercompanion.bargen.presentation.uiModels.TagUiModel
+import com.krayapp.buffercompanion.bargen.presentation.models.TagUiModel
 
 @Composable
 fun BargenChip(

@@ -1,4 +1,4 @@
-package com.krayapp.buffercompanion.bargen.presentation.bottomsheets
+package com.krayapp.buffercompanion.bargen.presentation.ui.bottomsheets.tagsBottomsheet
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
@@ -20,12 +20,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.krayapp.buffercompanion.bargen.R
+import com.krayapp.buffercompanion.bargen.presentation.ui.dialogs.setupTagDialog.SetupTagDialog
+import com.krayapp.buffercompanion.bargen.presentation.models.TagUiModel
 import com.krayapp.buffercompanion.bargen.presentation.utils.BargenChip
-import com.krayapp.buffercompanion.bargen.presentation.dialogs.SetupTagDialog
-import com.krayapp.buffercompanion.bargen.presentation.uiModels.TagUiModel
+import com.krayapp.buffercompanion.bargen.presentation.utils.Space
 import com.krayapp.buffercompanion.bargen.presentation.viewmodels.TagsViewModel
 import com.krayapp.buffercompanion.bargen.theme.mSize
-import com.krayapp.buffercompanion.bargen.presentation.utils.Space
 import com.krayapp.buffercompanion.bargen.utils.io
 import com.krayapp.buffercompanion.bargen.utils.launchWithDelay
 import kotlinx.coroutines.launch

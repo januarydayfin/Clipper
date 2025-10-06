@@ -1,4 +1,4 @@
-package com.krayapp.buffercompanion.bargen.presentation.menus
+package com.krayapp.buffercompanion.bargen.presentation.ui.menus
 
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem

@@ -27,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
@@ -40,9 +41,9 @@ import com.journeyapps.barcodescanner.ScanOptions.DATA_MATRIX
 import com.journeyapps.barcodescanner.ScanOptions.PDF_417
 import com.journeyapps.barcodescanner.ScanOptions.QR_CODE
 import com.krayapp.buffercompanion.bargen.R
-import com.krayapp.buffercompanion.bargen.presentation.dialogs.ConfirmationDialog
-import com.krayapp.buffercompanion.bargen.presentation.uiModels.BarcodeUiModel
-import com.krayapp.buffercompanion.bargen.presentation.uiModels.TagUiModel
+import com.krayapp.buffercompanion.bargen.presentation.ui.dialogs.ConfirmationDialog
+import com.krayapp.buffercompanion.bargen.presentation.models.BarcodeUiModel
+import com.krayapp.buffercompanion.bargen.presentation.models.TagUiModel
 import com.krayapp.buffercompanion.bargen.theme.barcodePreviewSize
 import com.krayapp.buffercompanion.bargen.theme.mSize
 import com.krayapp.buffercompanion.bargen.theme.sSize
@@ -179,7 +180,8 @@ private fun BarcodeInfo(
         Image(
             painter = painterResource(barcodePreviewRes),
             modifier = Modifier.size(barcodePreviewSize),
-            contentDescription = "barcode_preview"
+            contentDescription = "barcode_preview",
+            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface)
         )
         Text(text = barcodeTypeText, style = MaterialTheme.typography.labelSmall)
     }

@@ -1,4 +1,4 @@
-package com.krayapp.buffercompanion.bargen.presentation.dialogs
+package com.krayapp.buffercompanion.bargen.presentation.ui.dialogs
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement

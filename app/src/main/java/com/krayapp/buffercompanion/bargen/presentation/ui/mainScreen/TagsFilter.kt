@@ -21,8 +21,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.krayapp.buffercompanion.bargen.R
 import com.krayapp.buffercompanion.bargen.presentation.utils.BargenChip
-import com.krayapp.buffercompanion.bargen.presentation.uiModels.TagUiModel
-import com.krayapp.buffercompanion.bargen.presentation.uiModels.setChecked
+import com.krayapp.buffercompanion.bargen.presentation.models.TagUiModel
+import com.krayapp.buffercompanion.bargen.presentation.models.setChecked
 import com.krayapp.buffercompanion.bargen.presentation.viewmodels.TagsViewModel
 import com.krayapp.buffercompanion.bargen.theme.mSize
 import com.krayapp.buffercompanion.bargen.theme.sSize

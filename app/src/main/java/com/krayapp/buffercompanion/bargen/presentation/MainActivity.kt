@@ -21,11 +21,6 @@ import androidx.lifecycle.lifecycleScope
 import com.gun0912.tedpermission.normal.TedPermission
 import com.krayapp.buffercompanion.bargen.ClipperApp
 import com.krayapp.buffercompanion.bargen.R
-import com.krayapp.buffercompanion.bargen.data.room.bargen.BargenDB.Companion.DB_NAME
-import com.krayapp.buffercompanion.bargen.presentation.bottomsheets.MainBottomSheet
-import com.krayapp.buffercompanion.bargen.presentation.bottomsheets.SettingsBottomSheet
-import com.krayapp.buffercompanion.bargen.presentation.bottomsheets.TagsBottomSheet
-import com.krayapp.buffercompanion.bargen.presentation.dialogs.ScanDialog
 import com.krayapp.buffercompanion.bargen.presentation.mvi.BottomSheetStateData
 import com.krayapp.buffercompanion.bargen.presentation.mvi.MainIntent
 import com.krayapp.buffercompanion.bargen.presentation.mvi.ShowSettingsBottomsheet
@@ -34,6 +29,10 @@ import com.krayapp.buffercompanion.bargen.presentation.mvi.canShowMainBottomShee
 import com.krayapp.buffercompanion.bargen.presentation.mvi.canShowSettingsBottomsheet
 import com.krayapp.buffercompanion.bargen.presentation.mvi.canShowTagBottomSheet
 import com.krayapp.buffercompanion.bargen.presentation.screens.mainScreen.MainScreen
+import com.krayapp.buffercompanion.bargen.presentation.ui.bottomsheets.mainBottomSheet.MainBottomSheet
+import com.krayapp.buffercompanion.bargen.presentation.ui.bottomsheets.settingsBottomsheet.SettingsBottomSheet
+import com.krayapp.buffercompanion.bargen.presentation.ui.bottomsheets.tagsBottomsheet.TagsBottomSheet
+import com.krayapp.buffercompanion.bargen.presentation.ui.dialogs.ScanDialog
 import com.krayapp.buffercompanion.bargen.presentation.utils.addPermissionListener
 import com.krayapp.buffercompanion.bargen.presentation.utils.savePictureInStorage
 import com.krayapp.buffercompanion.bargen.presentation.utils.shareBitmap
@@ -164,11 +163,7 @@ class MainActivity : AppCompatActivity() {
 
     @Composable
     private fun ShowSettingsBottomsheet(data: ShowSettingsBottomsheet) {
-        SettingsBottomSheet(onRestoreClicked = {
-            importLauncher.launch(arrayOf("application/octet-stream"))
-        }, onBackupClicked = {
-            backupLauncher.launch(DB_NAME)
-        }) {
+        SettingsBottomSheet {
             viewmodel.recycleEffect(data)
         }
     }

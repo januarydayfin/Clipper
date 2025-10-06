@@ -1,4 +1,4 @@
-package com.krayapp.buffercompanion.bargen.presentation.dialogs
+package com.krayapp.buffercompanion.bargen.presentation.ui.dialogs
 
 import android.app.Dialog
 import android.content.DialogInterface
@@ -42,8 +42,8 @@ import com.krayapp.buffercompanion.bargen.domain.bargenCore.BarReader
 import com.krayapp.buffercompanion.bargen.presentation.utils.BargenChip
 import com.krayapp.buffercompanion.bargen.presentation.utils.Space
 import com.krayapp.buffercompanion.bargen.presentation.mvi.MainIntent
-import com.krayapp.buffercompanion.bargen.presentation.uiModels.TagUiModel
-import com.krayapp.buffercompanion.bargen.presentation.uiModels.setChecked
+import com.krayapp.buffercompanion.bargen.presentation.models.TagUiModel
+import com.krayapp.buffercompanion.bargen.presentation.models.setChecked
 import com.krayapp.buffercompanion.bargen.presentation.viewmodels.BargenViewModel
 import com.krayapp.buffercompanion.bargen.presentation.viewmodels.TagsViewModel
 import com.krayapp.buffercompanion.bargen.theme.AppTheme

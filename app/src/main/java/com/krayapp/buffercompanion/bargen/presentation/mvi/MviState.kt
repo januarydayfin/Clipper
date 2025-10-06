@@ -1,6 +1,6 @@
 package com.krayapp.buffercompanion.bargen.presentation.mvi
 
-import com.krayapp.buffercompanion.bargen.presentation.uiModels.BarcodeUiModel
+import com.krayapp.buffercompanion.bargen.presentation.models.BarcodeUiModel
 
 data class MviState(
     val bottomSheetData: BottomSheetStateData? = null,

@@ -10,20 +10,20 @@ import androidx.paging.map
 import com.google.zxing.BarcodeFormat
 import com.krayapp.buffercompanion.bargen.ClipperApp
 import com.krayapp.buffercompanion.bargen.data.room.bargen.entity.BarcodeEntity
-import com.krayapp.buffercompanion.bargen.domain.mapper.toBarcodeUiModel
-import com.krayapp.buffercompanion.bargen.domain.mapper.toTagUiModel
+import com.krayapp.buffercompanion.bargen.presentation.mapper.toBarcodeUiModel
+import com.krayapp.buffercompanion.bargen.presentation.mapper.toTagUiModel
 import com.krayapp.buffercompanion.bargen.domain.pagingSource.BarcodeFilterTagsPagingSource
 import com.krayapp.buffercompanion.bargen.domain.repository.BarcodeRepo
 import com.krayapp.buffercompanion.bargen.domain.repository.TagsRepo
 import com.krayapp.buffercompanion.bargen.domain.selector.barcodeSelector.CardSelector
 import com.krayapp.buffercompanion.bargen.domain.selector.tagSelector.TagSelector
 import com.krayapp.buffercompanion.bargen.domain.type.SortType
+import com.krayapp.buffercompanion.bargen.presentation.models.BarcodeUiModel
+import com.krayapp.buffercompanion.bargen.presentation.models.TagUiModel
 import com.krayapp.buffercompanion.bargen.presentation.mvi.Effect
 import com.krayapp.buffercompanion.bargen.presentation.mvi.FilterState
 import com.krayapp.buffercompanion.bargen.presentation.mvi.MainIntent
 import com.krayapp.buffercompanion.bargen.presentation.mvi.stateManager.StateManager
-import com.krayapp.buffercompanion.bargen.presentation.uiModels.BarcodeUiModel
-import com.krayapp.buffercompanion.bargen.presentation.uiModels.TagUiModel
 import com.krayapp.buffercompanion.bargen.presentation.utils.currentSortType
 import com.krayapp.buffercompanion.bargen.utils.launchInIO
 import kotlinx.coroutines.Dispatchers
@@ -43,7 +43,7 @@ import java.util.UUID
 class BargenViewModel : ViewModel(), KoinComponent {
     private val barcodeRepo: BarcodeRepo by inject()
     private val tagsRepo: TagsRepo by inject()
-    private val stateManager = StateManager(viewModelScope)
+    private val stateManager: StateManager by inject()
 
     val cardSelector: CardSelector by inject()
     private val tagsSelector: TagSelector by inject()
@@ -102,12 +102,16 @@ class BargenViewModel : ViewModel(), KoinComponent {
     }
 
     fun onIntent(intent: MainIntent) {
-        stateManager.onIntent(intent)
+        launchInIO {
+            stateManager.onIntent(intent)
+        }
     }
 
 
     fun recycleEffect(effect: Effect) {
-        stateManager.recycleEffect(effect)
+        launchInIO {
+            stateManager.recycleEffect(effect)
+        }
     }
 
     fun updatePager() {

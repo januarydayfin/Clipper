@@ -2,7 +2,7 @@ package com.krayapp.buffercompanion.bargen.presentation.viewmodels
 
 import androidx.lifecycle.ViewModel
 import com.krayapp.buffercompanion.bargen.ClipperApp
-import com.krayapp.buffercompanion.bargen.presentation.uiModels.SettingsUiModel
+import com.krayapp.buffercompanion.bargen.presentation.models.SettingsUiModel
 import com.krayapp.buffercompanion.bargen.utils.launchInIO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

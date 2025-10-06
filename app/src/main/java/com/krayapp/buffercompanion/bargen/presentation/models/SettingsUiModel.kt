@@ -1,4 +1,4 @@
-package com.krayapp.buffercompanion.bargen.presentation.uiModels
+package com.krayapp.buffercompanion.bargen.presentation.models
 
 import com.krayapp.buffercompanion.bargen.ClipperApp
 

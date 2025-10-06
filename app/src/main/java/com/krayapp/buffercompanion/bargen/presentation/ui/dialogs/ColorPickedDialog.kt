@@ -1,4 +1,4 @@
-package com.krayapp.buffercompanion.bargen.presentation.dialogs
+package com.krayapp.buffercompanion.bargen.presentation.ui.dialogs
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -29,7 +29,7 @@ import com.github.skydoves.colorpicker.compose.HsvColorPicker
 import com.github.skydoves.colorpicker.compose.rememberColorPickerController
 import com.krayapp.buffercompanion.bargen.R
 import com.krayapp.buffercompanion.bargen.presentation.utils.BargenChip
-import com.krayapp.buffercompanion.bargen.presentation.uiModels.TagUiModel
+import com.krayapp.buffercompanion.bargen.presentation.models.TagUiModel
 import com.krayapp.buffercompanion.bargen.theme.mSize
 import com.krayapp.buffercompanion.bargen.presentation.utils.Space
 
