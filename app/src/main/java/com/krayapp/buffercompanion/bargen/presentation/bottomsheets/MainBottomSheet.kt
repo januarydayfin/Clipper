@@ -1,7 +1,6 @@
 package com.krayapp.buffercompanion.bargen.presentation.bottomsheets
 
 import android.graphics.Bitmap
-import android.util.Log
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
@@ -68,8 +67,8 @@ import kotlinx.coroutines.launch
 fun MainBottomSheet(
     model: BarcodeUiModel,
     onDismiss: () -> Unit = {},
-    onSharePicture: (Bitmap) -> Unit = {},
-    onSaveStoragePicture: (Bitmap) -> Unit = {},
+    onSharePicture: (Bitmap?) -> Unit = {},
+    onSaveStoragePicture: (Bitmap?) -> Unit = {},
 ) {
     val viewmodel: BargenViewModel = viewModel()
     val tagsViewModel: TagsViewModel = viewModel()
@@ -126,7 +125,11 @@ fun MainBottomSheet(
                 .verticalScroll(state = scrollState),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            ImageBlock(modelState)
+            ImageBlock(
+                state = modelState,
+                onSharePicture = onSharePicture,
+                onSaveStoragePicture = onSaveStoragePicture
+            )
             BarcodeFormatBlock(modelState) {
                 formatDialogOpened.value = true
             }
@@ -174,14 +177,14 @@ private fun BarcodeFormatBlock(state: State<BarcodeUiModel>, openDialog: () -> U
 @Composable
 private fun ImageBlock(
     state: State<BarcodeUiModel>,
-    onSharePicture: () -> Unit = {},
-    onSaveStoragePicture: () -> Unit = {},
+    onSharePicture: (Bitmap?) -> Unit = {},
+    onSaveStoragePicture: (Bitmap?) -> Unit = {},
 ) {
     val model = state.value
     val scope = rememberCoroutineScope()
     val bitmapState = remember { mutableStateOf<Bitmap?>(null) }
 
-    val bmp = bitmapState.value?.asImageBitmap()
+    val bmp = bitmapState.value
     val generateBitmap: () -> Unit = {
         scope.launch {
             bitmapState.value = BarcodeGenerator.generate(
@@ -195,13 +198,13 @@ private fun ImageBlock(
     }
 
     if (bmp != null) {
-        Image(bitmap = bmp, contentDescription = "image")
+        Image(bitmap = bmp.asImageBitmap(), contentDescription = "image")
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
         ) {
             OutlinedIconButton(
-                onClick = { onSaveStoragePicture() },
+                onClick = { onSaveStoragePicture(bmp) },
                 textRes = R.string.save,
                 iconRes = R.drawable.ic_download
             )
@@ -209,7 +212,7 @@ private fun ImageBlock(
             Spacer(Modifier.width(mSize))
 
             OutlinedIconButton(
-                onClick = { onSharePicture() },
+                onClick = { onSharePicture(bmp) },
                 textRes = R.string.share,
                 iconRes = R.drawable.ic_share
             )

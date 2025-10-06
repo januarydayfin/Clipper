@@ -1,8 +1,10 @@
 package com.krayapp.buffercompanion.bargen.presentation
 
+import android.Manifest
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.MotionEvent
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -11,7 +13,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.lifecycleScope
+import com.gun0912.tedpermission.normal.TedPermission
 import com.krayapp.buffercompanion.bargen.ClipperApp
+import com.krayapp.buffercompanion.bargen.R
 import com.krayapp.buffercompanion.bargen.presentation.bottomsheets.MainBottomSheet
 import com.krayapp.buffercompanion.bargen.presentation.bottomsheets.SettingsBottomSheet
 import com.krayapp.buffercompanion.bargen.presentation.bottomsheets.TagsBottomSheet
@@ -26,7 +30,11 @@ import com.krayapp.buffercompanion.bargen.presentation.mvi.canShowTagBottomSheet
 import com.krayapp.buffercompanion.bargen.presentation.screens.mainScreen.MainScreen
 import com.krayapp.buffercompanion.bargen.presentation.viewmodels.BargenViewModel
 import com.krayapp.buffercompanion.bargen.theme.AppTheme
+import com.krayapp.buffercompanion.bargen.utils.addPermissionListener
+import com.krayapp.buffercompanion.bargen.utils.savePictureInStorage
+import com.krayapp.buffercompanion.bargen.utils.shareBitmap
 import kotlinx.coroutines.launch
+import kotlin.random.Random
 
 
 class MainActivity : AppCompatActivity() {
@@ -66,25 +74,44 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showScanDialog() {
-        ScanDialog {
-            it ?: return@ScanDialog
-            viewmodel.createBarcodeRecord(
-                text = it.text,
-                format = it.barcodeFormat
-            ) { model ->
-                if (ClipperApp.getPrefs().openCardAfterScan)
-                    viewmodel.onIntent(MainIntent.ShowBottomsheet(model))
-            }
-        }.show(supportFragmentManager, "")
+        TedPermission.create()
+            .addPermissionListener(onGranted = {
+                ScanDialog {
+                    it ?: return@ScanDialog
+                    viewmodel.createBarcodeRecord(
+                        text = it.text,
+                        format = it.barcodeFormat
+                    ) { model ->
+                        if (ClipperApp.getPrefs().openCardAfterScan)
+                            viewmodel.onIntent(MainIntent.ShowBottomsheet(model))
+                    }
+                }.show(supportFragmentManager, "")
+            }, onDenied = {
+                Toast.makeText(this, R.string.camera_required, Toast.LENGTH_SHORT).show()
+            }).setPermissions(Manifest.permission.CAMERA)
+            .check()
     }
 
     @Composable
     private fun ShowMainBottomSheet(data: BottomSheetStateData) {
         viewmodel.incrementUsageCount(data.model.id)
-        MainBottomSheet(model = data.model, onDismiss = {
-            viewmodel.recycleEffect(data)
-            viewmodel.updatePager()
-        })
+        MainBottomSheet(
+            model = data.model, onDismiss = {
+                viewmodel.recycleEffect(data)
+                viewmodel.updatePager()
+            }, onSharePicture = {
+                shareBitmap(bitmap = it, title = Random.nextInt().toString())
+            },
+            onSaveStoragePicture = {
+                savePictureInStorage(bmp = it, filename = "${Random.nextInt()}") { path ->
+                    Toast.makeText(
+                        this,
+                        "${getString(R.string.saved_to)} $path",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        )
     }
 
     @Composable
