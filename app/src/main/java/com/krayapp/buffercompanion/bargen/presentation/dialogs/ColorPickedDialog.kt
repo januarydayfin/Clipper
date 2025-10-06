@@ -28,10 +28,10 @@ import com.github.skydoves.colorpicker.compose.BrightnessSlider
 import com.github.skydoves.colorpicker.compose.HsvColorPicker
 import com.github.skydoves.colorpicker.compose.rememberColorPickerController
 import com.krayapp.buffercompanion.bargen.R
-import com.krayapp.buffercompanion.bargen.presentation.BargenChip
+import com.krayapp.buffercompanion.bargen.presentation.utils.BargenChip
 import com.krayapp.buffercompanion.bargen.presentation.uiModels.TagUiModel
 import com.krayapp.buffercompanion.bargen.theme.mSize
-import com.krayapp.buffercompanion.bargen.utils.Space
+import com.krayapp.buffercompanion.bargen.presentation.utils.Space
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

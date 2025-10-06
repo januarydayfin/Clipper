@@ -4,8 +4,8 @@ import android.content.Context
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.edit
 import com.google.zxing.BarcodeFormat
-import com.krayapp.buffercompanion.bargen.data.SearchType
-import com.krayapp.buffercompanion.bargen.data.SortType
+import com.krayapp.buffercompanion.bargen.domain.type.SearchType
+import com.krayapp.buffercompanion.bargen.domain.type.SortType
 
 class GlobalPrefs {
     private val prefs =

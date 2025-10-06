@@ -19,7 +19,7 @@ import androidx.compose.ui.res.stringResource
 import com.krayapp.buffercompanion.bargen.R
 import com.krayapp.buffercompanion.bargen.theme.lSize
 import com.krayapp.buffercompanion.bargen.theme.mSize
-import com.krayapp.buffercompanion.bargen.utils.Space
+import com.krayapp.buffercompanion.bargen.presentation.utils.Space
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

@@ -1,13 +1,13 @@
 package com.krayapp.buffercompanion.bargen.presentation.viewmodels
 
 import androidx.lifecycle.ViewModel
-import com.krayapp.buffercompanion.bargen.data.BarcodeRepo
-import com.krayapp.buffercompanion.bargen.data.TagsRepo
+import com.krayapp.buffercompanion.bargen.domain.mapper.toEntity
+import com.krayapp.buffercompanion.bargen.domain.mapper.toTagUiModel
+import com.krayapp.buffercompanion.bargen.domain.repository.BarcodeRepo
+import com.krayapp.buffercompanion.bargen.domain.repository.TagsRepo
 import com.krayapp.buffercompanion.bargen.domain.selector.tagSelector.TagSelector
 import com.krayapp.buffercompanion.bargen.presentation.uiModels.TagUiModel
 import com.krayapp.buffercompanion.bargen.utils.launchInIO
-import com.krayapp.buffercompanion.bargen.utils.toEntity
-import com.krayapp.buffercompanion.bargen.utils.toTagUiModel
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 

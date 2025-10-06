@@ -37,7 +37,7 @@ import com.krayapp.buffercompanion.bargen.presentation.uiModels.SettingsUiModel
 import com.krayapp.buffercompanion.bargen.presentation.viewmodels.SettingsViewModel
 import com.krayapp.buffercompanion.bargen.theme.mSize
 import com.krayapp.buffercompanion.bargen.theme.sSize
-import com.krayapp.buffercompanion.bargen.utils.Space
+import com.krayapp.buffercompanion.bargen.presentation.utils.Space
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

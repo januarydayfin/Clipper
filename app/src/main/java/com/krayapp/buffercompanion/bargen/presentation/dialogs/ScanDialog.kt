@@ -36,10 +36,11 @@ import androidx.lifecycle.lifecycleScope
 import com.journeyapps.barcodescanner.BarcodeResult
 import com.journeyapps.barcodescanner.DecoratedBarcodeView
 import com.journeyapps.barcodescanner.Size
+import com.krayapp.buffercompanion.bargen.ClipperApp
 import com.krayapp.buffercompanion.bargen.R
-import com.krayapp.buffercompanion.bargen.bargenCore.BarReader
-import com.krayapp.buffercompanion.bargen.bargenCore.reader.BargenReaderImpl
-import com.krayapp.buffercompanion.bargen.presentation.BargenChip
+import com.krayapp.buffercompanion.bargen.domain.bargenCore.BarReader
+import com.krayapp.buffercompanion.bargen.presentation.utils.BargenChip
+import com.krayapp.buffercompanion.bargen.presentation.utils.Space
 import com.krayapp.buffercompanion.bargen.presentation.mvi.MainIntent
 import com.krayapp.buffercompanion.bargen.presentation.uiModels.TagUiModel
 import com.krayapp.buffercompanion.bargen.presentation.uiModels.setChecked
@@ -47,17 +48,18 @@ import com.krayapp.buffercompanion.bargen.presentation.viewmodels.BargenViewMode
 import com.krayapp.buffercompanion.bargen.presentation.viewmodels.TagsViewModel
 import com.krayapp.buffercompanion.bargen.theme.AppTheme
 import com.krayapp.buffercompanion.bargen.theme.mSize
-import com.krayapp.buffercompanion.bargen.utils.Space
-import com.krayapp.buffercompanion.bargen.utils.dialogWidth
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 class ScanDialog(
     private val viewModel: BargenViewModel,
     private val tagsViewModel: TagsViewModel,
     private val onScanned: (BarcodeResult?, List<String>) -> Unit
-) : DialogFragment() {
-    private lateinit var reader: BarReader
+) : DialogFragment(), KoinComponent {
+    private val reader: BarReader by inject()
+    private val dialogWidth = (ClipperApp.displayWidth * 0.9).toInt()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -88,7 +90,7 @@ class ScanDialog(
 
         dialog?.setTransparent()
 
-        reader = BargenReaderImpl(scanner)
+        reader.setView(scanner)
         reader.startScan()
 
         lifecycleScope.launch {
@@ -143,7 +145,9 @@ private fun AutoTagSection(mainViewModel: BargenViewModel, viewmodel: TagsViewMo
                     style = MaterialTheme.typography.labelMedium
                 )
 
-                FlowRow(Modifier.fillMaxWidth().padding(horizontal = mSize)) {
+                FlowRow(Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = mSize)) {
                     tagsUiState.forEach {
                         BargenChip(model = it.setChecked(), onClick = {
                             scope.launch {

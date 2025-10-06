@@ -5,7 +5,6 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.KeyEvent
 import android.view.MotionEvent
 import android.widget.Toast
@@ -35,15 +34,15 @@ import com.krayapp.buffercompanion.bargen.presentation.mvi.canShowMainBottomShee
 import com.krayapp.buffercompanion.bargen.presentation.mvi.canShowSettingsBottomsheet
 import com.krayapp.buffercompanion.bargen.presentation.mvi.canShowTagBottomSheet
 import com.krayapp.buffercompanion.bargen.presentation.screens.mainScreen.MainScreen
+import com.krayapp.buffercompanion.bargen.presentation.utils.addPermissionListener
+import com.krayapp.buffercompanion.bargen.presentation.utils.savePictureInStorage
+import com.krayapp.buffercompanion.bargen.presentation.utils.shareBitmap
 import com.krayapp.buffercompanion.bargen.presentation.viewmodels.BargenViewModel
 import com.krayapp.buffercompanion.bargen.presentation.viewmodels.TagsViewModel
 import com.krayapp.buffercompanion.bargen.theme.AppTheme
-import com.krayapp.buffercompanion.bargen.utils.addPermissionListener
 import com.krayapp.buffercompanion.bargen.utils.exportDatabaseToUri
 import com.krayapp.buffercompanion.bargen.utils.launchWithDelay
 import com.krayapp.buffercompanion.bargen.utils.restoreDatabaseFromUri
-import com.krayapp.buffercompanion.bargen.utils.savePictureInStorage
-import com.krayapp.buffercompanion.bargen.utils.shareBitmap
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlin.random.Random

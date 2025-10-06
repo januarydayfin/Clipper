@@ -9,23 +9,23 @@ import androidx.paging.cachedIn
 import androidx.paging.map
 import com.google.zxing.BarcodeFormat
 import com.krayapp.buffercompanion.bargen.ClipperApp
-import com.krayapp.buffercompanion.bargen.data.BarcodeFilterTagsPagingSource
-import com.krayapp.buffercompanion.bargen.data.BarcodeRepo
-import com.krayapp.buffercompanion.bargen.data.FilterState
-import com.krayapp.buffercompanion.bargen.data.SortType
-import com.krayapp.buffercompanion.bargen.data.TagsRepo
 import com.krayapp.buffercompanion.bargen.data.room.bargen.entity.BarcodeEntity
+import com.krayapp.buffercompanion.bargen.domain.mapper.toBarcodeUiModel
+import com.krayapp.buffercompanion.bargen.domain.mapper.toTagUiModel
+import com.krayapp.buffercompanion.bargen.domain.pagingSource.BarcodeFilterTagsPagingSource
+import com.krayapp.buffercompanion.bargen.domain.repository.BarcodeRepo
+import com.krayapp.buffercompanion.bargen.domain.repository.TagsRepo
 import com.krayapp.buffercompanion.bargen.domain.selector.barcodeSelector.CardSelector
 import com.krayapp.buffercompanion.bargen.domain.selector.tagSelector.TagSelector
+import com.krayapp.buffercompanion.bargen.domain.type.SortType
 import com.krayapp.buffercompanion.bargen.presentation.mvi.Effect
+import com.krayapp.buffercompanion.bargen.presentation.mvi.FilterState
 import com.krayapp.buffercompanion.bargen.presentation.mvi.MainIntent
 import com.krayapp.buffercompanion.bargen.presentation.mvi.stateManager.StateManager
 import com.krayapp.buffercompanion.bargen.presentation.uiModels.BarcodeUiModel
 import com.krayapp.buffercompanion.bargen.presentation.uiModels.TagUiModel
-import com.krayapp.buffercompanion.bargen.utils.currentSortType
+import com.krayapp.buffercompanion.bargen.presentation.utils.currentSortType
 import com.krayapp.buffercompanion.bargen.utils.launchInIO
-import com.krayapp.buffercompanion.bargen.utils.toBarcodeUiModel
-import com.krayapp.buffercompanion.bargen.utils.toTagUiModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -41,8 +41,8 @@ import org.koin.core.component.inject
 import java.util.UUID
 
 class BargenViewModel : ViewModel(), KoinComponent {
-    private val barcodeRepo = BarcodeRepo()
-    private val tagsRepo = TagsRepo()
+    private val barcodeRepo: BarcodeRepo by inject()
+    private val tagsRepo: TagsRepo by inject()
     private val stateManager = StateManager(viewModelScope)
 
     val cardSelector: CardSelector by inject()

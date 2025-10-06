@@ -1,7 +1,6 @@
 package com.krayapp.buffercompanion.bargen.presentation.bottomsheets
 
 import android.graphics.Bitmap
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -43,8 +42,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.ImeAction
@@ -52,8 +49,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.zxing.BarcodeFormat
 import com.krayapp.buffercompanion.bargen.R
-import com.krayapp.buffercompanion.bargen.bargenCore.generator.BarcodeGenerator
-import com.krayapp.buffercompanion.bargen.presentation.BargenChip
+import com.krayapp.buffercompanion.bargen.domain.bargenCore.BarGenerator
+import com.krayapp.buffercompanion.bargen.domain.mapper.toBarcodeEntity
+import com.krayapp.buffercompanion.bargen.presentation.utils.BargenChip
 import com.krayapp.buffercompanion.bargen.presentation.dialogs.BarcodeFormatDialog
 import com.krayapp.buffercompanion.bargen.presentation.uiModels.BarcodeUiModel
 import com.krayapp.buffercompanion.bargen.presentation.uiModels.TagUiModel
@@ -61,10 +59,10 @@ import com.krayapp.buffercompanion.bargen.presentation.viewmodels.BargenViewMode
 import com.krayapp.buffercompanion.bargen.presentation.viewmodels.TagsViewModel
 import com.krayapp.buffercompanion.bargen.theme.lSize
 import com.krayapp.buffercompanion.bargen.theme.mSize
-import com.krayapp.buffercompanion.bargen.utils.Space
-import com.krayapp.buffercompanion.bargen.utils.toBarcodeEntity
+import com.krayapp.buffercompanion.bargen.presentation.utils.Space
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.koin.compose.koinInject
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -180,10 +178,11 @@ private fun ImageBlock(
     val scope = rememberCoroutineScope()
     val bitmapState = remember { mutableStateOf<Bitmap?>(null) }
 
+    val bmpGenerator: BarGenerator = koinInject()
     val bmp = bitmapState.value
     val generateBitmap: () -> Unit = {
         scope.launch {
-            bitmapState.value = BarcodeGenerator.generate(
+            bitmapState.value = bmpGenerator.generate(
                 model.content,
                 BarcodeFormat.valueOf(model.barcodeType)
             )

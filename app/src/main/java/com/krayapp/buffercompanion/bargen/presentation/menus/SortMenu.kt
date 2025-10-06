@@ -10,10 +10,11 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.unit.DpOffset
+import androidx.compose.ui.unit.dp
 import com.krayapp.buffercompanion.bargen.R
-import com.krayapp.buffercompanion.bargen.data.SortType
+import com.krayapp.buffercompanion.bargen.domain.type.SortType
 import com.krayapp.buffercompanion.bargen.presentation.viewmodels.BargenViewModel
-import com.krayapp.buffercompanion.bargen.toDpOffset
 
 @Composable
 fun SortDropdownMenu(
@@ -41,5 +42,6 @@ fun SortDropdownMenu(
             })
         }
     }
-
 }
+
+private fun Offset.toDpOffset() = DpOffset(x = x.toInt().dp, y = y.toInt().dp)
