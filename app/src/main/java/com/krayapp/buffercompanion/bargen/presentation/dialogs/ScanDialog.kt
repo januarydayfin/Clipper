@@ -6,7 +6,28 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
+import android.widget.LinearLayout
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.unit.dp
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import com.journeyapps.barcodescanner.BarcodeResult
@@ -15,11 +36,24 @@ import com.krayapp.buffercompanion.bargen.R
 import com.krayapp.buffercompanion.bargen.bargenCore.BarReader
 import com.krayapp.buffercompanion.bargen.bargenCore.reader.BargenReaderImpl
 import com.krayapp.buffercompanion.bargen.databinding.DialogScannerLayoutBinding
+import com.krayapp.buffercompanion.bargen.presentation.BargenChip
+import com.krayapp.buffercompanion.bargen.presentation.mvi.MainIntent
+import com.krayapp.buffercompanion.bargen.presentation.uiModels.TagUiModel
+import com.krayapp.buffercompanion.bargen.presentation.uiModels.setChecked
+import com.krayapp.buffercompanion.bargen.presentation.viewmodels.BargenViewModel
+import com.krayapp.buffercompanion.bargen.presentation.viewmodels.TagsViewModel
+import com.krayapp.buffercompanion.bargen.theme.AppTheme
+import com.krayapp.buffercompanion.bargen.theme.mSize
+import com.krayapp.buffercompanion.bargen.utils.Space
 import com.krayapp.buffercompanion.bargen.utils.dialogWidth
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-class ScanDialog(private val onScanned: (BarcodeResult?) -> Unit) : DialogFragment() {
+class ScanDialog(
+    private val viewModel: BargenViewModel,
+    private val tagsViewModel: TagsViewModel,
+    private val onScanned: (BarcodeResult?, List<String>) -> Unit
+) : DialogFragment() {
     private var binding: DialogScannerLayoutBinding? = null
     private lateinit var reader: BarReader
 
@@ -44,8 +78,12 @@ class ScanDialog(private val onScanned: (BarcodeResult?) -> Unit) : DialogFragme
 
         dialog?.setTransparent()
         binding?.run {
-            root.layoutParams = FrameLayout.LayoutParams(dialogWidth, dialogWidth)
+            scannerCard.layoutParams = LinearLayout.LayoutParams(dialogWidth, dialogWidth)
             scanner.barcodeView.framingRectSize = Size(dialogWidth, dialogWidth)
+
+            composeView.setContent {
+                AutoTagSection(viewmodel = tagsViewModel, mainViewModel = viewModel)
+            }
 
             reader = BargenReaderImpl(scanner)
             reader.startScan()
@@ -53,7 +91,7 @@ class ScanDialog(private val onScanned: (BarcodeResult?) -> Unit) : DialogFragme
             lifecycleScope.launch {
                 reader.readerFlow().collectLatest {
                     if (it?.text != null) {
-                        onScanned(it)
+                        onScanned(it, tagsViewModel.tagSelector.tagsFilterFlow.value)
                         dismiss()
                     }
                 }
@@ -64,4 +102,60 @@ class ScanDialog(private val onScanned: (BarcodeResult?) -> Unit) : DialogFragme
 
 private fun Dialog?.setTransparent() {
     this?.window?.setBackgroundDrawableResource(R.drawable.dialog_background)
+}
+
+@Composable
+private fun AutoTagSection(mainViewModel: BargenViewModel, viewmodel: TagsViewModel) {
+    AppTheme {
+        val tagsState = viewmodel.tagSelector.tagsFilterFlow.collectAsState()
+        val scope = rememberCoroutineScope()
+        val tagsUiState = remember { mutableStateListOf<TagUiModel>() }
+
+        LaunchedEffect(Unit) {
+            viewmodel.loadTagsUiModelsByIds(tagsState.value) { input ->
+                tagsUiState.clear()
+                tagsUiState.addAll(input)
+            }
+        }
+
+        viewmodel.loadTagsUiModelsByIds(tagsState.value) { input ->
+            tagsUiState.clear()
+            tagsUiState.addAll(input)
+        }
+
+        Column(Modifier.fillMaxWidth().padding(vertical = mSize), horizontalAlignment = Alignment.CenterHorizontally) {
+            Space(height = mSize)
+            Text(
+                text = stringResource(R.string.label_to_scans),
+                style = MaterialTheme.typography.labelMedium
+            )
+
+            FlowRow(Modifier.fillMaxWidth()) {
+                tagsUiState.forEach {
+                    BargenChip(model = it.setChecked(), onClick = {
+                        scope.launch {
+                            viewmodel.tagSelector.checkTag(it.id)
+                        }
+                    })
+                }
+            }
+            Space(height = mSize)
+            Button(onClick = {
+                mainViewModel.onIntent(MainIntent.ShowTagsMenu)
+            }) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        modifier = Modifier.padding(end = 4.dp),
+                        imageVector = ImageVector.vectorResource(R.drawable.ic_label),
+                        contentDescription = stringResource(R.string.tags),
+                    )
+                    Text(
+                        text = stringResource(R.string.tags),
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                }
+            }
+        }
+    }
+
 }

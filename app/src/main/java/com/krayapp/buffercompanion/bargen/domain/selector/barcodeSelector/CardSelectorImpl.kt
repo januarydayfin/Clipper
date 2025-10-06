@@ -1,4 +1,4 @@
-package com.krayapp.buffercompanion.bargen.domain.selector
+package com.krayapp.buffercompanion.bargen.domain.selector.barcodeSelector
 
 import com.krayapp.buffercompanion.bargen.data.BarcodeRepo
 import com.krayapp.buffercompanion.bargen.utils.withIO

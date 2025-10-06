@@ -73,4 +73,5 @@
     <string name="backup">Выгрузить</string>
     <string name="app_will_close">Приложение закрывается</string>
     <string name="delete_record">Удалить запись?</string>
+    <string name="label_to_scans">Теги будут автоматически присвоены к коду</string>
 </resources>

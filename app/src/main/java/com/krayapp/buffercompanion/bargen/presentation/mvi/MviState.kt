@@ -10,7 +10,11 @@ data class MviState(
 )
 
 data class BottomSheetStateData(val model: BarcodeUiModel) : Effect
-data class ShowTagsBottomsheet(val show: Boolean = false) : Effect
+
+data class ShowTagsBottomsheet(
+    val show: Boolean = false,
+) : Effect
+
 data class ShowSettingsBottomsheet(val show: Boolean = false) : Effect
 data class ShowSortBottomsheet(val show: Boolean = false) : Effect
 

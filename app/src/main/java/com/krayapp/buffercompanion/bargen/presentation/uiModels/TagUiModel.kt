@@ -9,3 +9,5 @@ data class TagUiModel(
     val fontColor: Int? = null,
     val checked: Boolean = false
 )
+
+fun TagUiModel.setChecked(): TagUiModel = copy(checked = true)

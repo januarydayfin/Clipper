@@ -42,7 +42,7 @@ fun TagsBottomSheet(onDismiss: () -> Unit) {
 
 
     fun refreshTags() {
-        val checkedTags = viewmodel.tagSelector.tagFilterFlow.value
+        val checkedTags = viewmodel.tagSelector.tagsFilterFlow.value
         viewmodel.getTags {
             val newList = it.map { item ->
                 item.copy(checked = item.id in checkedTags)

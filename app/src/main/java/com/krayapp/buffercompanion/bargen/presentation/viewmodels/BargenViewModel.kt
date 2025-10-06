@@ -1,6 +1,5 @@
 package com.krayapp.buffercompanion.bargen.presentation.viewmodels
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
@@ -16,8 +15,8 @@ import com.krayapp.buffercompanion.bargen.data.FilterState
 import com.krayapp.buffercompanion.bargen.data.SortType
 import com.krayapp.buffercompanion.bargen.data.TagsRepo
 import com.krayapp.buffercompanion.bargen.data.room.bargen.entity.BarcodeEntity
-import com.krayapp.buffercompanion.bargen.domain.selector.CardSelector
-import com.krayapp.buffercompanion.bargen.domain.selector.TagSelector
+import com.krayapp.buffercompanion.bargen.domain.selector.barcodeSelector.CardSelector
+import com.krayapp.buffercompanion.bargen.domain.selector.tagSelector.TagSelector
 import com.krayapp.buffercompanion.bargen.presentation.mvi.Effect
 import com.krayapp.buffercompanion.bargen.presentation.mvi.MainIntent
 import com.krayapp.buffercompanion.bargen.presentation.mvi.stateManager.StateManager
@@ -47,7 +46,7 @@ class BargenViewModel : ViewModel(), KoinComponent {
     private val stateManager = StateManager(viewModelScope)
 
     val cardSelector: CardSelector by inject()
-    val tagsSelector: TagSelector by inject()
+    private val tagsSelector: TagSelector by inject()
 
     val uiState = stateManager.state
 
@@ -96,7 +95,7 @@ class BargenViewModel : ViewModel(), KoinComponent {
 
     init {
         launchInIO {
-            tagsSelector.tagFilterFlow.collectLatest {
+            tagsSelector.tagsFilterFlow.collectLatest {
                 filterState.value = filterState.value.copy(tagIds = it.map { tag -> tag })
             }
         }
@@ -120,21 +119,17 @@ class BargenViewModel : ViewModel(), KoinComponent {
     fun createBarcodeRecord(
         text: String,
         format: BarcodeFormat = BarcodeFormat.QR_CODE,
+        tagIds: List<String> = emptyList(),
         onCreated: (BarcodeUiModel) -> Unit = { }
     ) {
         launchInIO {
             val entity = BarcodeEntity(
                 content = text,
-                type = format.toString()
+                type = format.toString(),
+                tags = tagIds
             )
             barcodeRepo.upsertBarcode(entity)
             onCreated(entity.toBarcodeUiModel())
-        }
-    }
-
-    fun loadTagsUiModelsByIds(ids: List<String>, onSuccess: (List<TagUiModel>) -> Unit) {
-        launchInIO {
-            onSuccess(tagsRepo.getTagsWithIds(ids).map { it.toTagUiModel() })
         }
     }
 

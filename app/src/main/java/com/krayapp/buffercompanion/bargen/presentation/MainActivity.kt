@@ -5,6 +5,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.KeyEvent
 import android.view.MotionEvent
 import android.widget.Toast
@@ -35,6 +36,7 @@ import com.krayapp.buffercompanion.bargen.presentation.mvi.canShowSettingsBottom
 import com.krayapp.buffercompanion.bargen.presentation.mvi.canShowTagBottomSheet
 import com.krayapp.buffercompanion.bargen.presentation.screens.mainScreen.MainScreen
 import com.krayapp.buffercompanion.bargen.presentation.viewmodels.BargenViewModel
+import com.krayapp.buffercompanion.bargen.presentation.viewmodels.TagsViewModel
 import com.krayapp.buffercompanion.bargen.theme.AppTheme
 import com.krayapp.buffercompanion.bargen.utils.addPermissionListener
 import com.krayapp.buffercompanion.bargen.utils.exportDatabaseToUri
@@ -49,6 +51,7 @@ import kotlin.random.Random
 
 class MainActivity : AppCompatActivity() {
     private val viewmodel: BargenViewModel by viewModels()
+    private val tagsViewModel: TagsViewModel by viewModels()
     private lateinit var backupLauncher: ActivityResultLauncher<String>
     private lateinit var importLauncher: ActivityResultLauncher<Array<String>>
 
@@ -111,14 +114,17 @@ class MainActivity : AppCompatActivity() {
     private fun showScanDialog() {
         TedPermission.create()
             .addPermissionListener(onGranted = {
-                ScanDialog {
-                    it ?: return@ScanDialog
+                ScanDialog(viewModel = viewmodel, tagsViewModel = tagsViewModel) { result, tags ->
+                    result ?: return@ScanDialog
                     viewmodel.createBarcodeRecord(
-                        text = it.text,
-                        format = it.barcodeFormat
+                        text = result.text,
+                        format = result.barcodeFormat,
+                        tagIds = tags
                     ) { model ->
                         if (ClipperApp.getPrefs().openCardAfterScan)
                             viewmodel.onIntent(MainIntent.ShowBottomsheet(model))
+
+                        viewmodel.updatePager()
                     }
                 }.show(supportFragmentManager, "")
             }, onDenied = {

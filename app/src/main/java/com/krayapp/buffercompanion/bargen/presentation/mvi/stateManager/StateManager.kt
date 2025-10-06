@@ -1,12 +1,12 @@
 package com.krayapp.buffercompanion.bargen.presentation.mvi.stateManager
 
-import com.krayapp.buffercompanion.bargen.presentation.uiModels.BarcodeUiModel
 import com.krayapp.buffercompanion.bargen.presentation.mvi.BottomSheetStateData
 import com.krayapp.buffercompanion.bargen.presentation.mvi.Effect
 import com.krayapp.buffercompanion.bargen.presentation.mvi.MainIntent
 import com.krayapp.buffercompanion.bargen.presentation.mvi.MviState
 import com.krayapp.buffercompanion.bargen.presentation.mvi.ShowSettingsBottomsheet
 import com.krayapp.buffercompanion.bargen.presentation.mvi.ShowTagsBottomsheet
+import com.krayapp.buffercompanion.bargen.presentation.uiModels.BarcodeUiModel
 import com.krayapp.buffercompanion.bargen.utils.withIO
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -43,7 +43,11 @@ class StateManager(private val scope: CoroutineScope) {
         withIO {
             val currentState = _state.value
             val newState =
-                currentState.copy(showTagBottomSheet = ShowTagsBottomsheet(show = true))
+                currentState.copy(
+                    showTagBottomSheet = ShowTagsBottomsheet(
+                        show = true
+                    )
+                )
             _state.emit(newState)
         }
     }

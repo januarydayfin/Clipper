@@ -62,10 +62,6 @@ fun MainTopBar(
                 scope.io {
                     cardSelector.cleanSelection()
                 }
-            }, selectAll = {
-                scope.io {
-                    cardSelector.selectAll()
-                }
             },
             delete = {
                 scope.io {
@@ -82,9 +78,9 @@ fun MainTopBar(
 @Composable
 private fun SelectionTopBar(
     undoSelectionMode: () -> Unit,
-    selectAll: () -> Unit,
     delete: () -> Unit
 ) {
+
     val confirmationDialogShowState = remember { mutableStateOf(false) }
 
     if (confirmationDialogShowState.value)
@@ -95,17 +91,13 @@ private fun SelectionTopBar(
         }
 
     Row(modifier = Modifier.fillMaxWidth()) {
+
         TextButton(onClick = {
             undoSelectionMode()
         }) {
             Text(text = stringResource(R.string.cancel))
         }
         Spacer(modifier = Modifier.weight(1f))
-        TextButton(onClick = {
-            selectAll()
-        }) {
-            Text(text = stringResource(R.string.check_all))
-        }
 
         TextButton(onClick = {
             confirmationDialogShowState.value = true

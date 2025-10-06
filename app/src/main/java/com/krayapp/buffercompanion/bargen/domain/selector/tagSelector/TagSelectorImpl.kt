@@ -1,15 +1,13 @@
-package com.krayapp.buffercompanion.bargen.domain.selector
+package com.krayapp.buffercompanion.bargen.domain.selector.tagSelector
 
-import android.util.Log
-import com.krayapp.buffercompanion.bargen.data.TagsRepo
 import com.krayapp.buffercompanion.bargen.utils.withIO
-import kotlinx.coroutines.DEBUG_PROPERTY_VALUE_ON
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-class TagSelectorImpl() : TagSelector {
+class TagSelectorImpl : TagSelector {
     private val _tagsFilterFlow = MutableStateFlow<List<String>>(emptyList())
-    override val tagFilterFlow
+
+    override val tagsFilterFlow
         get() = _tagsFilterFlow.asStateFlow()
 
     override suspend fun checkTag(id: String) {
@@ -26,11 +24,5 @@ class TagSelectorImpl() : TagSelector {
 
             _tagsFilterFlow.value = newList
         }
-    }
-
-    override suspend fun uncheckTag(id: String) {
-        val newList = _tagsFilterFlow.value.toMutableList()
-        newList.remove(id)
-        _tagsFilterFlow.emit(newList)
     }
 }

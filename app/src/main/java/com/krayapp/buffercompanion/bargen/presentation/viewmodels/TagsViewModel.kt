@@ -3,7 +3,7 @@ package com.krayapp.buffercompanion.bargen.presentation.viewmodels
 import androidx.lifecycle.ViewModel
 import com.krayapp.buffercompanion.bargen.data.BarcodeRepo
 import com.krayapp.buffercompanion.bargen.data.TagsRepo
-import com.krayapp.buffercompanion.bargen.domain.selector.TagSelector
+import com.krayapp.buffercompanion.bargen.domain.selector.tagSelector.TagSelector
 import com.krayapp.buffercompanion.bargen.presentation.uiModels.TagUiModel
 import com.krayapp.buffercompanion.bargen.utils.launchInIO
 import com.krayapp.buffercompanion.bargen.utils.toEntity
@@ -25,6 +25,12 @@ class TagsViewModel : ViewModel(), KoinComponent {
     fun saveTags(tags: List<TagUiModel>) {
         launchInIO {
             tagsRepo.upsertTags(tags.map { it.toEntity() })
+        }
+    }
+
+    fun loadTagsUiModelsByIds(ids: List<String>, onSuccess: (List<TagUiModel>) -> Unit) {
+        launchInIO {
+            onSuccess(tagsRepo.getTagsWithIds(ids).map { it.toTagUiModel() })
         }
     }
 

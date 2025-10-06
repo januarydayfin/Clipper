@@ -54,7 +54,7 @@ fun MainScreen(
                 },
                 viewModel = viewmodel
             )
-            SelectedFilterTags(viewmodel)
+            SelectedFilterTags()
             Box(
                 modifier = Modifier.fillMaxSize(),
             ) {
