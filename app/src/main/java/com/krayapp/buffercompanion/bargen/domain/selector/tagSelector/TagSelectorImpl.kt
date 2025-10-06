@@ -25,4 +25,13 @@ class TagSelectorImpl : TagSelector {
             _tagsFilterFlow.value = newList
         }
     }
+
+    override suspend fun forceUncheck(id: String) {
+        val newList = mutableListOf<String>().apply {
+            addAll(_tagsFilterFlow.value)
+        }
+
+        newList.remove(id)
+        _tagsFilterFlow.value = newList
+    }
 }

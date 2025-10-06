@@ -1,6 +1,7 @@
 package com.krayapp.buffercompanion.bargen.presentation.bottomsheets
 
 import android.graphics.Bitmap
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -42,6 +43,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.ImeAction
@@ -79,7 +82,6 @@ fun MainBottomSheet(
     val scrollState = rememberScrollState()
     val scope = rememberCoroutineScope()
     val formatDialogOpened = remember { mutableStateOf(false) }
-
     if (formatDialogOpened.value)
         BarcodeFormatDialog(
             initialState = modelState.value.barcodeType,
@@ -97,9 +99,7 @@ fun MainBottomSheet(
 
         Row(Modifier.padding(horizontal = mSize)) {
             TextButton(onClick = {
-                scope.launch {
-                    sheetState.hide()
-                }
+                onDismiss()
             }) {
                 Text(text = stringResource(R.string.cancel))
             }
@@ -109,9 +109,7 @@ fun MainBottomSheet(
                 scope.launch {
                     viewmodel.createBarcodeRecord(modelState.value.toBarcodeEntity())
                     tagsViewModel.saveTags(modelState.value.tags)
-                    scope.launch {
-                        sheetState.hide()
-                    }
+                    onDismiss()
                 }
 
             }) { Text(text = stringResource(R.string.apply)) }
@@ -196,7 +194,11 @@ private fun ImageBlock(
     }
 
     if (bmp != null) {
-        Image(bitmap = bmp.asImageBitmap(), modifier = Modifier.clip(RoundedCornerShape(mSize)), contentDescription = "image")
+        Image(
+            bitmap = bmp.asImageBitmap(),
+            modifier = Modifier.clip(RoundedCornerShape(mSize)),
+            contentDescription = "image"
+        )
         Space(height = mSize)
         Row(
             modifier = Modifier.fillMaxWidth(),

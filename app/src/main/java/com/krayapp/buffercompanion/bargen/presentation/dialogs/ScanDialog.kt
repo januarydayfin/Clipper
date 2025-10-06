@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import androidx.cardview.widget.CardView
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -25,17 +27,18 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import com.journeyapps.barcodescanner.BarcodeResult
+import com.journeyapps.barcodescanner.DecoratedBarcodeView
 import com.journeyapps.barcodescanner.Size
 import com.krayapp.buffercompanion.bargen.R
 import com.krayapp.buffercompanion.bargen.bargenCore.BarReader
 import com.krayapp.buffercompanion.bargen.bargenCore.reader.BargenReaderImpl
-import com.krayapp.buffercompanion.bargen.databinding.DialogScannerLayoutBinding
 import com.krayapp.buffercompanion.bargen.presentation.BargenChip
 import com.krayapp.buffercompanion.bargen.presentation.mvi.MainIntent
 import com.krayapp.buffercompanion.bargen.presentation.uiModels.TagUiModel
@@ -54,48 +57,52 @@ class ScanDialog(
     private val tagsViewModel: TagsViewModel,
     private val onScanned: (BarcodeResult?, List<String>) -> Unit
 ) : DialogFragment() {
-    private var binding: DialogScannerLayoutBinding? = null
     private lateinit var reader: BarReader
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = DialogScannerLayoutBinding.inflate(inflater)
-        return binding?.root
-    }
+    ): View = LinearLayout(context).apply { orientation = LinearLayout.VERTICAL }
 
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
         reader.pauseScan()
-        binding = null
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val linear = view as LinearLayout
+        val scanner = DecoratedBarcodeView(linear.context).apply {
+            barcodeView.framingRectSize = Size(dialogWidth, dialogWidth)
+        }
+        val card = CardView(linear.context).apply {
+            layoutParams = LinearLayout.LayoutParams(dialogWidth, dialogWidth)
+            addView(scanner)
+        }
+
+        val composeView = ComposeView(linear.context)
+        linear.addView(card)
+        linear.addView(composeView)
+
         dialog?.setTransparent()
-        binding?.run {
-            scannerCard.layoutParams = LinearLayout.LayoutParams(dialogWidth, dialogWidth)
-            scanner.barcodeView.framingRectSize = Size(dialogWidth, dialogWidth)
 
-            composeView.setContent {
-                AutoTagSection(viewmodel = tagsViewModel, mainViewModel = viewModel)
-            }
+        reader = BargenReaderImpl(scanner)
+        reader.startScan()
 
-            reader = BargenReaderImpl(scanner)
-            reader.startScan()
-
-            lifecycleScope.launch {
-                reader.readerFlow().collectLatest {
-                    if (it?.text != null) {
-                        onScanned(it, tagsViewModel.tagSelector.tagsFilterFlow.value)
-                        dismiss()
-                    }
+        lifecycleScope.launch {
+            reader.readerFlow().collectLatest {
+                if (it?.text != null) {
+                    onScanned(it, tagsViewModel.tagSelector.tagsFilterFlow.value)
+                    dismiss()
                 }
             }
+        }
+
+        composeView.setContent {
+            AutoTagSection(viewmodel = tagsViewModel, mainViewModel = viewModel)
+
         }
     }
 }
@@ -123,39 +130,45 @@ private fun AutoTagSection(mainViewModel: BargenViewModel, viewmodel: TagsViewMo
             tagsUiState.addAll(input)
         }
 
-        Column(Modifier.fillMaxWidth().padding(vertical = mSize), horizontalAlignment = Alignment.CenterHorizontally) {
-            Space(height = mSize)
-            Text(
-                text = stringResource(R.string.label_to_scans),
-                style = MaterialTheme.typography.labelMedium
-            )
+        Surface {
+            Column(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = mSize),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Space(height = mSize)
+                Text(
+                    text = stringResource(R.string.label_to_scans),
+                    style = MaterialTheme.typography.labelMedium
+                )
 
-            FlowRow(Modifier.fillMaxWidth()) {
-                tagsUiState.forEach {
-                    BargenChip(model = it.setChecked(), onClick = {
-                        scope.launch {
-                            viewmodel.tagSelector.checkTag(it.id)
-                        }
-                    })
+                FlowRow(Modifier.fillMaxWidth().padding(horizontal = mSize)) {
+                    tagsUiState.forEach {
+                        BargenChip(model = it.setChecked(), onClick = {
+                            scope.launch {
+                                viewmodel.tagSelector.checkTag(it.id)
+                            }
+                        })
+                    }
                 }
-            }
-            Space(height = mSize)
-            Button(onClick = {
-                mainViewModel.onIntent(MainIntent.ShowTagsMenu)
-            }) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        modifier = Modifier.padding(end = 4.dp),
-                        imageVector = ImageVector.vectorResource(R.drawable.ic_label),
-                        contentDescription = stringResource(R.string.tags),
-                    )
-                    Text(
-                        text = stringResource(R.string.tags),
-                        style = MaterialTheme.typography.bodySmall
-                    )
+                Space(height = mSize)
+                Button(onClick = {
+                    mainViewModel.onIntent(MainIntent.ShowTagsMenu)
+                }) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            modifier = Modifier.padding(end = 4.dp),
+                            imageVector = ImageVector.vectorResource(R.drawable.ic_label),
+                            contentDescription = stringResource(R.string.tags),
+                        )
+                        Text(
+                            text = stringResource(R.string.tags),
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                    }
                 }
             }
         }
     }
-
 }

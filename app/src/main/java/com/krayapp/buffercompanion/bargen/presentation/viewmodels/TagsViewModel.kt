@@ -36,6 +36,7 @@ class TagsViewModel : ViewModel(), KoinComponent {
 
     fun removeTagById(id: String) {
         launchInIO {
+            tagSelector.forceUncheck(id)
             tagsRepo.removeTagById(id)
             barcodeRepo.removeTagFromBarcodes(id)
         }
