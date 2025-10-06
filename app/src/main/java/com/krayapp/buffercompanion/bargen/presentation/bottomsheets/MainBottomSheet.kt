@@ -72,7 +72,7 @@ fun MainBottomSheet(
 ) {
     val viewmodel: BargenViewModel = viewModel()
     val tagsViewModel: TagsViewModel = viewModel()
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val sheetState = rememberModalBottomSheetState()
     val modelState = remember { mutableStateOf(model) }
     val scrollState = rememberScrollState()
     val scope = rememberCoroutineScope()
