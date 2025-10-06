@@ -20,12 +20,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.krayapp.buffercompanion.bargen.R
-import com.krayapp.buffercompanion.bargen.theme.mSize
 import com.krayapp.buffercompanion.bargen.presentation.BargenChip
 import com.krayapp.buffercompanion.bargen.presentation.dialogs.SetupTagDialog
 import com.krayapp.buffercompanion.bargen.presentation.uiModels.TagUiModel
 import com.krayapp.buffercompanion.bargen.presentation.viewmodels.TagsViewModel
+import com.krayapp.buffercompanion.bargen.theme.mSize
 import com.krayapp.buffercompanion.bargen.utils.io
+import com.krayapp.buffercompanion.bargen.utils.launchWithDelay
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -38,16 +40,20 @@ fun TagsBottomSheet(onDismiss: () -> Unit) {
     val selector = viewmodel.tagSelector
     val showEditDialog = remember { mutableStateOf<TagUiModel?>(null) }
 
-    LaunchedEffect(true) {
+
+    fun refreshTags() {
         val checkedTags = viewmodel.tagSelector.tagFilterFlow.value
         viewmodel.getTags {
             val newList = it.map { item ->
                 item.copy(checked = item.id in checkedTags)
             }
+            tagsList.clear()
             tagsList.addAll(newList)
         }
     }
-
+    LaunchedEffect(Unit) {
+        refreshTags()
+    }
     if (showEditDialog.value != null) {
         val dialogModel = showEditDialog.value ?: return
         SetupTagDialog(dialogModel, onDismiss = {
@@ -56,8 +62,13 @@ fun TagsBottomSheet(onDismiss: () -> Unit) {
             val position = tagsList.toList().indexOfFirst { it.id == dialogModel.id }
             tagsList[position] = changed
             viewmodel.saveTags(tagsList)
-        }, onRemoveTag = {
+        }, onDeleteTag = {
+            viewmodel.removeTagById(it.id)
+            showEditDialog.value = null
 
+            scope.launchWithDelay {
+                refreshTags()
+            }
         })
     }
 
@@ -97,7 +108,5 @@ fun TagsBottomSheet(onDismiss: () -> Unit) {
                 Text(text = stringResource(R.string.close))
             }
         }
-
     }
-
 }

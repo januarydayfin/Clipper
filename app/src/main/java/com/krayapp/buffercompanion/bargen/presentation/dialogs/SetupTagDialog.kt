@@ -14,7 +14,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -54,11 +53,19 @@ import com.krayapp.buffercompanion.bargen.utils.Space
 @Composable
 fun SetupTagDialog(
     model: TagUiModel,
-    onRemoveTag: () -> Unit,
+    onDeleteTag: (TagUiModel) -> Unit,
     onDismiss: () -> Unit,
     onComplete: (TagUiModel) -> Unit
 ) {
     val modelState = remember { mutableStateOf(model) }
+    val confirmationDialogState = remember { mutableStateOf(false) }
+
+    if (confirmationDialogState.value)
+        ConfirmationDialog(onDismiss = {
+            confirmationDialogState.value = false
+        }) {
+            onDeleteTag(model)
+        }
     BasicAlertDialog(onDismissRequest = { onDismiss() }) {
         Surface(shape = RoundedCornerShape(size = mSize)) {
             Column(
@@ -95,7 +102,9 @@ fun SetupTagDialog(
 
 
                 TextButton(
-                    onClick = onRemoveTag,
+                    onClick = {
+                        confirmationDialogState.value = true
+                    },
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors()
                         .copy(

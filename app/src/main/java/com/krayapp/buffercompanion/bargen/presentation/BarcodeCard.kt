@@ -40,7 +40,7 @@ import com.journeyapps.barcodescanner.ScanOptions.DATA_MATRIX
 import com.journeyapps.barcodescanner.ScanOptions.PDF_417
 import com.journeyapps.barcodescanner.ScanOptions.QR_CODE
 import com.krayapp.buffercompanion.bargen.R
-import com.krayapp.buffercompanion.bargen.presentation.dialogs.DeleteConfirmationDialog
+import com.krayapp.buffercompanion.bargen.presentation.dialogs.ConfirmationDialog
 import com.krayapp.buffercompanion.bargen.presentation.uiModels.BarcodeUiModel
 import com.krayapp.buffercompanion.bargen.presentation.uiModels.TagUiModel
 import com.krayapp.buffercompanion.bargen.theme.barcodePreviewSize
@@ -66,7 +66,7 @@ fun BarcodeCard(
     val deleteDialogShowState = remember { mutableStateOf("") }
 
     if (deleteDialogShowState.value.isNotEmpty()) {
-        DeleteConfirmationDialog(onDismiss = {
+        ConfirmationDialog(onDismiss = {
             deleteDialogShowState.value = ""
         }) {
             onDeleteClicked(deleteDialogShowState.value)

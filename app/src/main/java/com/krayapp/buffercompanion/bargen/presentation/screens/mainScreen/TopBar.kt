@@ -39,7 +39,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.krayapp.buffercompanion.bargen.R
-import com.krayapp.buffercompanion.bargen.presentation.dialogs.DeleteConfirmationDialog
+import com.krayapp.buffercompanion.bargen.presentation.dialogs.ConfirmationDialog
 import com.krayapp.buffercompanion.bargen.presentation.menus.SortDropdownMenu
 import com.krayapp.buffercompanion.bargen.presentation.mvi.MainIntent
 import com.krayapp.buffercompanion.bargen.presentation.viewmodels.BargenViewModel
@@ -88,7 +88,7 @@ private fun SelectionTopBar(
     val confirmationDialogShowState = remember { mutableStateOf(false) }
 
     if (confirmationDialogShowState.value)
-        DeleteConfirmationDialog(onDismiss = {
+        ConfirmationDialog(onDismiss = {
             confirmationDialogShowState.value = false
         }) {
             delete()
