@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -22,7 +21,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -30,16 +28,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.unit.dp
-import com.github.skydoves.colorpicker.compose.AlphaSlider
-import com.github.skydoves.colorpicker.compose.BrightnessSlider
-import com.github.skydoves.colorpicker.compose.HsvColorPicker
-import com.github.skydoves.colorpicker.compose.rememberColorPickerController
 import com.krayapp.buffercompanion.bargen.R
 import com.krayapp.buffercompanion.bargen.presentation.BargenChip
 import com.krayapp.buffercompanion.bargen.presentation.uiModels.TagUiModel
@@ -85,6 +77,8 @@ fun SetupTagDialog(
                 Space(height = sSize)
 
                 PickColorItem(
+                    model = modelState.value,
+                    colorPart = ColorPart.BACKGROUND,
                     titleRes = R.string.tag_background,
                     pickedColor = modelState.value.backgroundColor
                 ) {
@@ -93,6 +87,8 @@ fun SetupTagDialog(
                 Space(height = sSize)
 
                 PickColorItem(
+                    model = modelState.value,
+                    colorPart = ColorPart.CONTENT,
                     titleRes = R.string.tag_font_color,
                     pickedColor = modelState.value.fontColor
                 ) {
@@ -136,21 +132,25 @@ fun SetupTagDialog(
                     }
                 }
             }
-
-
         }
     }
 }
 
 @Composable
-private fun PickColorItem(titleRes: Int, pickedColor: Int?, onColorPicked: (Int) -> Unit) {
+private fun PickColorItem(
+    model: TagUiModel,
+    colorPart: ColorPart,
+    titleRes: Int,
+    pickedColor: Int?,
+    onColorPicked: (Int) -> Unit
+) {
     val colorPickerShown = remember { mutableStateOf(false) }
     Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
         Text(text = stringResource(titleRes), style = MaterialTheme.typography.labelLarge)
         Spacer(Modifier.weight(1f))
 
         if (colorPickerShown.value)
-            ColorPickedDialog(onDismiss = {
+            ColorPickedDialog(model = model, colorPart = colorPart, onDismiss = {
                 colorPickerShown.value = false
             }) {
                 onColorPicked(it)
@@ -181,53 +181,3 @@ private fun PickColorItem(titleRes: Int, pickedColor: Int?, onColorPicked: (Int)
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun ColorPickedDialog(onDismiss: () -> Unit, onColorPicked: (Int) -> Unit) {
-    BasicAlertDialog(onDismissRequest = { onDismiss() }) {
-        val pickedColor = remember { mutableIntStateOf(0) }
-        val controller = rememberColorPickerController()
-        Surface(shape = RoundedCornerShape(size = mSize)) {
-
-            Column {
-                HsvColorPicker(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(300.dp)
-                        .padding(10.dp),
-                    controller = controller,
-                    onColorChanged = {
-                        pickedColor.intValue = it.color.toArgb()
-                    })
-                AlphaSlider(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(10.dp)
-                        .height(35.dp), controller = controller
-                )
-
-                BrightnessSlider(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(10.dp)
-                        .height(35.dp), controller = controller
-                )
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                    TextButton(onClick = {
-                        onDismiss()
-                    }) {
-                        Text(text = stringResource(R.string.cancel))
-                    }
-
-                    TextButton(onClick = {
-                        onColorPicked(pickedColor.intValue)
-                        onDismiss()
-                    }) {
-                        Text(text = stringResource(R.string.apply))
-                    }
-                }
-            }
-
-        }
-    }
-}
