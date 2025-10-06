@@ -74,7 +74,7 @@ val filterChipStyle: Int
 fun Context.showDeleteConfirmationDialog(onDelete: () -> Unit) {
     MaterialAlertDialogBuilder(this)
         .setTitle(R.string.delete)
-        .setMessage(R.string.are_you_sure)
+        .setMessage(R.string.action_unrevertable)
         .setPositiveButton(R.string.delete) { dialog, _ ->
             onDelete()
             dialog.dismiss()

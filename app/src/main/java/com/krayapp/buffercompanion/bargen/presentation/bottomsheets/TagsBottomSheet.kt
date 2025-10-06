@@ -4,8 +4,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
@@ -25,9 +25,9 @@ import com.krayapp.buffercompanion.bargen.presentation.dialogs.SetupTagDialog
 import com.krayapp.buffercompanion.bargen.presentation.uiModels.TagUiModel
 import com.krayapp.buffercompanion.bargen.presentation.viewmodels.TagsViewModel
 import com.krayapp.buffercompanion.bargen.theme.mSize
+import com.krayapp.buffercompanion.bargen.utils.Space
 import com.krayapp.buffercompanion.bargen.utils.io
 import com.krayapp.buffercompanion.bargen.utils.launchWithDelay
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -100,7 +100,8 @@ fun TagsBottomSheet(onDismiss: () -> Unit) {
                 }
             }
 
-            FilledTonalButton(modifier = Modifier.fillMaxWidth(), onClick = {
+            Space(height = mSize)
+            Button(modifier = Modifier.fillMaxWidth(), onClick = {
                 scope.launch {
                     sheetState.hide()
                 }

@@ -57,7 +57,7 @@
     <string name="by_date_desc">По дате - свежее</string>
     <string name="by_name">По имени</string>
     <string name="by_usage">По частоте использования</string>
-    <string name="are_you_sure">Вы уверены?</string>
+    <string name="action_unrevertable">Это действие необратимо</string>
     <string name="tag_background">Цвет тега</string>
     <string name="tag_font_color">Цвет текста тега</string>
     <string name="found_tags">Найденные теги:</string>
@@ -72,5 +72,5 @@
     <string name="restore">Восстановить</string>
     <string name="backup">Выгрузить</string>
     <string name="app_will_close">Приложение закрывается</string>
-
+    <string name="delete_record">Удалить запись?</string>
 </resources>

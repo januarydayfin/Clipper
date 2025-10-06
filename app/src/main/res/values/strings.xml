@@ -60,7 +60,7 @@
     <string name="by_date_desc">By date - new</string>
     <string name="by_name">By name</string>
     <string name="by_usage">By frequency of use</string>
-    <string name="are_you_sure">Are you sure?</string>
+    <string name="action_unrevertable">Effect is irreversible</string>
     <string name="tag_background">Tag color</string>
     <string name="tag_font_color">Tag text color</string>
 
@@ -75,4 +75,5 @@
     <string name="restore">Restore</string>
     <string name="backup">Backup</string>
     <string name="app_will_close">App will close soon</string>
+    <string name="delete_record">Delete record?</string>
 </resources>

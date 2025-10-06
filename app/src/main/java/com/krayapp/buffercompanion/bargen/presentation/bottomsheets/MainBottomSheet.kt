@@ -1,8 +1,6 @@
 package com.krayapp.buffercompanion.bargen.presentation.bottomsheets
 
 import android.graphics.Bitmap
-import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
@@ -29,6 +28,7 @@ import androidx.compose.material3.SplitButtonDefaults
 import androidx.compose.material3.SplitButtonLayout
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
@@ -39,6 +39,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
@@ -57,7 +58,9 @@ import com.krayapp.buffercompanion.bargen.presentation.viewmodels.BargenViewMode
 import com.krayapp.buffercompanion.bargen.presentation.viewmodels.TagsViewModel
 import com.krayapp.buffercompanion.bargen.theme.lSize
 import com.krayapp.buffercompanion.bargen.theme.mSize
+import com.krayapp.buffercompanion.bargen.utils.Space
 import com.krayapp.buffercompanion.bargen.utils.toBarcodeEntity
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
@@ -71,7 +74,7 @@ fun MainBottomSheet(
 ) {
     val viewmodel: BargenViewModel = viewModel()
     val tagsViewModel: TagsViewModel = viewModel()
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val sheetState = rememberModalBottomSheetState()
     val modelState = remember { mutableStateOf(model) }
     val scrollState = rememberScrollState()
     val scope = rememberCoroutineScope()
@@ -92,7 +95,7 @@ fun MainBottomSheet(
             onDismiss()
         }) {
 
-        Row {
+        Row(Modifier.padding(horizontal = mSize)) {
             TextButton(onClick = {
                 scope.launch {
                     sheetState.hide()
@@ -193,7 +196,8 @@ private fun ImageBlock(
     }
 
     if (bmp != null) {
-        Image(bitmap = bmp.asImageBitmap(), contentDescription = "image")
+        Image(bitmap = bmp.asImageBitmap(), modifier = Modifier.clip(RoundedCornerShape(mSize)), contentDescription = "image")
+        Space(height = mSize)
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
@@ -272,18 +276,12 @@ private fun TagBlock(
 
     val nameList = tagsTextFieldState.text.splitRawTagsForNames()
 
-    val flowRowAnimate = Modifier.animateContentSize(
-        animationSpec = tween(
-            durationMillis = 200,
-            delayMillis = 50
-        )
-    ) { _, _ -> }
 
     suspend fun foundTagsInDb(name: String) = viewModel.findTagWithName(name)
 
 
     SideEffect {
-        scope.launch {
+        scope.launch(Dispatchers.IO) {
             nameList.forEach { stringName ->
                 if (stringName.isNotEmpty()) {
                     val foundTags = foundTagsInDb(stringName)
@@ -292,6 +290,7 @@ private fun TagBlock(
                     newTags.add(exactTag ?: TagUiModel(name = stringName))
                     previewTags.addAll(foundTags.filter { it !in newTags })
                     onTagsAdded(newTags.toList())
+                    onScrollToBottom()
                 }
             }
         }
@@ -312,7 +311,7 @@ private fun TagBlock(
         //добавляемые теги
         FlowRow(
             horizontalArrangement = Arrangement.Start,
-            modifier = flowRowAnimate
+            modifier = Modifier.minimumInteractiveComponentSize()
         ) {
             newTags.toList().forEach {
                 BargenChip(it)
@@ -325,7 +324,7 @@ private fun TagBlock(
         )
         //превью
         FlowRow(
-            modifier = flowRowAnimate,
+            modifier = Modifier.minimumInteractiveComponentSize(),
             horizontalArrangement = Arrangement.Start,
         ) {
             previewTags.toList().distinct().forEach {
@@ -337,7 +336,6 @@ private fun TagBlock(
                 }, model = it)
             }
         }
-        onScrollToBottom()
     }
 }
 
