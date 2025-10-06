@@ -66,4 +66,11 @@
     <string name="volume_button_open_scanner">Кнопка громкости открывает сканер</string>
     <string name="share">Поделиться</string>
     <string name="saved_to">Сохранено в</string>
+
+    <string name="backup_restore">Сохранить/восстановить данные</string>
+
+    <string name="restore">Восстановить</string>
+    <string name="backup">Выгрузить</string>
+    <string name="app_will_close">Приложение закрывается</string>
+
 </resources>

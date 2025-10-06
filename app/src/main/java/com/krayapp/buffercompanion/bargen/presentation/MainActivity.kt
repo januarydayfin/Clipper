@@ -3,6 +3,7 @@ package com.krayapp.buffercompanion.bargen.presentation
 import android.Manifest
 import android.content.ClipboardManager
 import android.content.Context
+import android.net.Uri
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.MotionEvent
@@ -10,6 +11,8 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
@@ -18,6 +21,7 @@ import androidx.lifecycle.lifecycleScope
 import com.gun0912.tedpermission.normal.TedPermission
 import com.krayapp.buffercompanion.bargen.ClipperApp
 import com.krayapp.buffercompanion.bargen.R
+import com.krayapp.buffercompanion.bargen.data.room.bargen.BargenDB.Companion.DB_NAME
 import com.krayapp.buffercompanion.bargen.presentation.bottomsheets.MainBottomSheet
 import com.krayapp.buffercompanion.bargen.presentation.bottomsheets.SettingsBottomSheet
 import com.krayapp.buffercompanion.bargen.presentation.bottomsheets.TagsBottomSheet
@@ -33,15 +37,21 @@ import com.krayapp.buffercompanion.bargen.presentation.screens.mainScreen.MainSc
 import com.krayapp.buffercompanion.bargen.presentation.viewmodels.BargenViewModel
 import com.krayapp.buffercompanion.bargen.theme.AppTheme
 import com.krayapp.buffercompanion.bargen.utils.addPermissionListener
+import com.krayapp.buffercompanion.bargen.utils.exportDatabaseToUri
 import com.krayapp.buffercompanion.bargen.utils.launchWithDelay
+import com.krayapp.buffercompanion.bargen.utils.restoreDatabaseFromUri
 import com.krayapp.buffercompanion.bargen.utils.savePictureInStorage
 import com.krayapp.buffercompanion.bargen.utils.shareBitmap
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
 
 class MainActivity : AppCompatActivity() {
     private val viewmodel: BargenViewModel by viewModels()
+    private lateinit var backupLauncher: ActivityResultLauncher<String>
+    private lateinit var importLauncher: ActivityResultLauncher<Array<String>>
+
     private val onBackPressed = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             if (viewmodel.inSelection)
@@ -56,6 +66,26 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        backupLauncher = registerForActivityResult(
+            ActivityResultContracts.CreateDocument("application/octet-stream")
+        ) { uri: Uri? ->
+            uri?.let {
+                lifecycleScope.launch(Dispatchers.IO) {
+                    exportDatabaseToUri(applicationContext, it)
+                }
+            }
+        }
+
+        importLauncher = registerForActivityResult(
+            ActivityResultContracts.OpenDocument()
+        ) { uri: Uri? ->
+            uri?.let {
+                lifecycleScope.launch(Dispatchers.IO) {
+                    restoreDatabaseFromUri(uri)
+                }
+            }
+        }
 
         onBackPressedDispatcher.addCallback(onBackPressed)
         setContent {
@@ -129,7 +159,11 @@ class MainActivity : AppCompatActivity() {
 
     @Composable
     private fun ShowSettingsBottomsheet(data: ShowSettingsBottomsheet) {
-        SettingsBottomSheet {
+        SettingsBottomSheet(onRestoreClicked = {
+            importLauncher.launch(arrayOf("application/octet-stream"))
+        }, onBackupClicked = {
+            backupLauncher.launch(DB_NAME)
+        }) {
             viewmodel.recycleEffect(data)
         }
     }

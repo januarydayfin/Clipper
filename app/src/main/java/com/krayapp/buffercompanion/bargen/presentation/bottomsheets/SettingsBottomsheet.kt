@@ -4,13 +4,16 @@ import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
 import androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SegmentedButton
@@ -23,7 +26,11 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.krayapp.buffercompanion.bargen.R
 import com.krayapp.buffercompanion.bargen.presentation.uiModels.SettingsUiModel
@@ -34,7 +41,11 @@ import com.krayapp.buffercompanion.bargen.utils.Space
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsBottomSheet(onDismiss: () -> Unit) {
+fun SettingsBottomSheet(
+    onRestoreClicked: () -> Unit,
+    onBackupClicked: () -> Unit,
+    onDismiss: () -> Unit,
+) {
     val viewmodel: SettingsViewModel = viewModel()
 
     val state = viewmodel.settingsState.collectAsState()
@@ -52,26 +63,10 @@ fun SettingsBottomSheet(onDismiss: () -> Unit) {
         ) {
 
             AppThemeBlock(state, viewmodel)
-
             Space(height = mSize)
-            Card(modifier = Modifier.fillMaxWidth()) {
-                Column(Modifier.padding(mSize)) {
-                    TextCheckbox(
-                        isChecked = state.value.openCardAfterScan,
-                        textRes = R.string.show_card_after_scan
-                    ) {
-                        viewmodel.updateOpenAfterScan(it)
-                    }
-
-                    TextCheckbox(
-                        isChecked = state.value.openScannerByButton,
-                        textRes = R.string.volume_button_open_scanner
-                    ) {
-                        viewmodel.updateOpenScanByButton(it)
-                    }
-                }
-            }
-
+            CheckboxSection(state, viewmodel)
+            Space(height = mSize)
+            BackupSection(onRestoreClicked, onBackupClicked)
         }
     }
 }
@@ -112,6 +107,26 @@ private fun AppThemeBlock(state: State<SettingsUiModel>, viewModel: SettingsView
     }
 }
 
+@Composable
+private fun CheckboxSection(state: State<SettingsUiModel>, viewmodel: SettingsViewModel) {
+    Card(modifier = Modifier.fillMaxWidth()) {
+        Column(Modifier.padding(mSize)) {
+            TextCheckbox(
+                isChecked = state.value.openCardAfterScan,
+                textRes = R.string.show_card_after_scan
+            ) {
+                viewmodel.updateOpenAfterScan(it)
+            }
+
+            TextCheckbox(
+                isChecked = state.value.openScannerByButton,
+                textRes = R.string.volume_button_open_scanner
+            ) {
+                viewmodel.updateOpenScanByButton(it)
+            }
+        }
+    }
+}
 
 @Composable
 private fun TextCheckbox(isChecked: Boolean, textRes: Int, onCheckChanged: (Boolean) -> Unit) {
@@ -130,4 +145,68 @@ private enum class AppTheme(val value: Int, val displayName: Int) {
         R.string.system_theme
     ),
     LIGHT(MODE_NIGHT_NO, R.string.light_theme)
+}
+
+@Composable
+private fun BackupSection(
+    onRestoreClicked: () -> Unit,
+    onBackupClicked: () -> Unit) {
+    val context = LocalContext.current
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier
+                .padding(all = mSize)
+        ) {
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = stringResource(R.string.backup_restore),
+                style = MaterialTheme.typography.labelLarge
+            )
+            Space(height = mSize)
+            Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
+                Button(
+                    onClick = {
+                        onRestoreClicked()
+                    }
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            modifier = Modifier.padding(end = 4.dp),
+                            imageVector = ImageVector.vectorResource(R.drawable.ic_download),
+                            contentDescription = null,
+                        )
+                        Text(
+                            text = stringResource(R.string.restore),
+                            style = MaterialTheme.typography.bodySmall,
+                            maxLines = 1
+                        )
+                    }
+                }
+
+                Space(width = mSize)
+                Button(
+                    onClick = {
+                        onBackupClicked()
+                    }
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            modifier = Modifier.padding(end = 4.dp),
+                            imageVector = ImageVector.vectorResource(R.drawable.ic_share),
+                            contentDescription = null,
+                        )
+                        Text(
+                            text = stringResource(R.string.backup),
+                            style = MaterialTheme.typography.bodySmall,
+                            maxLines = 1
+                        )
+                    }
+                }
+            }
+        }
+    }
+
 }
