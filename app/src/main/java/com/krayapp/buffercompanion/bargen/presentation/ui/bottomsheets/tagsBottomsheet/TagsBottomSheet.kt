@@ -3,6 +3,7 @@ package com.krayapp.buffercompanion.bargen.presentation.ui.bottomsheets.tagsBott
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -78,42 +79,41 @@ fun TagsBottomSheet(onDismiss: () -> Unit) {
     }, sheetState = sheetState, onDismissRequest = {
         onDismiss()
     }) {
-        Column {
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(horizontal = mSize)
-                    .verticalScroll(state = rememberScrollState())
-            ) {
-                Text(
-                    text = stringResource(R.string.tag_longtap_hint),
-                    style = MaterialTheme.typography.labelMedium
-                )
-                FlowRow {
-                    tagsList.forEachIndexed { index, _ ->
-                        BargenChip(
-                            model = tagsList[index],
-                            onLongClick = {
-                                showEditDialog.value = tagsList[index]
-                            },
-                            onClick = {
-                                tagsList[index] =
-                                    tagsList[index].copy(checked = !tagsList[index].checked)
+        Column(
+            modifier = Modifier
+                .padding(horizontal = mSize)
+                .weight(1f, fill = false)
+                .verticalScroll(state = rememberScrollState())
+        ) {
+            Text(
+                text = stringResource(R.string.tag_longtap_hint),
+                style = MaterialTheme.typography.labelMedium
+            )
+            FlowRow(Modifier.wrapContentHeight()) {
+                tagsList.forEachIndexed { index, _ ->
+                    BargenChip(
+                        model = tagsList[index],
+                        onLongClick = {
+                            showEditDialog.value = tagsList[index]
+                        },
+                        onClick = {
+                            tagsList[index] =
+                                tagsList[index].copy(checked = !tagsList[index].checked)
 
-                                scope.io {
-                                    selector.checkTag(tagsList[index].id)
-                                }
+                            scope.io {
+                                selector.checkTag(tagsList[index].id)
                             }
-                        )
-                    }
+                        }
+                    )
                 }
             }
 
-            SearchBar(Modifier.padding(all = mSize)) {
-                filterQueryState.value = it
-                refreshTags()
-            }
-        }
 
+        }
+        SearchBar(Modifier.padding(all = mSize)) {
+            filterQueryState.value = it
+            refreshTags()
+        }
     }
+
 }
