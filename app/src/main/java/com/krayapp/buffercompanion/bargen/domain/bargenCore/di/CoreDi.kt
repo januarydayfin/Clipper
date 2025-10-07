@@ -8,7 +8,7 @@ import com.krayapp.buffercompanion.bargen.domain.bargenCore.reader.BargenReaderI
 import org.koin.dsl.module
 
 val bargenCoreModule = module {
-    single<BarReader> {
+    factory<BarReader> {
         BargenReaderImpl()
     }
 
