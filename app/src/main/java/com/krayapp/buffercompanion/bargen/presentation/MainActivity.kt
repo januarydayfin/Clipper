@@ -3,7 +3,6 @@ package com.krayapp.buffercompanion.bargen.presentation
 import android.Manifest
 import android.content.ClipboardManager
 import android.content.Context
-import android.net.Uri
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.MotionEvent
@@ -11,8 +10,6 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
@@ -28,21 +25,18 @@ import com.krayapp.buffercompanion.bargen.presentation.mvi.ShowTagsBottomsheet
 import com.krayapp.buffercompanion.bargen.presentation.mvi.canShowMainBottomSheet
 import com.krayapp.buffercompanion.bargen.presentation.mvi.canShowSettingsBottomsheet
 import com.krayapp.buffercompanion.bargen.presentation.mvi.canShowTagBottomSheet
-import com.krayapp.buffercompanion.bargen.presentation.ui.mainScreen.MainScreen
 import com.krayapp.buffercompanion.bargen.presentation.ui.bottomsheets.mainBottomSheet.MainBottomSheet
 import com.krayapp.buffercompanion.bargen.presentation.ui.bottomsheets.settingsBottomsheet.SettingsBottomSheet
 import com.krayapp.buffercompanion.bargen.presentation.ui.bottomsheets.tagsBottomsheet.TagsBottomSheet
 import com.krayapp.buffercompanion.bargen.presentation.ui.dialogs.ScanDialog
+import com.krayapp.buffercompanion.bargen.presentation.ui.mainScreen.MainScreen
 import com.krayapp.buffercompanion.bargen.presentation.utils.addPermissionListener
 import com.krayapp.buffercompanion.bargen.presentation.utils.savePictureInStorage
 import com.krayapp.buffercompanion.bargen.presentation.utils.shareBitmap
 import com.krayapp.buffercompanion.bargen.presentation.viewmodels.BargenViewModel
 import com.krayapp.buffercompanion.bargen.presentation.viewmodels.TagsViewModel
 import com.krayapp.buffercompanion.bargen.theme.AppTheme
-import com.krayapp.buffercompanion.bargen.utils.exportDatabaseToUri
 import com.krayapp.buffercompanion.bargen.utils.launchWithDelay
-import com.krayapp.buffercompanion.bargen.utils.restoreDatabaseFromUri
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
@@ -50,9 +44,6 @@ import kotlin.random.Random
 class MainActivity : AppCompatActivity() {
     private val viewmodel: BargenViewModel by viewModels()
     private val tagsViewModel: TagsViewModel by viewModels()
-    private lateinit var backupLauncher: ActivityResultLauncher<String>
-    private lateinit var importLauncher: ActivityResultLauncher<Array<String>>
-
     private val onBackPressed = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             if (viewmodel.inSelection)
@@ -67,26 +58,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-
-        backupLauncher = registerForActivityResult(
-            ActivityResultContracts.CreateDocument("application/octet-stream")
-        ) { uri: Uri? ->
-            uri?.let {
-                lifecycleScope.launch(Dispatchers.IO) {
-                    exportDatabaseToUri(applicationContext, it)
-                }
-            }
-        }
-
-        importLauncher = registerForActivityResult(
-            ActivityResultContracts.OpenDocument()
-        ) { uri: Uri? ->
-            uri?.let {
-                lifecycleScope.launch(Dispatchers.IO) {
-                    restoreDatabaseFromUri(uri)
-                }
-            }
-        }
 
         onBackPressedDispatcher.addCallback(onBackPressed)
         setContent {

@@ -77,5 +77,6 @@
     <string name="app_will_close">App will close soon</string>
     <string name="delete_record">Delete record?</string>
     <string name="label_to_scans">Tags will be automatically assigned to the code</string>
-
+    <string name="backup_error">Restore error</string>
+    <string name="error">Error</string>
 </resources>
