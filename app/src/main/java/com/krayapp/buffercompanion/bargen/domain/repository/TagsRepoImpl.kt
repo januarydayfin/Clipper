@@ -28,4 +28,8 @@ class TagsRepoImpl : TagsRepo {
 
     override suspend fun getAllTags() =
         tags.getTags()
+
+    override suspend fun getTagsWithFilter(filter: String) = withContext(Dispatchers.IO) {
+        tags.findTagByName(filter)
+    }
 }

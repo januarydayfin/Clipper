@@ -159,7 +159,7 @@ private fun BasicTopBar(
 
 @Preview
 @Composable
-private fun SearchBar(modifier: Modifier = Modifier, onTextChanged: (String) -> Unit = {}) {
+fun SearchBar(modifier: Modifier = Modifier, onTextChanged: (String) -> Unit = {}) {
     val textFieldState = rememberTextFieldState()
     val focus = LocalFocusManager.current
     onTextChanged(textFieldState.text.toString())

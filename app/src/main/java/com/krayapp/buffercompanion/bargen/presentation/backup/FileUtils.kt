@@ -24,7 +24,11 @@ fun Context.writeToFile(data: String, uri: Uri, onError: () -> Unit) {
     }
 }
 
-suspend fun Context.readFromFile(uri: Uri, onSuccess: suspend (String) -> Unit, onError: () -> Unit) {
+suspend fun Context.readFromFile(
+    uri: Uri,
+    onSuccess: suspend (String) -> Unit,
+    onError: () -> Unit
+) {
     runCatching {
         val tempFileName = "tempFileName"
         val file = File(cacheDir, tempFileName)
