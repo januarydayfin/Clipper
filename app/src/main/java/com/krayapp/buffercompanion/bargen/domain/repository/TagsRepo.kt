@@ -1,6 +1,6 @@
 package com.krayapp.buffercompanion.bargen.domain.repository
 
-import com.krayapp.buffercompanion.bargen.data.room.bargen.entity.TagEntity
+import com.krayapp.buffercompanion.bargen.data.room.entity.TagEntity
 
 interface TagsRepo {
     suspend fun upsertTags(list: List<TagEntity>)

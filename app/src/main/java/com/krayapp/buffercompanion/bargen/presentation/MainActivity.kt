@@ -28,7 +28,7 @@ import com.krayapp.buffercompanion.bargen.presentation.mvi.ShowTagsBottomsheet
 import com.krayapp.buffercompanion.bargen.presentation.mvi.canShowMainBottomSheet
 import com.krayapp.buffercompanion.bargen.presentation.mvi.canShowSettingsBottomsheet
 import com.krayapp.buffercompanion.bargen.presentation.mvi.canShowTagBottomSheet
-import com.krayapp.buffercompanion.bargen.presentation.screens.mainScreen.MainScreen
+import com.krayapp.buffercompanion.bargen.presentation.ui.mainScreen.MainScreen
 import com.krayapp.buffercompanion.bargen.presentation.ui.bottomsheets.mainBottomSheet.MainBottomSheet
 import com.krayapp.buffercompanion.bargen.presentation.ui.bottomsheets.settingsBottomsheet.SettingsBottomSheet
 import com.krayapp.buffercompanion.bargen.presentation.ui.bottomsheets.tagsBottomsheet.TagsBottomSheet

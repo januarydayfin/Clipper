@@ -1,4 +1,4 @@
-package com.krayapp.buffercompanion.bargen.presentation.screens.mainScreen
+package com.krayapp.buffercompanion.bargen.presentation.ui.mainScreen
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,6 +20,9 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import com.krayapp.buffercompanion.bargen.presentation.utils.BarcodeCard
 import com.krayapp.buffercompanion.bargen.presentation.mvi.MainIntent
+import com.krayapp.buffercompanion.bargen.presentation.screens.mainScreen.BottomButtonGroup
+import com.krayapp.buffercompanion.bargen.presentation.screens.mainScreen.MainTopBar
+import com.krayapp.buffercompanion.bargen.presentation.screens.mainScreen.SelectedFilterTags
 import com.krayapp.buffercompanion.bargen.presentation.viewmodels.BargenViewModel
 import com.krayapp.buffercompanion.bargen.theme.mSize
 import com.krayapp.buffercompanion.bargen.presentation.utils.Space
@@ -66,7 +69,7 @@ fun MainScreen(
                 ) {
                     items(
                         count = lazyItems.itemCount,
-                        key = lazyItems.itemKey { item -> item.toString() }
+                        key = lazyItems.itemKey { item -> item.hashCode() }
                     ) { index ->
                         val item = lazyItems[index]
                         if (item != null) {

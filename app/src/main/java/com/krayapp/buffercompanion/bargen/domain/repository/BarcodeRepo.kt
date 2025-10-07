@@ -1,7 +1,7 @@
 package com.krayapp.buffercompanion.bargen.domain.repository
 
 import androidx.paging.PagingSource
-import com.krayapp.buffercompanion.bargen.data.room.bargen.entity.BarcodeEntity
+import com.krayapp.buffercompanion.bargen.data.room.entity.BarcodeEntity
 import com.krayapp.buffercompanion.bargen.domain.type.SortType
 
 interface BarcodeRepo {

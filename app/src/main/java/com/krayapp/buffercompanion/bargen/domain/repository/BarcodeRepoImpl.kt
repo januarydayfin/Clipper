@@ -2,7 +2,7 @@ package com.krayapp.buffercompanion.bargen.domain.repository
 
 import com.krayapp.buffercompanion.bargen.domain.type.SortType
 import com.krayapp.buffercompanion.bargen.data.room.bargen.BargenDB
-import com.krayapp.buffercompanion.bargen.data.room.bargen.entity.BarcodeEntity
+import com.krayapp.buffercompanion.bargen.data.room.entity.BarcodeEntity
 import com.krayapp.buffercompanion.bargen.domain.provideDatabase
 import com.krayapp.buffercompanion.bargen.utils.withIO
 import kotlinx.coroutines.Dispatchers

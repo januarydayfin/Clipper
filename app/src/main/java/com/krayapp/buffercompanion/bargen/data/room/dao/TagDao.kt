@@ -4,7 +4,7 @@ import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Upsert
-import com.krayapp.buffercompanion.bargen.data.room.bargen.entity.TagEntity
+import com.krayapp.buffercompanion.bargen.data.room.entity.TagEntity
 
 @Dao
 interface TagDao {
@@ -31,4 +31,7 @@ interface TagDao {
 
     @Query("select * from tags WHERE name LIKE '%' || :name || '%'")
     suspend fun findTagByName(name: String): List<TagEntity>
+
+    @Query("delete from tags")
+    suspend fun clean()
 }

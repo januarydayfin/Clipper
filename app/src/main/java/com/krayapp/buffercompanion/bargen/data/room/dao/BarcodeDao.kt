@@ -4,8 +4,7 @@ import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Upsert
-import com.krayapp.buffercompanion.bargen.data.room.bargen.entity.BarcodeEntity
-import com.krayapp.buffercompanion.bargen.data.room.bargen.entity.TagEntity
+import com.krayapp.buffercompanion.bargen.data.room.entity.BarcodeEntity
 
 @Dao
 interface BarcodeDao {
@@ -20,7 +19,6 @@ interface BarcodeDao {
 
     @Query("SELECT * FROM barcodes WHERE name LIKE '%' || :filter || '%' OR content LIKE '%' || :filter || '%'")
     suspend fun getFilteredBarcodes(filter: String): List<BarcodeEntity>
-
 
     @Query("select * from barcodes limit :pageSize offset :offset")
     suspend fun loadPage(pageSize: Int, offset: Int): List<BarcodeEntity>
@@ -58,6 +56,12 @@ interface BarcodeDao {
     @Query("SELECT * FROM barcodes WHERE name LIKE '%' || :filter || '%' OR content LIKE '%' || :filter || '%'")
     fun getFilteredBarcodesPaging(filter: String): PagingSource<Int, BarcodeEntity>
 
+    @Query("select * from barcodes")
+    suspend fun getAll(): List<BarcodeEntity>
 
+    @Query("select count(id) from barcodes")
+    suspend fun count(): Int
 
+    @Query("delete from barcodes")
+    suspend fun clean()
 }

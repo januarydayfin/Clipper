@@ -3,6 +3,7 @@
 [versions]
 # Общие версии AndroidX/Google
 activity = "1.11.0"
+kotlin = "2.0.10"
 activityKtx = "1.11.0"
 appcompat = "1.7.1"
 coreKtx = "1.17.0"
@@ -37,6 +38,8 @@ pagingCommonAndroid = "3.3.6"
 
 koin = "4.0.3"
 
+[plugins]
+kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 
 [libraries]
 # --- AndroidX/Google ---
