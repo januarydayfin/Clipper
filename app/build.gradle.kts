@@ -15,8 +15,8 @@ android {
         applicationId = "com.krayapp.buffercompanion.bargen"
         minSdk = 30
         targetSdk = 36
-        versionCode = 305
-        versionName = "3.0.5"
+        versionCode = 306
+        versionName = "3.0.6"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
