@@ -22,6 +22,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.krayapp.buffercompanion.bargen.R
 import com.krayapp.buffercompanion.bargen.presentation.models.TagUiModel
 import com.krayapp.buffercompanion.bargen.presentation.screens.mainScreen.SearchBar
+import com.krayapp.buffercompanion.bargen.presentation.ui.composables.SheetDragger
 import com.krayapp.buffercompanion.bargen.presentation.ui.dialogs.setupTagDialog.SetupTagDialog
 import com.krayapp.buffercompanion.bargen.presentation.utils.BargenChip
 import com.krayapp.buffercompanion.bargen.presentation.viewmodels.TagsViewModel
@@ -72,7 +73,9 @@ fun TagsBottomSheet(onDismiss: () -> Unit) {
     }
 
 
-    ModalBottomSheet(sheetState = sheetState, onDismissRequest = {
+    ModalBottomSheet(dragHandle = {
+        SheetDragger()
+    }, sheetState = sheetState, onDismissRequest = {
         onDismiss()
     }) {
         Column {

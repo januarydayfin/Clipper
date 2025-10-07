@@ -22,6 +22,7 @@ import com.krayapp.buffercompanion.bargen.domain.backup.convertAllDbToJson
 import com.krayapp.buffercompanion.bargen.presentation.backup.bargen_backup_filename
 import com.krayapp.buffercompanion.bargen.presentation.backup.readFromFile
 import com.krayapp.buffercompanion.bargen.presentation.backup.writeToFile
+import com.krayapp.buffercompanion.bargen.presentation.ui.composables.SheetDragger
 import com.krayapp.buffercompanion.bargen.presentation.utils.Space
 import com.krayapp.buffercompanion.bargen.presentation.utils.toast
 import com.krayapp.buffercompanion.bargen.presentation.viewmodels.SettingsViewModel
@@ -64,16 +65,18 @@ fun SettingsBottomSheet(
     }
     ModalBottomSheet(
         sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+        dragHandle = {
+            SheetDragger()
+        },
         onDismissRequest = {
             onDismiss()
         }) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(all = mSize),
+                .padding(horizontal = mSize),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
             AppThemeBlock(state, viewmodel)
             Space(height = mSize)
             CheckboxSection(state, viewmodel)
@@ -85,6 +88,7 @@ fun SettingsBottomSheet(
                     importLauncher.launch(arrayOf("application/json"))
                 }
             )
+            Space(height = mSize)
         }
     }
 }

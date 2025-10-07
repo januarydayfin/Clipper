@@ -22,8 +22,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.krayapp.buffercompanion.bargen.R
 import com.krayapp.buffercompanion.bargen.presentation.mapper.toBarcodeEntity
-import com.krayapp.buffercompanion.bargen.presentation.ui.dialogs.BarcodeFormatDialog
 import com.krayapp.buffercompanion.bargen.presentation.models.BarcodeUiModel
+import com.krayapp.buffercompanion.bargen.presentation.ui.composables.SheetDragger
+import com.krayapp.buffercompanion.bargen.presentation.ui.dialogs.BarcodeFormatDialog
 import com.krayapp.buffercompanion.bargen.presentation.viewmodels.BargenViewModel
 import com.krayapp.buffercompanion.bargen.presentation.viewmodels.TagsViewModel
 import com.krayapp.buffercompanion.bargen.theme.lSize
@@ -56,6 +57,9 @@ fun MainBottomSheet(
             })
 
     ModalBottomSheet(
+        dragHandle = {
+            SheetDragger()
+        },
         sheetState = sheetState,
         onDismissRequest = {
             onDismiss()
