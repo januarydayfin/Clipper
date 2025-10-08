@@ -3,8 +3,6 @@ package com.krayapp.buffercompanion.bargen
 import android.content.Context
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.edit
-import com.google.zxing.BarcodeFormat
-import com.krayapp.buffercompanion.bargen.domain.type.SearchType
 import com.krayapp.buffercompanion.bargen.domain.type.SortType
 
 class GlobalPrefs {
@@ -31,11 +29,14 @@ class GlobalPrefs {
         get() = prefs.getBoolean(VOLUME_BUTTON_SCAN, true)
         set(value) = prefs.edit { putBoolean(VOLUME_BUTTON_SCAN, value) }
 
-
+    var maxBrightOnCode: Boolean
+        get() = prefs.getBoolean(MAX_BRIGHT_ON_CODE, false)
+        set(value) = prefs.edit { putBoolean(MAX_BRIGHT_ON_CODE, value) }
 
     companion object {
         private const val PREFS_NAME = "mainSettings"
 
+        private const val MAX_BRIGHT_ON_CODE = "MAX_BRIGHT_ON_CODE"
         private const val KEY_THEME_MODE = "KEY_THEME_MODE"
         private const val SORT_TYPE = "SORT_TYPE"
         private const val VOLUME_BUTTON_SCAN = "VOLUME_BUTTON_SCAN "

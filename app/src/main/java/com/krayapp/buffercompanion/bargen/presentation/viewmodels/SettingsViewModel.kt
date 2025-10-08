@@ -31,4 +31,11 @@ class SettingsViewModel : ViewModel() {
             _settingsState.value = _settingsState.value.copy(openScannerByButton = open)
         }
     }
+
+    fun updateMaxBrightOnCard(needToBright : Boolean) {
+        launchInIO {
+            ClipperApp.getPrefs().maxBrightOnCode = needToBright
+            _settingsState.value = _settingsState.value.copy(maxBrightOnCode = needToBright)
+        }
+    }
 }

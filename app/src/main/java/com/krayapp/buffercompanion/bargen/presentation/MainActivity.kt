@@ -18,6 +18,8 @@ import androidx.lifecycle.lifecycleScope
 import com.gun0912.tedpermission.normal.TedPermission
 import com.krayapp.buffercompanion.bargen.ClipperApp
 import com.krayapp.buffercompanion.bargen.R
+import com.krayapp.buffercompanion.bargen.presentation.brightness.peakBright
+import com.krayapp.buffercompanion.bargen.presentation.brightness.restoreBright
 import com.krayapp.buffercompanion.bargen.presentation.mvi.BottomSheetStateData
 import com.krayapp.buffercompanion.bargen.presentation.mvi.MainIntent
 import com.krayapp.buffercompanion.bargen.presentation.mvi.ShowSettingsBottomsheet
@@ -106,8 +108,13 @@ class MainActivity : AppCompatActivity() {
     @Composable
     private fun ShowMainBottomSheet(data: BottomSheetStateData) {
         viewmodel.incrementUsageCount(data.model.id)
+        if (ClipperApp.getPrefs().maxBrightOnCode)
+            peakBright()
         MainBottomSheet(
             model = data.model, onDismiss = {
+                if (ClipperApp.getPrefs().maxBrightOnCode)
+                    restoreBright()
+
                 viewmodel.recycleEffect(data)
                 viewmodel.updatePager()
             }, onSharePicture = {

@@ -35,6 +35,13 @@ fun CheckboxSection(state: State<SettingsUiModel>, viewmodel: SettingsViewModel)
             ) {
                 viewmodel.updateOpenScanByButton(it)
             }
+
+            TextCheckbox(
+                isChecked = state.value.maxBrightOnCode,
+                textRes = R.string.max_bright
+            ) {
+                viewmodel.updateMaxBrightOnCard(it)
+            }
         }
     }
 }

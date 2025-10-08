@@ -79,4 +79,5 @@
     <string name="label_to_scans">Tags will be automatically assigned to the code</string>
     <string name="backup_error">Restore error</string>
     <string name="error">Error</string>
+    <string name="max_bright">Maximum brightness on the code screen</string>
 </resources>

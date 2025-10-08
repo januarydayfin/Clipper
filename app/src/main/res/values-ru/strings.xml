@@ -77,4 +77,5 @@
 
     <string name="backup_error">Ошибка восстановления</string>
     <string name="error">Ошибка</string>
+    <string name="max_bright">Максимальная яркость на экране кода</string>
 </resources>
