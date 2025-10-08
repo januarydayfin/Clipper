@@ -22,7 +22,6 @@ import com.krayapp.buffercompanion.bargen.presentation.utils.BarcodeCard
 import com.krayapp.buffercompanion.bargen.presentation.mvi.MainIntent
 import com.krayapp.buffercompanion.bargen.presentation.screens.mainScreen.BottomButtonGroup
 import com.krayapp.buffercompanion.bargen.presentation.screens.mainScreen.MainTopBar
-import com.krayapp.buffercompanion.bargen.presentation.screens.mainScreen.SelectedFilterTags
 import com.krayapp.buffercompanion.bargen.presentation.viewmodels.BargenViewModel
 import com.krayapp.buffercompanion.bargen.theme.mSize
 import com.krayapp.buffercompanion.bargen.presentation.utils.Space

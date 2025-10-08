@@ -34,4 +34,8 @@ class TagSelectorImpl : TagSelector {
         newList.remove(id)
         _tagsFilterFlow.value = newList
     }
+
+    override suspend fun cleanSelection() {
+        _tagsFilterFlow.value = emptyList()
+    }
 }

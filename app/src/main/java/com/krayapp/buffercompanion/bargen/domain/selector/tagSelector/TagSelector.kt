@@ -7,4 +7,6 @@ interface TagSelector {
     suspend fun checkTag(id: String)
 
     suspend fun forceUncheck(id: String)
+
+    suspend fun cleanSelection()
 }
