@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 class SettingsViewModel : ViewModel() {
-    private val _settingsState = MutableStateFlow(SettingsUiModel.Default)
+    private val _settingsState = MutableStateFlow(SettingsUiModel.default())
     val settingsState = _settingsState.asStateFlow()
 
     fun updateTheme(theme: Int) {

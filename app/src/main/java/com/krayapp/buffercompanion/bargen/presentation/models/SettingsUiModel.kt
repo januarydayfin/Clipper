@@ -9,7 +9,7 @@ data class SettingsUiModel(
     val maxBrightOnCode: Boolean,
 ) {
     companion object {
-        val Default = SettingsUiModel(
+        fun default() = SettingsUiModel(
             theme = ClipperApp.getPrefs().theme,
             openScannerByButton = ClipperApp.getPrefs().scanOnVolume,
             openCardAfterScan = ClipperApp.getPrefs().openCardAfterScan,
