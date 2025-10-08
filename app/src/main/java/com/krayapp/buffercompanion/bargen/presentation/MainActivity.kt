@@ -36,8 +36,8 @@ import com.krayapp.buffercompanion.bargen.presentation.utils.shareBitmap
 import com.krayapp.buffercompanion.bargen.presentation.viewmodels.BargenViewModel
 import com.krayapp.buffercompanion.bargen.presentation.viewmodels.TagsViewModel
 import com.krayapp.buffercompanion.bargen.theme.AppTheme
+import com.krayapp.buffercompanion.bargen.utils.io
 import com.krayapp.buffercompanion.bargen.utils.launchWithDelay
-import kotlinx.coroutines.launch
 import kotlin.random.Random
 
 
@@ -46,12 +46,13 @@ class MainActivity : AppCompatActivity() {
     private val tagsViewModel: TagsViewModel by viewModels()
     private val onBackPressed = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
-            if (viewmodel.inSelection)
-                lifecycleScope.launch {
-                    viewmodel.cardSelector.cleanSelection()
+            lifecycleScope.io {
+                when {
+                    viewmodel.inSelection -> { viewmodel.cardSelector.cleanSelection() }
+                    tagsViewModel.tagSelector.tagsFilterFlow.value.isNotEmpty() ->  tagsViewModel.tagSelector.cleanSelection()
+                    else -> finishAndRemoveTask()
                 }
-            else
-                finish()
+            }
         }
     }
 
