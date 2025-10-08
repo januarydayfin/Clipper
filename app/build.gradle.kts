@@ -50,7 +50,6 @@ dependencies {
     implementation(libs.androidx.activity.ktx)
     implementation(libs.kotlin.reflect)
     implementation(libs.kotlinx.serialization.json)
-    implementation(libs.google.play.review.ktx)
 
     // Core/UI
     implementation(libs.bundles.core) // Включает core-ktx, appcompat, recyclerview, material
@@ -66,6 +65,7 @@ dependencies {
     implementation(libs.bundles.compose)
 
     // Сторонние
+    implementation(libs.google.play.review)
     implementation(libs.zxing.android.embedded)
     implementation(libs.tedpermission.normal)
     implementation(libs.skydoves.colorpickerview)

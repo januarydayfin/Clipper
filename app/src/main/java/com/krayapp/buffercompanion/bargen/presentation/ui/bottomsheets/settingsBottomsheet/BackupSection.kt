@@ -53,7 +53,6 @@ fun BackupSection(
                         )
                         Text(
                             text = stringResource(R.string.restore),
-                            style = MaterialTheme.typography.bodySmall,
                             maxLines = 1
                         )
                     }
@@ -73,7 +72,6 @@ fun BackupSection(
                         )
                         Text(
                             text = stringResource(R.string.backup),
-                            style = MaterialTheme.typography.bodySmall,
                             maxLines = 1
                         )
                     }

@@ -5,6 +5,7 @@ import com.krayapp.buffercompanion.bargen.data.room.entity.BarcodeEntity
 import com.krayapp.buffercompanion.bargen.domain.type.SortType
 
 interface BarcodeRepo {
+    suspend fun recordsCount(): Int
     suspend fun upsertBarcode(barcodeEntity: BarcodeEntity)
     suspend fun removeBarcodesByIds(ids: List<String>)
     suspend fun incrementUsageCount(id: String)

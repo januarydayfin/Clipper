@@ -58,7 +58,6 @@ androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-recyclerview = { group = "androidx.recyclerview", name = "recyclerview", version.ref = "recyclerview" }
 google-material = { group = "com.google.android.material", name = "material", version.ref = "material" }
-google-play-review-ktx = { group = "com.google.android.play", name = "review-ktx", version.ref = "playReview" }
 
 # Compose UI/Material
 androidx-compose-paging = { group = "androidx.paging", name = "paging-compose", version.ref = "composePaging" }
@@ -88,6 +87,7 @@ kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-
 tedpermission-normal = { group = "io.github.ParkSangGwon", name = "tedpermission-normal", version.ref = "tedpermission" }
 zxing-android-embedded = { group = "com.journeyapps", name = "zxing-android-embedded", version.ref = "zxing" }
 skydoves-colorpickerview = { group = "com.github.skydoves", name = "colorpicker-compose", version.ref = "colorpicker" }
+google-play-review = { group = "com.google.android.play", name = "review", version.ref = "playReview" }
 
 # --- Тестирование ---
 junit-junit = { group = "junit", name = "junit", version.ref = "junit" }

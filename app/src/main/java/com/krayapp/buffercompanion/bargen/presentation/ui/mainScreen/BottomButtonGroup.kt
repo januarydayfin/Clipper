@@ -94,7 +94,6 @@ fun BottomButtonGroup(
                 )
                 Text(
                     text = stringResource(R.string.tags),
-                    style = MaterialTheme.typography.bodySmall
                 )
             }
         }

@@ -1,6 +1,5 @@
 package com.krayapp.buffercompanion.bargen.presentation.viewmodels
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
@@ -11,14 +10,14 @@ import androidx.paging.map
 import com.google.zxing.BarcodeFormat
 import com.krayapp.buffercompanion.bargen.ClipperApp
 import com.krayapp.buffercompanion.bargen.data.room.entity.BarcodeEntity
-import com.krayapp.buffercompanion.bargen.presentation.mapper.toBarcodeUiModel
-import com.krayapp.buffercompanion.bargen.presentation.mapper.toTagUiModel
 import com.krayapp.buffercompanion.bargen.domain.pagingSource.BarcodeFilterTagsPagingSource
 import com.krayapp.buffercompanion.bargen.domain.repository.BarcodeRepo
 import com.krayapp.buffercompanion.bargen.domain.repository.TagsRepo
 import com.krayapp.buffercompanion.bargen.domain.selector.barcodeSelector.CardSelector
 import com.krayapp.buffercompanion.bargen.domain.selector.tagSelector.TagSelector
 import com.krayapp.buffercompanion.bargen.domain.type.SortType
+import com.krayapp.buffercompanion.bargen.presentation.mapper.toBarcodeUiModel
+import com.krayapp.buffercompanion.bargen.presentation.mapper.toTagUiModel
 import com.krayapp.buffercompanion.bargen.presentation.models.BarcodeUiModel
 import com.krayapp.buffercompanion.bargen.presentation.models.TagUiModel
 import com.krayapp.buffercompanion.bargen.presentation.mvi.Effect
@@ -135,6 +134,15 @@ class BargenViewModel : ViewModel(), KoinComponent {
             )
             barcodeRepo.upsertBarcode(entity)
             onCreated(entity.toBarcodeUiModel())
+        }
+    }
+
+    fun onNotEmptyData(onNotEmpty: () -> Unit) {
+        launchInIO {
+            val count = barcodeRepo.recordsCount()
+
+            if (count != 0)
+                onNotEmpty()
         }
     }
 

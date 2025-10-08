@@ -100,7 +100,6 @@ private fun OutlinedIconButton(onClick: () -> Unit, textRes: Int, iconRes: Int) 
             )
             Text(
                 text = stringResource(textRes),
-                style = MaterialTheme.typography.bodySmall
             )
         }
     }

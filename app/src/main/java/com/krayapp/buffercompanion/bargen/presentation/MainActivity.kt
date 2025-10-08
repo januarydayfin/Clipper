@@ -15,11 +15,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.lifecycleScope
+import com.google.android.play.core.review.ReviewManagerFactory
 import com.gun0912.tedpermission.normal.TedPermission
 import com.krayapp.buffercompanion.bargen.ClipperApp
 import com.krayapp.buffercompanion.bargen.R
-import com.krayapp.buffercompanion.bargen.presentation.utils.brightness.peakBright
-import com.krayapp.buffercompanion.bargen.presentation.utils.brightness.restoreBright
 import com.krayapp.buffercompanion.bargen.presentation.mvi.BottomSheetStateData
 import com.krayapp.buffercompanion.bargen.presentation.mvi.MainIntent
 import com.krayapp.buffercompanion.bargen.presentation.mvi.ShowSettingsBottomsheet
@@ -33,6 +32,8 @@ import com.krayapp.buffercompanion.bargen.presentation.ui.bottomsheets.tagsBotto
 import com.krayapp.buffercompanion.bargen.presentation.ui.dialogs.ScanDialog
 import com.krayapp.buffercompanion.bargen.presentation.ui.mainScreen.MainScreen
 import com.krayapp.buffercompanion.bargen.presentation.utils.addPermissionListener
+import com.krayapp.buffercompanion.bargen.presentation.utils.brightness.peakBright
+import com.krayapp.buffercompanion.bargen.presentation.utils.brightness.restoreBright
 import com.krayapp.buffercompanion.bargen.presentation.utils.savePictureInStorage
 import com.krayapp.buffercompanion.bargen.presentation.utils.shareBitmap
 import com.krayapp.buffercompanion.bargen.presentation.viewmodels.BargenViewModel
@@ -81,6 +82,22 @@ class MainActivity : AppCompatActivity() {
 
         if (calledFromShortcut())
             pasteFromClip()
+
+        viewmodel.onNotEmptyData {
+            runAppReview()
+        }
+
+    }
+
+    private fun runAppReview() {
+        val manager = ReviewManagerFactory.create(this)
+        val request = manager.requestReviewFlow()
+        request.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val reviewInfo = task.result
+                manager.launchReviewFlow(this, reviewInfo)
+            }
+        }
     }
 
     private fun showScanDialog() {
