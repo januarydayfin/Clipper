@@ -1,4 +1,4 @@
-package com.krayapp.buffercompanion.bargen.presentation.brightness
+package com.krayapp.buffercompanion.bargen.presentation.utils.brightness
 
 import com.krayapp.buffercompanion.bargen.presentation.MainActivity
 

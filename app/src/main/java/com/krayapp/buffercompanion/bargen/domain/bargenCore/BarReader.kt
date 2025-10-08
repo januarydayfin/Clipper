@@ -9,4 +9,6 @@ interface BarReader {
     fun setView(view: DecoratedBarcodeView)
     fun startScan()
     fun pauseScan()
+    fun torchOn()
+    fun torchOff()
 }

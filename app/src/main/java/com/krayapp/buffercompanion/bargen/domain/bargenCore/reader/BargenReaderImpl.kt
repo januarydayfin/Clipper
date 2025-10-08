@@ -37,6 +37,14 @@ class BargenReaderImpl: BarReader {
         scanner?.pause()
     }
 
+    override fun torchOn() {
+        scanner?.setTorchOn()
+    }
+
+    override fun torchOff() {
+        scanner?.setTorchOff()
+    }
+
     private fun startParser() {
         val options = ScanOptions().apply {
             setDesiredBarcodeFormats(

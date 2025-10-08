@@ -22,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -39,11 +40,11 @@ import com.journeyapps.barcodescanner.Size
 import com.krayapp.buffercompanion.bargen.ClipperApp
 import com.krayapp.buffercompanion.bargen.R
 import com.krayapp.buffercompanion.bargen.domain.bargenCore.BarReader
-import com.krayapp.buffercompanion.bargen.presentation.utils.BargenChip
-import com.krayapp.buffercompanion.bargen.presentation.utils.Space
-import com.krayapp.buffercompanion.bargen.presentation.mvi.MainIntent
 import com.krayapp.buffercompanion.bargen.presentation.models.TagUiModel
 import com.krayapp.buffercompanion.bargen.presentation.models.setChecked
+import com.krayapp.buffercompanion.bargen.presentation.mvi.MainIntent
+import com.krayapp.buffercompanion.bargen.presentation.utils.BargenChip
+import com.krayapp.buffercompanion.bargen.presentation.utils.Space
 import com.krayapp.buffercompanion.bargen.presentation.viewmodels.BargenViewModel
 import com.krayapp.buffercompanion.bargen.presentation.viewmodels.TagsViewModel
 import com.krayapp.buffercompanion.bargen.theme.AppTheme
@@ -103,8 +104,7 @@ class ScanDialog(
         }
 
         composeView.setContent {
-            AutoTagSection(viewmodel = tagsViewModel, mainViewModel = viewModel)
-
+            AutoTagSection(viewmodel = tagsViewModel, mainViewModel = viewModel, barReader = reader)
         }
     }
 }
@@ -114,12 +114,16 @@ private fun Dialog?.setTransparent() {
 }
 
 @Composable
-private fun AutoTagSection(mainViewModel: BargenViewModel, viewmodel: TagsViewModel) {
+private fun AutoTagSection(
+    mainViewModel: BargenViewModel,
+    viewmodel: TagsViewModel,
+    barReader: BarReader
+) {
     AppTheme {
         val tagsState = viewmodel.tagSelector.tagsFilterFlow.collectAsState()
         val scope = rememberCoroutineScope()
         val tagsUiState = remember { mutableStateListOf<TagUiModel>() }
-
+        val torchState = remember { mutableStateOf(false) }
         LaunchedEffect(Unit) {
             viewmodel.loadTagsUiModelsByIds(tagsState.value) { input ->
                 tagsUiState.clear()
@@ -145,9 +149,11 @@ private fun AutoTagSection(mainViewModel: BargenViewModel, viewmodel: TagsViewMo
                     style = MaterialTheme.typography.labelMedium
                 )
 
-                FlowRow(Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = mSize)) {
+                FlowRow(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = mSize)
+                ) {
                     tagsUiState.forEach {
                         BargenChip(model = it.setChecked(), onClick = {
                             scope.launch {
@@ -157,21 +163,45 @@ private fun AutoTagSection(mainViewModel: BargenViewModel, viewmodel: TagsViewMo
                     }
                 }
                 Space(height = mSize)
-                Button(onClick = {
-                    mainViewModel.onIntent(MainIntent.ShowTagsMenu)
-                }) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            modifier = Modifier.padding(end = 4.dp),
-                            imageVector = ImageVector.vectorResource(R.drawable.ic_label),
-                            contentDescription = stringResource(R.string.tags),
-                        )
-                        Text(
-                            text = stringResource(R.string.tags),
-                            style = MaterialTheme.typography.bodySmall
-                        )
+                Row {
+                    Button(onClick = {
+                        mainViewModel.onIntent(MainIntent.ShowTagsMenu)
+                    }) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(
+                                modifier = Modifier.padding(end = 4.dp),
+                                imageVector = ImageVector.vectorResource(R.drawable.ic_label),
+                                contentDescription = stringResource(R.string.tags),
+                            )
+                            Text(
+                                text = stringResource(R.string.tags),
+                                style = MaterialTheme.typography.bodySmall
+                            )
+                        }
+                    }
+                    Space(width = mSize)
+                    Button(onClick = {
+                        if (torchState.value)
+                            barReader.torchOff()
+                        else
+                            barReader.torchOn()
+
+                        torchState.value = !torchState.value
+                    })
+                    {
+                        if (torchState.value)
+                            Icon(
+                                imageVector = ImageVector.vectorResource(R.drawable.baseline_flashlight_off_24),
+                                contentDescription = null
+                            )
+                        else
+                            Icon(
+                                imageVector = ImageVector.vectorResource(R.drawable.baseline_flashlight_on_24),
+                                contentDescription = null
+                            )
                     }
                 }
+
             }
         }
     }

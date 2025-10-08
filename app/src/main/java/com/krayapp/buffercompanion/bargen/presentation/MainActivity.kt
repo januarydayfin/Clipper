@@ -18,8 +18,8 @@ import androidx.lifecycle.lifecycleScope
 import com.gun0912.tedpermission.normal.TedPermission
 import com.krayapp.buffercompanion.bargen.ClipperApp
 import com.krayapp.buffercompanion.bargen.R
-import com.krayapp.buffercompanion.bargen.presentation.brightness.peakBright
-import com.krayapp.buffercompanion.bargen.presentation.brightness.restoreBright
+import com.krayapp.buffercompanion.bargen.presentation.utils.brightness.peakBright
+import com.krayapp.buffercompanion.bargen.presentation.utils.brightness.restoreBright
 import com.krayapp.buffercompanion.bargen.presentation.mvi.BottomSheetStateData
 import com.krayapp.buffercompanion.bargen.presentation.mvi.MainIntent
 import com.krayapp.buffercompanion.bargen.presentation.mvi.ShowSettingsBottomsheet
