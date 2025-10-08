@@ -59,7 +59,6 @@ fun BarcodeFormatDialog(
     )
     val selectedState = remember { mutableStateOf(initialState) }
     BasicAlertDialog(onDismissRequest = {
-
     }) {
         Card {
             Column {
@@ -69,13 +68,14 @@ fun BarcodeFormatDialog(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable {
-                            selectedState.value = entry
-                        }) {
+                                selectedState.value = entry
+                            }) {
                         RadioButton(
-                            selected = selectedState.value == entry, onClick = {}
+                            selected = selectedState.value == entry,
+                            onClick = {
+                                selectedState.value = entry
+                            }
                         )
-
-
                         Text(text = entry, style = MaterialTheme.typography.labelLarge)
                     }
 
