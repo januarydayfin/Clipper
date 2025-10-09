@@ -38,7 +38,7 @@ interface BarcodeDao {
     @Query("SELECT * FROM barcodes ORDER BY usageCount DESC")
     suspend fun getBarcodesByUsage(): List<BarcodeEntity>
 
-    @Query("SELECT * FROM barcodes ORDER BY name DESC")
+    @Query("SELECT * FROM barcodes ORDER BY name ASC")
     suspend fun getBarcodesByName(): List<BarcodeEntity>
 
     @Query("SELECT * FROM barcodes ORDER BY modificationTime ASC")
@@ -50,7 +50,7 @@ interface BarcodeDao {
     @Query("SELECT * FROM barcodes ORDER BY usageCount DESC")
     fun getBarcodesByUsagePaging(): PagingSource<Int, BarcodeEntity>
 
-    @Query("SELECT * FROM barcodes ORDER BY name DESC")
+    @Query("SELECT * FROM barcodes ORDER BY name ASC")
     fun getBarcodesByNamePaging(): PagingSource<Int, BarcodeEntity>
 
     @Query("SELECT * FROM barcodes WHERE name LIKE '%' || :filter || '%' OR content LIKE '%' || :filter || '%'")

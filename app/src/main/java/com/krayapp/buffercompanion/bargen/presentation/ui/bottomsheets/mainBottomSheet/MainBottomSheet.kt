@@ -2,8 +2,11 @@ package com.krayapp.buffercompanion.bargen.presentation.ui.bottomsheets.mainBott
 
 import android.graphics.Bitmap
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -13,9 +16,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -32,7 +38,7 @@ import com.krayapp.buffercompanion.bargen.theme.mSize
 import kotlinx.coroutines.launch
 
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun MainBottomSheet(
     model: BarcodeUiModel,
@@ -47,6 +53,16 @@ fun MainBottomSheet(
     val scrollState = rememberScrollState()
     val scope = rememberCoroutineScope()
     val formatDialogOpened = remember { mutableStateOf(false) }
+    val isKeyboardVisible by rememberUpdatedState(WindowInsets.isImeVisible)
+
+
+    SideEffect {
+        if (isKeyboardVisible)
+            scope.launch {
+                sheetState.expand()
+            }
+    }
+
     if (formatDialogOpened.value)
         BarcodeFormatDialog(
             initialState = modelState.value.barcodeType,

@@ -15,6 +15,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
@@ -40,6 +41,7 @@ fun MainScreen(
             selectedIdsState.value.isNotEmpty()
         }
     }
+    val focus = LocalFocusManager.current
     val lazyItems = viewmodel.barcodePagingData.collectAsLazyPagingItems()
     val lazyListState = rememberLazyListState()
     val scope = rememberCoroutineScope()
@@ -82,6 +84,7 @@ fun MainScreen(
                                     }
                                 },
                                 onCardClick = {
+                                    focus.clearFocus(true)
                                     if (selectionMode.value)
                                         scope.io {
                                             cardSelector.checkBarcodeForSelection(item.id)
