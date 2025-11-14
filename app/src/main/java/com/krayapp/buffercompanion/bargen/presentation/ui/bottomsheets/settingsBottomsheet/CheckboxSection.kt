@@ -14,7 +14,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.krayapp.buffercompanion.bargen.R
-import com.krayapp.buffercompanion.bargen.presentation.models.SettingsState
+import com.krayapp.buffercompanion.bargen.presentation.mvi.settings.SettingsIntent
+import com.krayapp.buffercompanion.bargen.presentation.mvi.settings.SettingsState
 import com.krayapp.buffercompanion.bargen.presentation.viewmodels.SettingsViewModel
 import com.krayapp.buffercompanion.bargen.theme.mSize
 
@@ -26,21 +27,21 @@ fun CheckboxSection(state: State<SettingsState>, viewmodel: SettingsViewModel) {
                 isChecked = state.value.openCardAfterScan,
                 textRes = R.string.show_card_after_scan
             ) {
-                viewmodel.updateOpenAfterScan(it)
+                viewmodel.onIntent(SettingsIntent.UpdateOpenScanByButton(it))
             }
 
             TextCheckbox(
                 isChecked = state.value.openScannerByButton,
                 textRes = R.string.volume_button_open_scanner
             ) {
-                viewmodel.updateOpenScanByButton(it)
+                viewmodel.onIntent(SettingsIntent.UpdateOpenScanByButton(it))
             }
 
             TextCheckbox(
                 isChecked = state.value.maxBrightOnCode,
                 textRes = R.string.max_bright
             ) {
-                viewmodel.updateMaxBrightOnCard(it)
+                viewmodel.onIntent(SettingsIntent.UpdateMaxBrightOnCard(it))
             }
         }
     }

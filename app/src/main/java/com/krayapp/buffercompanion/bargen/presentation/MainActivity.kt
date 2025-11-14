@@ -18,11 +18,11 @@ import com.google.android.play.core.review.ReviewManagerFactory
 import com.gun0912.tedpermission.normal.TedPermission
 import com.krayapp.buffercompanion.bargen.ClipperApp
 import com.krayapp.buffercompanion.bargen.R
+import com.krayapp.buffercompanion.bargen.domain.selector.tagSelector.TagSelector
 import com.krayapp.buffercompanion.bargen.domain.usecase.barcode.CheckDataExistUsecase
 import com.krayapp.buffercompanion.bargen.presentation.mapper.toBarcodeEntity
 import com.krayapp.buffercompanion.bargen.presentation.mvi.main.BottomSheetStateData
 import com.krayapp.buffercompanion.bargen.presentation.mvi.main.MainIntent
-import com.krayapp.buffercompanion.bargen.presentation.mvi.main.MviState
 import com.krayapp.buffercompanion.bargen.presentation.mvi.main.canShowMainBottomSheet
 import com.krayapp.buffercompanion.bargen.presentation.mvi.main.canShowSettingsBottomsheet
 import com.krayapp.buffercompanion.bargen.presentation.mvi.main.canShowTagBottomSheet
@@ -31,25 +31,28 @@ import com.krayapp.buffercompanion.bargen.presentation.ui.bottomsheets.settingsB
 import com.krayapp.buffercompanion.bargen.presentation.ui.bottomsheets.tagsBottomsheet.TagsBottomSheet
 import com.krayapp.buffercompanion.bargen.presentation.ui.dialogs.ScanDialog
 import com.krayapp.buffercompanion.bargen.presentation.ui.mainScreen.MainScreen
+import com.krayapp.buffercompanion.bargen.presentation.utils.TagsRouter
 import com.krayapp.buffercompanion.bargen.presentation.utils.addPermissionListener
 import com.krayapp.buffercompanion.bargen.presentation.utils.brightness.peakBright
 import com.krayapp.buffercompanion.bargen.presentation.utils.brightness.restoreBright
 import com.krayapp.buffercompanion.bargen.presentation.utils.savePictureInStorage
 import com.krayapp.buffercompanion.bargen.presentation.utils.shareBitmap
 import com.krayapp.buffercompanion.bargen.presentation.viewmodels.BargenViewModel
-import com.krayapp.buffercompanion.bargen.presentation.viewmodels.TagsViewModel
 import com.krayapp.buffercompanion.bargen.theme.AppTheme
 import com.krayapp.buffercompanion.bargen.utils.io
 import com.krayapp.buffercompanion.bargen.utils.launchWithDelay
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.orbitmvi.orbit.viewmodel.observe
+import org.koin.android.ext.android.inject
+import org.orbitmvi.orbit.compose.collectAsState
 import kotlin.random.Random
 
 
 class MainActivity : AppCompatActivity() {
     private val viewmodel: BargenViewModel by viewModels()
-    private val tagsViewModel: TagsViewModel by viewModels()
+    private val tagsRouter = TagsRouter
+    private val tagSelector: TagSelector by inject()
+
     private val onBackPressed = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             lifecycleScope.io {
@@ -58,7 +61,7 @@ class MainActivity : AppCompatActivity() {
                         viewmodel.cardSelector.cleanSelection()
                     }
 
-                    tagsViewModel.tagSelector.tagsFilterFlow.value.isNotEmpty() -> tagsViewModel.tagSelector.cleanSelection()
+                    tagSelector.tagsFilterFlow.value.isNotEmpty() -> tagSelector.cleanSelection()
                     else -> finishAndRemoveTask()
                 }
             }
@@ -72,7 +75,13 @@ class MainActivity : AppCompatActivity() {
         onBackPressedDispatcher.addCallback(onBackPressed)
         setContent {
             AppTheme {
-                viewmodel.observe(lifecycleOwner = this, state = ::renderState)
+                val state = viewmodel.collectAsState().value
+
+                when {
+                    state.canShowMainBottomSheet -> ShowMainBottomSheet(state.mainBottomSheetState!!)
+                    state.canShowTagBottomSheet -> ShowTagBottomsheet()
+                    state.canShowSettingsBottomsheet -> ShowSettingsBottomsheet()
+                }
 
                 MainScreen {
                     showScanDialog()
@@ -86,16 +95,6 @@ class MainActivity : AppCompatActivity() {
         lifecycleScope.launch {
             if (CheckDataExistUsecase())
                 runAppReview()
-        }
-    }
-
-    private fun renderState(mviState: MviState) {
-        @Composable {
-            when {
-                mviState.canShowMainBottomSheet -> ShowMainBottomSheet(mviState.mainBottomSheetState!!)
-                mviState.canShowTagBottomSheet -> ShowTagBottomsheet()
-                mviState.canShowSettingsBottomsheet -> ShowSettingsBottomsheet()
-            }
         }
     }
 
@@ -113,7 +112,7 @@ class MainActivity : AppCompatActivity() {
     private fun showScanDialog() {
         TedPermission.create()
             .addPermissionListener(onGranted = {
-                ScanDialog(viewModel = viewmodel, tagsViewModel = tagsViewModel) { result, tags ->
+                ScanDialog(viewModel = viewmodel) { result, tags ->
                     result ?: return@ScanDialog
                     viewmodel.onIntent(
                         MainIntent.CreateNewRecordFromRawData(
@@ -156,7 +155,7 @@ class MainActivity : AppCompatActivity() {
             onApplyBarcode = { model ->
                 lifecycleScope.launch(Dispatchers.IO) {
                     viewmodel.onIntent(MainIntent.CreateNewRecordFromEntity(model.toBarcodeEntity()))
-                    tagsViewModel.saveTags(model.tags)
+                    tagsRouter.saveTags(model.tags)
                 }
             }
         )

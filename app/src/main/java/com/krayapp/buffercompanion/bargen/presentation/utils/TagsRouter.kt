@@ -1,41 +1,38 @@
-package com.krayapp.buffercompanion.bargen.presentation.viewmodels
+package com.krayapp.buffercompanion.bargen.presentation.utils
 
-import androidx.lifecycle.ViewModel
-import com.krayapp.buffercompanion.bargen.domain.selector.tagSelector.TagSelector
 import com.krayapp.buffercompanion.bargen.domain.usecase.tags.TagsUsecase
 import com.krayapp.buffercompanion.bargen.presentation.mapper.toEntity
 import com.krayapp.buffercompanion.bargen.presentation.mapper.toTagUiModel
 import com.krayapp.buffercompanion.bargen.presentation.models.TagUiModel
-import com.krayapp.buffercompanion.bargen.utils.launchInIO
+import com.krayapp.buffercompanion.bargen.utils.withIO
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 
-class TagsViewModel : ViewModel(), KoinComponent {
-    val tagSelector: TagSelector by inject()
+object TagsRouter : KoinComponent {
     private val tagsUsecase = TagsUsecase
-    fun getTags(filter: String, onLoaded: (List<TagUiModel>) -> Unit) {
-        launchInIO {
+    suspend fun getTags(filter: String, onLoaded: (List<TagUiModel>) -> Unit) {
+        withIO {
             val tagList = tagsUsecase.getTags(filter)
             onLoaded(tagList.map { it.toTagUiModel() })
         }
     }
 
-    fun saveTags(tags: List<TagUiModel>) {
-        launchInIO {
+    suspend fun saveTags(tags: List<TagUiModel>) {
+        withIO {
             tagsUsecase.saveTags(tags.map { it.toEntity() })
         }
     }
 
-    fun loadTagsUiModelsByIds(ids: List<String>, onSuccess: (List<TagUiModel>) -> Unit) {
-        launchInIO {
+    suspend fun loadTagsUiModelsByIds(ids: List<String>, onSuccess: (List<TagUiModel>) -> Unit) {
+        withIO {
             onSuccess(tagsUsecase.loadTagsUiModelsByIds(ids).map { it.toTagUiModel() })
         }
     }
 
-    fun removeTagById(id: String) {
-        launchInIO {
-            tagSelector.forceUncheck(id)
+    suspend fun removeTagById(id: String) {
+        withIO {
             tagsUsecase.removeTagById(id)
         }
     }
+
+    suspend fun findTagsWithName(name: String) = tagsUsecase.findTagsWithName(name)
 }

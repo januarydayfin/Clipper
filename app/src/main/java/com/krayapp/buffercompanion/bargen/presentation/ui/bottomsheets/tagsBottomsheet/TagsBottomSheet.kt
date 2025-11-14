@@ -19,37 +19,42 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.krayapp.buffercompanion.bargen.R
+import com.krayapp.buffercompanion.bargen.domain.selector.tagSelector.TagSelector
 import com.krayapp.buffercompanion.bargen.presentation.models.TagUiModel
 import com.krayapp.buffercompanion.bargen.presentation.screens.mainScreen.SearchBar
 import com.krayapp.buffercompanion.bargen.presentation.ui.composables.SheetDragger
 import com.krayapp.buffercompanion.bargen.presentation.ui.dialogs.setupTagDialog.SetupTagDialog
 import com.krayapp.buffercompanion.bargen.presentation.utils.BargenChip
-import com.krayapp.buffercompanion.bargen.presentation.viewmodels.TagsViewModel
+import com.krayapp.buffercompanion.bargen.presentation.utils.TagsRouter
 import com.krayapp.buffercompanion.bargen.theme.mSize
 import com.krayapp.buffercompanion.bargen.utils.io
 import com.krayapp.buffercompanion.bargen.utils.launchWithDelay
+import kotlinx.coroutines.launch
+import org.koin.compose.koinInject
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TagsBottomSheet(onDismiss: () -> Unit) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    val viewmodel: TagsViewModel = viewModel()
+    val tagsRouter = TagsRouter
+    val tagSelector: TagSelector = koinInject()
     val tagsList = remember { mutableStateListOf<TagUiModel>() }
     val scope = rememberCoroutineScope()
-    val selector = viewmodel.tagSelector
+    val selector: TagSelector = koinInject()
     val showEditDialog = remember { mutableStateOf<TagUiModel?>(null) }
     val filterQueryState = remember { mutableStateOf("") }
 
     fun refreshTags() {
-        val checkedTags = viewmodel.tagSelector.tagsFilterFlow.value
-        viewmodel.getTags(filterQueryState.value) {
-            val newList = it.map { item ->
-                item.copy(checked = item.id in checkedTags)
+        val checkedTags = tagSelector.tagsFilterFlow.value
+        scope.launch {
+            tagsRouter.getTags(filterQueryState.value) {
+                val newList = it.map { item ->
+                    item.copy(checked = item.id in checkedTags)
+                }
+                tagsList.clear()
+                tagsList.addAll(newList)
             }
-            tagsList.clear()
-            tagsList.addAll(newList)
         }
     }
     LaunchedEffect(Unit) {
@@ -60,13 +65,17 @@ fun TagsBottomSheet(onDismiss: () -> Unit) {
         SetupTagDialog(dialogModel, onDismiss = {
             showEditDialog.value = null
         }, onComplete = { changed ->
-            val position = tagsList.toList().indexOfFirst { it.id == dialogModel.id }
-            tagsList[position] = changed
-            viewmodel.saveTags(tagsList)
+            scope.launch {
+                val position = tagsList.toList().indexOfFirst { it.id == dialogModel.id }
+                tagsList[position] = changed
+                tagsRouter.saveTags(tagsList)
+            }
         }, onDeleteTag = {
-            viewmodel.removeTagById(it.id)
-            showEditDialog.value = null
-
+            scope.launch {
+                selector.forceUncheck(it.id)
+                tagsRouter.removeTagById(it.id)
+                showEditDialog.value = null
+            }
             scope.launchWithDelay {
                 refreshTags()
             }

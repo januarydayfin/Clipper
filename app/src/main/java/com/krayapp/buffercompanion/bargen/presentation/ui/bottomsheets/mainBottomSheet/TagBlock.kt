@@ -20,8 +20,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import com.krayapp.buffercompanion.bargen.R
+import com.krayapp.buffercompanion.bargen.presentation.mapper.toTagUiModel
 import com.krayapp.buffercompanion.bargen.presentation.models.TagUiModel
 import com.krayapp.buffercompanion.bargen.presentation.utils.BargenChip
+import com.krayapp.buffercompanion.bargen.presentation.utils.TagsRouter
 import com.krayapp.buffercompanion.bargen.presentation.viewmodels.BargenViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -29,7 +31,6 @@ import kotlinx.coroutines.launch
 @Composable
 fun TagBlock(
     initialValue: List<TagUiModel> = emptyList(),
-    viewModel: BargenViewModel,
     onScrollToBottom: () -> Unit = {},
     onTagsAdded: (List<TagUiModel>) -> Unit
 ) {
@@ -41,15 +42,17 @@ fun TagBlock(
 
     val nameList = tagsTextFieldState.text.splitRawTagsForNames()
 
-    suspend fun foundTagsInDb(name: String) = viewModel.findTagWithName(name)
+    suspend fun foundTagsInDb(name: String) = TagsRouter.findTagsWithName(name)
 
     SideEffect {
         scope.launch(Dispatchers.IO) {
             nameList.forEach { stringName ->
                 if (stringName.isNotEmpty()) {
-                    val foundTags = foundTagsInDb(stringName)
+                    val foundTags = foundTagsInDb(stringName).map { it.toTagUiModel() }
                     val exactTag =
-                        runCatching { foundTags.first { stringName == it.name } }.getOrNull()
+                        runCatching {
+                            foundTags.first { stringName == it.name }
+                        }.getOrNull()
                     newTags.add(exactTag ?: TagUiModel(name = stringName))
                     previewTags.addAll(foundTags.filter { it !in newTags })
                     onTagsAdded(newTags.toList())
@@ -101,4 +104,5 @@ fun TagBlock(
         }
     }
 }
+
 private fun CharSequence.splitRawTagsForNames() = this.toString().split(",").map { it.trim() }

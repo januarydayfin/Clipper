@@ -40,26 +40,28 @@ import com.journeyapps.barcodescanner.Size
 import com.krayapp.buffercompanion.bargen.ClipperApp
 import com.krayapp.buffercompanion.bargen.R
 import com.krayapp.buffercompanion.bargen.domain.bargenCore.BarReader
+import com.krayapp.buffercompanion.bargen.domain.selector.tagSelector.TagSelector
 import com.krayapp.buffercompanion.bargen.presentation.models.TagUiModel
 import com.krayapp.buffercompanion.bargen.presentation.models.setChecked
 import com.krayapp.buffercompanion.bargen.presentation.mvi.main.MainIntent
 import com.krayapp.buffercompanion.bargen.presentation.utils.BargenChip
 import com.krayapp.buffercompanion.bargen.presentation.utils.Space
 import com.krayapp.buffercompanion.bargen.presentation.viewmodels.BargenViewModel
-import com.krayapp.buffercompanion.bargen.presentation.viewmodels.TagsViewModel
+import com.krayapp.buffercompanion.bargen.presentation.utils.TagsRouter
 import com.krayapp.buffercompanion.bargen.theme.AppTheme
 import com.krayapp.buffercompanion.bargen.theme.mSize
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import org.koin.compose.koinInject
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 class ScanDialog(
     private val viewModel: BargenViewModel,
-    private val tagsViewModel: TagsViewModel,
     private val onScanned: (BarcodeResult?, List<String>) -> Unit
 ) : DialogFragment(), KoinComponent {
     private val reader: BarReader by inject()
+    private val tagSelector: TagSelector by inject()
     private val dialogWidth = (ClipperApp.displayWidth * 0.9).toInt()
 
     override fun onCreateView(
@@ -97,14 +99,14 @@ class ScanDialog(
         lifecycleScope.launch {
             reader.readerFlow().collectLatest {
                 if (it?.text != null) {
-                    onScanned(it, tagsViewModel.tagSelector.tagsFilterFlow.value)
+                    onScanned(it, tagSelector.tagsFilterFlow.value)
                     dismiss()
                 }
             }
         }
 
         composeView.setContent {
-            AutoTagSection(viewmodel = tagsViewModel, mainViewModel = viewModel, barReader = reader)
+            AutoTagSection(mainViewModel = viewModel, barReader = reader)
         }
     }
 }
@@ -116,24 +118,20 @@ private fun Dialog?.setTransparent() {
 @Composable
 private fun AutoTagSection(
     mainViewModel: BargenViewModel,
-    viewmodel: TagsViewModel,
     barReader: BarReader
 ) {
+    val tagRouter = TagsRouter
+    val tagSelector: TagSelector = koinInject()
     AppTheme {
-        val tagsState = viewmodel.tagSelector.tagsFilterFlow.collectAsState()
+        val tagsState = tagSelector.tagsFilterFlow.collectAsState()
         val scope = rememberCoroutineScope()
         val tagsUiState = remember { mutableStateListOf<TagUiModel>() }
         val torchState = remember { mutableStateOf(false) }
         LaunchedEffect(Unit) {
-            viewmodel.loadTagsUiModelsByIds(tagsState.value) { input ->
+            tagRouter.loadTagsUiModelsByIds(tagsState.value) { input ->
                 tagsUiState.clear()
                 tagsUiState.addAll(input)
             }
-        }
-
-        viewmodel.loadTagsUiModelsByIds(tagsState.value) { input ->
-            tagsUiState.clear()
-            tagsUiState.addAll(input)
         }
 
         Surface {
@@ -157,7 +155,7 @@ private fun AutoTagSection(
                     tagsUiState.forEach {
                         BargenChip(model = it.setChecked(), onClick = {
                             scope.launch {
-                                viewmodel.tagSelector.checkTag(it.id)
+                                tagSelector.checkTag(it.id)
                             }
                         })
                     }

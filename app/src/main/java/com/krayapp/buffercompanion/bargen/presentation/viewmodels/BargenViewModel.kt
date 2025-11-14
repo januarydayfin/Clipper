@@ -1,5 +1,6 @@
 package com.krayapp.buffercompanion.bargen.presentation.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
@@ -183,8 +184,6 @@ class BargenViewModel : ContainerHost<MviState, SideEffect>, ViewModel(), KoinCo
         }
     }
 
-
-    suspend fun findTagWithName(name: String) = TagsUsecase.findTagsWithName(name)
 
 
     fun changeSort(sortType: SortType) {

@@ -2,40 +2,56 @@ package com.krayapp.buffercompanion.bargen.presentation.viewmodels
 
 import androidx.lifecycle.ViewModel
 import com.krayapp.buffercompanion.bargen.ClipperApp
-import com.krayapp.buffercompanion.bargen.presentation.models.SettingsState
-import com.krayapp.buffercompanion.bargen.utils.launchInIO
+import com.krayapp.buffercompanion.bargen.presentation.mvi.settings.SettingsIntent
+import com.krayapp.buffercompanion.bargen.presentation.mvi.settings.SettingsSideEffect
+import com.krayapp.buffercompanion.bargen.presentation.mvi.settings.SettingsState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import org.orbitmvi.orbit.ContainerHost
+import org.orbitmvi.orbit.viewmodel.container
 
-class SettingsViewModel : ViewModel() {
-    private val _settingsState = MutableStateFlow(SettingsState.default())
-    val settingsState = _settingsState.asStateFlow()
+class SettingsViewModel : ContainerHost<SettingsState, SettingsSideEffect>, ViewModel() {
 
-    fun updateTheme(theme: Int) {
-        launchInIO {
-            ClipperApp.getPrefs().theme = theme
-            _settingsState.value = _settingsState.value.copy(theme = theme)
+    override val container = container<SettingsState, SettingsSideEffect>(SettingsState.default())
+
+    fun onIntent(intent: SettingsIntent) {
+        when (intent) {
+            is SettingsIntent.UpdateMaxBrightOnCard -> updateMaxBrightOnCard(intent.needToBright)
+            is SettingsIntent.UpdateOpenAfterScan -> updateOpenAfterScan(intent.open)
+            is SettingsIntent.UpdateOpenScanByButton -> updateOpenScanByButton(intent.open)
+            is SettingsIntent.UpdateTheme -> updateTheme(intent.theme)
         }
     }
 
-    fun updateOpenAfterScan(open: Boolean) {
-        launchInIO {
-            ClipperApp.getPrefs().openCardAfterScan = open
-            _settingsState.value = _settingsState.value.copy(openCardAfterScan = open)
+    private fun updateTheme(theme: Int) = intent {
+        ClipperApp.getPrefs().theme = theme
+        reduce {
+            state.copy(theme = theme)
         }
     }
 
-    fun updateOpenScanByButton(open: Boolean) {
-        launchInIO {
-            ClipperApp.getPrefs().scanOnVolume = open
-            _settingsState.value = _settingsState.value.copy(openScannerByButton = open)
+
+    private fun updateOpenAfterScan(open: Boolean) = intent {
+        ClipperApp.getPrefs().openCardAfterScan = open
+        reduce {
+            state.copy(openCardAfterScan = open)
         }
     }
 
-    fun updateMaxBrightOnCard(needToBright : Boolean) {
-        launchInIO {
-            ClipperApp.getPrefs().maxBrightOnCode = needToBright
-            _settingsState.value = _settingsState.value.copy(maxBrightOnCode = needToBright)
+    private fun updateOpenScanByButton(open: Boolean) = intent {
+        ClipperApp.getPrefs().scanOnVolume = open
+        reduce {
+            state.copy(openScannerByButton = open)
+        }
+
+    }
+
+    private fun updateMaxBrightOnCard(needToBright: Boolean) = intent {
+        ClipperApp.getPrefs().maxBrightOnCode = needToBright
+        reduce {
+            state.copy(maxBrightOnCode = needToBright)
         }
     }
+
+
 }

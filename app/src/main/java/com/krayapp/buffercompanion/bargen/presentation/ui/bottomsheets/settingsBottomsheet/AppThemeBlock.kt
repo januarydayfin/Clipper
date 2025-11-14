@@ -18,7 +18,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.krayapp.buffercompanion.bargen.R
-import com.krayapp.buffercompanion.bargen.presentation.models.SettingsState
+import com.krayapp.buffercompanion.bargen.presentation.mvi.settings.SettingsIntent
+import com.krayapp.buffercompanion.bargen.presentation.mvi.settings.SettingsState
 import com.krayapp.buffercompanion.bargen.presentation.utils.Space
 import com.krayapp.buffercompanion.bargen.presentation.viewmodels.SettingsViewModel
 import com.krayapp.buffercompanion.bargen.theme.mSize
@@ -48,7 +49,7 @@ fun AppThemeBlock(state: State<SettingsState>, viewModel: SettingsViewModel) {
                         count = AppTheme.entries.size
                     ),
                     onClick = {
-                        viewModel.updateTheme(item.value)
+                        viewModel.onIntent(SettingsIntent.UpdateTheme(item.value))
                         setDefaultNightMode(item.value)
                     },
                     label = {

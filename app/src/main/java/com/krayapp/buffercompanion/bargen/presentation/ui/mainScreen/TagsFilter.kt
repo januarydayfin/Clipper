@@ -23,29 +23,31 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.krayapp.buffercompanion.bargen.R
+import com.krayapp.buffercompanion.bargen.domain.selector.tagSelector.TagSelector
 import com.krayapp.buffercompanion.bargen.presentation.models.TagUiModel
 import com.krayapp.buffercompanion.bargen.presentation.models.setChecked
 import com.krayapp.buffercompanion.bargen.presentation.utils.BargenChip
 import com.krayapp.buffercompanion.bargen.presentation.utils.Space
-import com.krayapp.buffercompanion.bargen.presentation.viewmodels.TagsViewModel
+import com.krayapp.buffercompanion.bargen.presentation.utils.TagsRouter
 import com.krayapp.buffercompanion.bargen.theme.mSize
 import com.krayapp.buffercompanion.bargen.theme.sSize
 import com.krayapp.buffercompanion.bargen.utils.io
 import kotlinx.coroutines.flow.collectLatest
+import org.koin.compose.koinInject
 
 
 @Composable
 fun SelectedFilterTags() {
-    val viewModel: TagsViewModel = viewModel()
+    val router = TagsRouter
+    val tagSelector: TagSelector = koinInject()
     val scope = rememberCoroutineScope()
     val tagsUi = remember { mutableStateListOf<TagUiModel>() }
 
     LaunchedEffect(Unit) {
         scope.io {
-            viewModel.tagSelector.tagsFilterFlow.collectLatest { filter ->
-                viewModel.loadTagsUiModelsByIds(filter) { input ->
+            tagSelector.tagsFilterFlow.collectLatest { filter ->
+                router.loadTagsUiModelsByIds(filter) { input ->
                     tagsUi.clear()
                     tagsUi.addAll(input)
                 }
@@ -82,7 +84,7 @@ fun SelectedFilterTags() {
                             .padding(all = sSize)
                             .clickable {
                                 scope.io {
-                                    viewModel.tagSelector.cleanSelection()
+                                    tagSelector.cleanSelection()
                                 }
                             }
                     )
@@ -96,7 +98,7 @@ fun SelectedFilterTags() {
                 tagsUi.forEach { model ->
                     BargenChip(model = model.setChecked(), onClick = {
                         scope.io {
-                            viewModel.tagSelector.checkTag(model.id)
+                            tagSelector.checkTag(model.id)
                         }
                     })
                 }
