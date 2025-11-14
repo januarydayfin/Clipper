@@ -30,6 +30,7 @@
 # Stack:
   * Jetpack Compose
   * Koin
+  * Orbit MVI
   * Room
   * Zxing scanner
 
