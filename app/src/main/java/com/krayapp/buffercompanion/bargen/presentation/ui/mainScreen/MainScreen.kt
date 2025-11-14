@@ -20,7 +20,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import com.krayapp.buffercompanion.bargen.presentation.utils.BarcodeCard
-import com.krayapp.buffercompanion.bargen.presentation.mvi.MainIntent
+import com.krayapp.buffercompanion.bargen.presentation.mvi.main.MainIntent
 import com.krayapp.buffercompanion.bargen.presentation.screens.mainScreen.BottomButtonGroup
 import com.krayapp.buffercompanion.bargen.presentation.screens.mainScreen.MainTopBar
 import com.krayapp.buffercompanion.bargen.presentation.viewmodels.BargenViewModel
@@ -90,7 +90,7 @@ fun MainScreen(
                                             cardSelector.checkBarcodeForSelection(item.id)
                                         }
                                     else
-                                        viewmodel.onIntent(MainIntent.ShowBottomsheet(item))
+                                        viewmodel.onIntent(MainIntent.ShowExistCodeBottomsheet(item))
                                 },
                                 onDeleteClicked = { id ->
                                     viewmodel.deleteBarcodes(id)
@@ -103,7 +103,7 @@ fun MainScreen(
                     modifier = Modifier.align(Alignment.BottomCenter),
                     hideState = lazyListState.lastScrolledForward,
                     onCreateClicked = {
-                        viewmodel.onIntent(MainIntent.CreateNewBarcode)
+                        viewmodel.onIntent(MainIntent.ShowEmptyMainBottomSheet)
                     },
                     onTagsClicked = { viewmodel.onIntent(MainIntent.ShowTagsMenu) },
                     onScanClicked = onScanClicked

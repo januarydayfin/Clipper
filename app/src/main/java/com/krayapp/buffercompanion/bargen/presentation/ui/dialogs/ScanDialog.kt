@@ -42,7 +42,7 @@ import com.krayapp.buffercompanion.bargen.R
 import com.krayapp.buffercompanion.bargen.domain.bargenCore.BarReader
 import com.krayapp.buffercompanion.bargen.presentation.models.TagUiModel
 import com.krayapp.buffercompanion.bargen.presentation.models.setChecked
-import com.krayapp.buffercompanion.bargen.presentation.mvi.MainIntent
+import com.krayapp.buffercompanion.bargen.presentation.mvi.main.MainIntent
 import com.krayapp.buffercompanion.bargen.presentation.utils.BargenChip
 import com.krayapp.buffercompanion.bargen.presentation.utils.Space
 import com.krayapp.buffercompanion.bargen.presentation.viewmodels.BargenViewModel

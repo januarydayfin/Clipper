@@ -14,12 +14,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.krayapp.buffercompanion.bargen.R
-import com.krayapp.buffercompanion.bargen.presentation.models.SettingsUiModel
+import com.krayapp.buffercompanion.bargen.presentation.models.SettingsState
 import com.krayapp.buffercompanion.bargen.presentation.viewmodels.SettingsViewModel
 import com.krayapp.buffercompanion.bargen.theme.mSize
 
 @Composable
-fun CheckboxSection(state: State<SettingsUiModel>, viewmodel: SettingsViewModel) {
+fun CheckboxSection(state: State<SettingsState>, viewmodel: SettingsViewModel) {
     Card(modifier = Modifier.fillMaxWidth()) {
         Column(Modifier.padding(mSize)) {
             TextCheckbox(

@@ -7,26 +7,26 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
-import com.google.zxing.BarcodeFormat
 import com.krayapp.buffercompanion.bargen.ClipperApp
-import com.krayapp.buffercompanion.bargen.data.room.entity.BarcodeEntity
 import com.krayapp.buffercompanion.bargen.domain.pagingSource.BarcodeFilterTagsPagingSource
-import com.krayapp.buffercompanion.bargen.domain.repository.BarcodeRepo
-import com.krayapp.buffercompanion.bargen.domain.repository.TagsRepo
 import com.krayapp.buffercompanion.bargen.domain.selector.barcodeSelector.CardSelector
 import com.krayapp.buffercompanion.bargen.domain.selector.tagSelector.TagSelector
 import com.krayapp.buffercompanion.bargen.domain.type.SortType
+import com.krayapp.buffercompanion.bargen.domain.usecase.barcode.CreateBarcodeUsecase
+import com.krayapp.buffercompanion.bargen.domain.usecase.barcode.GetAllBarcodesPaging
+import com.krayapp.buffercompanion.bargen.domain.usecase.barcode.GetFilteredByNamePagingSource
+import com.krayapp.buffercompanion.bargen.domain.usecase.barcode.IncrementBarcodeUsageCountUsecase
+import com.krayapp.buffercompanion.bargen.domain.usecase.barcode.RemoveBarcodesByIds
+import com.krayapp.buffercompanion.bargen.domain.usecase.tags.TagsUsecase
 import com.krayapp.buffercompanion.bargen.presentation.mapper.toBarcodeUiModel
-import com.krayapp.buffercompanion.bargen.presentation.mapper.toTagUiModel
 import com.krayapp.buffercompanion.bargen.presentation.models.BarcodeUiModel
-import com.krayapp.buffercompanion.bargen.presentation.models.TagUiModel
-import com.krayapp.buffercompanion.bargen.presentation.mvi.Effect
-import com.krayapp.buffercompanion.bargen.presentation.mvi.FilterState
-import com.krayapp.buffercompanion.bargen.presentation.mvi.MainIntent
-import com.krayapp.buffercompanion.bargen.presentation.mvi.stateManager.StateManager
+import com.krayapp.buffercompanion.bargen.presentation.mvi.main.BottomSheetStateData
+import com.krayapp.buffercompanion.bargen.presentation.mvi.main.FilterState
+import com.krayapp.buffercompanion.bargen.presentation.mvi.main.MainIntent
+import com.krayapp.buffercompanion.bargen.presentation.mvi.main.MviState
+import com.krayapp.buffercompanion.bargen.presentation.mvi.main.SideEffect
 import com.krayapp.buffercompanion.bargen.presentation.utils.currentSortType
 import com.krayapp.buffercompanion.bargen.utils.launchInIO
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -35,20 +35,18 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import org.orbitmvi.orbit.ContainerHost
+import org.orbitmvi.orbit.viewmodel.container
 import java.util.UUID
 
-class BargenViewModel : ViewModel(), KoinComponent {
-    private val barcodeRepo: BarcodeRepo by inject()
-    private val tagsRepo: TagsRepo by inject()
-    private val stateManager: StateManager by inject()
+class BargenViewModel : ContainerHost<MviState, SideEffect>, ViewModel(), KoinComponent {
+    override val container = container<MviState, SideEffect>(MviState())
 
     val cardSelector: CardSelector by inject()
     private val tagsSelector: TagSelector by inject()
 
-    val uiState = stateManager.state
 
     private val _sortType = MutableStateFlow(currentSortType)
     val sortType = _sortType.asStateFlow()
@@ -75,14 +73,14 @@ class BargenViewModel : ViewModel(), KoinComponent {
                 pagingSourceFactory = {
                     when {
                         filterState.searchFilter.isNotEmpty() -> {
-                            barcodeRepo.getFilteredBarcodesByNamePaging(filterState.searchFilter)
+                            GetFilteredByNamePagingSource(filterState.searchFilter)
                         }
 
                         filterState.tagIds.isNotEmpty() -> {
                             BarcodeFilterTagsPagingSource(filterState.tagIds)
                         }
 
-                        else -> barcodeRepo.getAllBarcodesPaging(sort)
+                        else -> GetAllBarcodesPaging(sort)
                     }
                 }
             )
@@ -102,54 +100,91 @@ class BargenViewModel : ViewModel(), KoinComponent {
     }
 
     fun onIntent(intent: MainIntent) {
-        launchInIO {
-            stateManager.onIntent(intent)
+        when (intent) {
+            is MainIntent.ShowEmptyMainBottomSheet -> showMainBottomSheet()
+            is MainIntent.HideBottomSheet -> hideBottomSheets()
+            is MainIntent.ShowExistCodeBottomsheet -> showMainBottomSheet(intent.uiModel)
+            is MainIntent.ShowSettingsBottomsheet -> showSettingsBottomSheet()
+            is MainIntent.ShowTagsMenu -> showTagsBottomsheet()
+            is MainIntent.CreateNewRecordFromRawData -> createBarcodeRecord(intent)
+            is MainIntent.CreateNewRecordFromEntity -> createBarcodeRecord(intent)
         }
     }
 
 
-    fun recycleEffect(effect: Effect) {
-        launchInIO {
-            stateManager.recycleEffect(effect)
+    private fun showMainBottomSheet(uiModel: BarcodeUiModel = BarcodeUiModel.UNDEFINED) = intent {
+        reduce {
+            state.copy(mainBottomSheetState = BottomSheetStateData(uiModel))
         }
     }
+
+    private fun showSettingsBottomSheet() = intent {
+        reduce {
+            state.copy(showSettingsBottomSheet = true)
+        }
+    }
+
+    private fun showTagsBottomsheet() = intent {
+        reduce {
+            state.copy(showTagBottomSheet = true)
+        }
+    }
+
+    private fun hideBottomSheets() = intent {
+        reduce {
+            state.copy(
+                mainBottomSheetState = null,
+                showTagBottomSheet = false,
+                showSettingsBottomSheet = false,
+                showSortBottomSheet = false
+            )
+        }
+    }
+
 
     fun updatePager() {
         launchInIO {
-            filterState.emit(filterState.value.copy(manualUpdate = UUID.randomUUID().toString()))
+            filterState.emit(
+                filterState.value.copy(
+                    manualUpdate = UUID.randomUUID().toString()
+                )
+            )
         }
     }
 
-    fun createBarcodeRecord(
-        text: String,
-        format: BarcodeFormat = BarcodeFormat.QR_CODE,
-        tagIds: List<String> = emptyList(),
-        onCreated: (BarcodeUiModel) -> Unit = { }
+
+    private fun createBarcodeRecord(
+        intent: MainIntent.CreateNewRecordFromRawData,
+    ) {
+        val text = intent.text
+        val format = intent.format.toString()
+        val tagIds = intent.tagIds
+
+        launchInIO {
+            val entity = CreateBarcodeUsecase(text = text, format = format, tagIds = tagIds)
+
+            updatePager()
+
+            if (ClipperApp.getPrefs().openCardAfterScan)
+                showMainBottomSheet(entity.toBarcodeUiModel())
+        }
+    }
+
+    private fun createBarcodeRecord(
+        intent: MainIntent.CreateNewRecordFromEntity,
     ) {
         launchInIO {
-            val entity = BarcodeEntity(
-                content = text,
-                type = format.toString(),
-                tags = tagIds
-            )
-            barcodeRepo.upsertBarcode(entity)
-            onCreated(entity.toBarcodeUiModel())
+            val entity = CreateBarcodeUsecase(intent.barcodeEntity)
+
+            updatePager()
+
+            if (ClipperApp.getPrefs().openCardAfterScan)
+                showMainBottomSheet(entity.toBarcodeUiModel())
         }
     }
 
-    fun onNotEmptyData(onNotEmpty: () -> Unit) {
-        launchInIO {
-            val count = barcodeRepo.recordsCount()
 
-            if (count != 0)
-                onNotEmpty()
-        }
-    }
-
-    suspend fun findTagWithName(name: String): List<TagUiModel> =
-        withContext(Dispatchers.IO) {
-            tagsRepo.findTagWithName(name).map { it.toTagUiModel() }
-        }
+    suspend fun findTagWithName(name: String) = TagsUsecase.findTagsWithName(name)
 
 
     fun changeSort(sortType: SortType) {
@@ -160,24 +195,15 @@ class BargenViewModel : ViewModel(), KoinComponent {
 
     fun deleteBarcodes(vararg ids: String) {
         launchInIO {
-            barcodeRepo.removeBarcodesByIds(ids.toList())
+            RemoveBarcodesByIds(ids.toList())
             updatePager()
         }
     }
 
-    fun createBarcodeRecord(
-        entity: BarcodeEntity,
-        onCreated: (BarcodeUiModel) -> Unit = { }
-    ) {
-        launchInIO {
-            barcodeRepo.upsertBarcode(entity)
-            onCreated(entity.toBarcodeUiModel())
-        }
-    }
 
     fun incrementUsageCount(id: String) {
         launchInIO {
-            barcodeRepo.incrementUsageCount(id)
+            IncrementBarcodeUsageCountUsecase(id)
             updatePager()
         }
     }

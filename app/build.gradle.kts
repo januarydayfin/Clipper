@@ -58,6 +58,8 @@ dependencies {
     // Navigation
     implementation(libs.bundles.navigation)
 
+    implementation(libs.bundles.orbit)
+
     // Room
     implementation(libs.bundles.room) // Включает room-runtime и room-ktx
 

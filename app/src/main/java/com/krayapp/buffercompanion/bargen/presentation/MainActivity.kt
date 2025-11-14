@@ -13,19 +13,19 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.lifecycleScope
 import com.google.android.play.core.review.ReviewManagerFactory
 import com.gun0912.tedpermission.normal.TedPermission
 import com.krayapp.buffercompanion.bargen.ClipperApp
 import com.krayapp.buffercompanion.bargen.R
-import com.krayapp.buffercompanion.bargen.presentation.mvi.BottomSheetStateData
-import com.krayapp.buffercompanion.bargen.presentation.mvi.MainIntent
-import com.krayapp.buffercompanion.bargen.presentation.mvi.ShowSettingsBottomsheet
-import com.krayapp.buffercompanion.bargen.presentation.mvi.ShowTagsBottomsheet
-import com.krayapp.buffercompanion.bargen.presentation.mvi.canShowMainBottomSheet
-import com.krayapp.buffercompanion.bargen.presentation.mvi.canShowSettingsBottomsheet
-import com.krayapp.buffercompanion.bargen.presentation.mvi.canShowTagBottomSheet
+import com.krayapp.buffercompanion.bargen.domain.usecase.barcode.CheckDataExistUsecase
+import com.krayapp.buffercompanion.bargen.presentation.mapper.toBarcodeEntity
+import com.krayapp.buffercompanion.bargen.presentation.mvi.main.BottomSheetStateData
+import com.krayapp.buffercompanion.bargen.presentation.mvi.main.MainIntent
+import com.krayapp.buffercompanion.bargen.presentation.mvi.main.MviState
+import com.krayapp.buffercompanion.bargen.presentation.mvi.main.canShowMainBottomSheet
+import com.krayapp.buffercompanion.bargen.presentation.mvi.main.canShowSettingsBottomsheet
+import com.krayapp.buffercompanion.bargen.presentation.mvi.main.canShowTagBottomSheet
 import com.krayapp.buffercompanion.bargen.presentation.ui.bottomsheets.mainBottomSheet.MainBottomSheet
 import com.krayapp.buffercompanion.bargen.presentation.ui.bottomsheets.settingsBottomsheet.SettingsBottomSheet
 import com.krayapp.buffercompanion.bargen.presentation.ui.bottomsheets.tagsBottomsheet.TagsBottomSheet
@@ -41,6 +41,9 @@ import com.krayapp.buffercompanion.bargen.presentation.viewmodels.TagsViewModel
 import com.krayapp.buffercompanion.bargen.theme.AppTheme
 import com.krayapp.buffercompanion.bargen.utils.io
 import com.krayapp.buffercompanion.bargen.utils.launchWithDelay
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import org.orbitmvi.orbit.viewmodel.observe
 import kotlin.random.Random
 
 
@@ -51,8 +54,11 @@ class MainActivity : AppCompatActivity() {
         override fun handleOnBackPressed() {
             lifecycleScope.io {
                 when {
-                    viewmodel.inSelection -> { viewmodel.cardSelector.cleanSelection() }
-                    tagsViewModel.tagSelector.tagsFilterFlow.value.isNotEmpty() ->  tagsViewModel.tagSelector.cleanSelection()
+                    viewmodel.inSelection -> {
+                        viewmodel.cardSelector.cleanSelection()
+                    }
+
+                    tagsViewModel.tagSelector.tagsFilterFlow.value.isNotEmpty() -> tagsViewModel.tagSelector.cleanSelection()
                     else -> finishAndRemoveTask()
                 }
             }
@@ -66,16 +72,10 @@ class MainActivity : AppCompatActivity() {
         onBackPressedDispatcher.addCallback(onBackPressed)
         setContent {
             AppTheme {
-                val mviState = viewmodel.uiState.collectAsState()
+                viewmodel.observe(lifecycleOwner = this, state = ::renderState)
 
                 MainScreen {
                     showScanDialog()
-                }
-
-                when {
-                    mviState.value.canShowMainBottomSheet -> ShowMainBottomSheet(mviState.value.bottomSheetData!!)
-                    mviState.value.canShowTagBottomSheet -> ShowTagBottomsheet(mviState.value.showTagBottomSheet)
-                    mviState.value.canShowSettingsBottomsheet -> ShowSettingsBottomsheet(mviState.value.showSettingsBottomSheet)
                 }
             }
         }
@@ -83,10 +83,20 @@ class MainActivity : AppCompatActivity() {
         if (calledFromShortcut())
             pasteFromClip()
 
-        viewmodel.onNotEmptyData {
-            runAppReview()
+        lifecycleScope.launch {
+            if (CheckDataExistUsecase())
+                runAppReview()
         }
+    }
 
+    private fun renderState(mviState: MviState) {
+        @Composable {
+            when {
+                mviState.canShowMainBottomSheet -> ShowMainBottomSheet(mviState.mainBottomSheetState!!)
+                mviState.canShowTagBottomSheet -> ShowTagBottomsheet()
+                mviState.canShowSettingsBottomsheet -> ShowSettingsBottomsheet()
+            }
+        }
     }
 
     private fun runAppReview() {
@@ -105,16 +115,13 @@ class MainActivity : AppCompatActivity() {
             .addPermissionListener(onGranted = {
                 ScanDialog(viewModel = viewmodel, tagsViewModel = tagsViewModel) { result, tags ->
                     result ?: return@ScanDialog
-                    viewmodel.createBarcodeRecord(
-                        text = result.text,
-                        format = result.barcodeFormat,
-                        tagIds = tags
-                    ) { model ->
-                        if (ClipperApp.getPrefs().openCardAfterScan)
-                            viewmodel.onIntent(MainIntent.ShowBottomsheet(model))
-
-                        viewmodel.updatePager()
-                    }
+                    viewmodel.onIntent(
+                        MainIntent.CreateNewRecordFromRawData(
+                            text = result.text,
+                            format = result.barcodeFormat,
+                            tagIds = tags
+                        )
+                    )
                 }.show(supportFragmentManager, "")
             }, onDenied = {
                 Toast.makeText(this, R.string.camera_required, Toast.LENGTH_SHORT).show()
@@ -129,10 +136,10 @@ class MainActivity : AppCompatActivity() {
             peakBright()
         MainBottomSheet(
             model = data.model, onDismiss = {
+                viewmodel.onIntent(MainIntent.HideBottomSheet)
+
                 if (ClipperApp.getPrefs().maxBrightOnCode)
                     restoreBright()
-
-                viewmodel.recycleEffect(data)
                 viewmodel.updatePager()
             }, onSharePicture = {
                 shareBitmap(bitmap = it, title = Random.nextInt().toString())
@@ -145,22 +152,28 @@ class MainActivity : AppCompatActivity() {
                         Toast.LENGTH_SHORT
                     ).show()
                 }
+            },
+            onApplyBarcode = { model ->
+                lifecycleScope.launch(Dispatchers.IO) {
+                    viewmodel.onIntent(MainIntent.CreateNewRecordFromEntity(model.toBarcodeEntity()))
+                    tagsViewModel.saveTags(model.tags)
+                }
             }
         )
     }
 
     @Composable
-    private fun ShowTagBottomsheet(data: ShowTagsBottomsheet) {
+    private fun ShowTagBottomsheet() {
         TagsBottomSheet {
-            viewmodel.recycleEffect(data)
+            viewmodel.onIntent(MainIntent.HideBottomSheet)
             viewmodel.updatePager()
         }
     }
 
     @Composable
-    private fun ShowSettingsBottomsheet(data: ShowSettingsBottomsheet) {
+    private fun ShowSettingsBottomsheet() {
         SettingsBottomSheet {
-            viewmodel.recycleEffect(data)
+            viewmodel.onIntent(MainIntent.HideBottomSheet)
         }
     }
 
@@ -189,9 +202,7 @@ class MainActivity : AppCompatActivity() {
             val text = manager.primaryClip?.getItemAt(0)?.text.toString()
 
             if (text.isNotEmpty() && text != "null")
-                viewmodel.createBarcodeRecord(text) {
-                    viewmodel.onIntent(MainIntent.ShowBottomsheet(it))
-                }
+                viewmodel.onIntent(MainIntent.CreateNewRecordFromRawData(text = text))
         }
     }
 }

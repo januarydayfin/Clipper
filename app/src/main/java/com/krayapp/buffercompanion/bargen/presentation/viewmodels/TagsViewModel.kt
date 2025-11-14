@@ -1,9 +1,8 @@
 package com.krayapp.buffercompanion.bargen.presentation.viewmodels
 
 import androidx.lifecycle.ViewModel
-import com.krayapp.buffercompanion.bargen.domain.repository.BarcodeRepo
-import com.krayapp.buffercompanion.bargen.domain.repository.TagsRepo
 import com.krayapp.buffercompanion.bargen.domain.selector.tagSelector.TagSelector
+import com.krayapp.buffercompanion.bargen.domain.usecase.tags.TagsUsecase
 import com.krayapp.buffercompanion.bargen.presentation.mapper.toEntity
 import com.krayapp.buffercompanion.bargen.presentation.mapper.toTagUiModel
 import com.krayapp.buffercompanion.bargen.presentation.models.TagUiModel
@@ -13,37 +12,30 @@ import org.koin.core.component.inject
 
 class TagsViewModel : ViewModel(), KoinComponent {
     val tagSelector: TagSelector by inject()
-    private val tagsRepo: TagsRepo by inject()
-    private val barcodeRepo: BarcodeRepo by inject()
-
+    private val tagsUsecase = TagsUsecase
     fun getTags(filter: String, onLoaded: (List<TagUiModel>) -> Unit) {
         launchInIO {
-            val tagList = if (filter.isEmpty())
-                tagsRepo.getAllTags()
-            else
-                tagsRepo.getTagsWithFilter(filter)
-
+            val tagList = tagsUsecase.getTags(filter)
             onLoaded(tagList.map { it.toTagUiModel() })
         }
     }
 
     fun saveTags(tags: List<TagUiModel>) {
         launchInIO {
-            tagsRepo.upsertTags(tags.map { it.toEntity() })
+            tagsUsecase.saveTags(tags.map { it.toEntity() })
         }
     }
 
     fun loadTagsUiModelsByIds(ids: List<String>, onSuccess: (List<TagUiModel>) -> Unit) {
         launchInIO {
-            onSuccess(tagsRepo.getTagsWithIds(ids).map { it.toTagUiModel() })
+            onSuccess(tagsUsecase.loadTagsUiModelsByIds(ids).map { it.toTagUiModel() })
         }
     }
 
     fun removeTagById(id: String) {
         launchInIO {
             tagSelector.forceUncheck(id)
-            tagsRepo.removeTagById(id)
-            barcodeRepo.removeTagFromBarcodes(id)
+            tagsUsecase.removeTagById(id)
         }
     }
 }

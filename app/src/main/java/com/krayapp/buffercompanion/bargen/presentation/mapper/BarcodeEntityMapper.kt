@@ -2,17 +2,16 @@ package com.krayapp.buffercompanion.bargen.presentation.mapper
 
 import com.krayapp.buffercompanion.bargen.data.room.bargen.BargenDB
 import com.krayapp.buffercompanion.bargen.data.room.entity.BarcodeEntity
-import com.krayapp.buffercompanion.bargen.data.room.entity.TagEntity
+import com.krayapp.buffercompanion.bargen.domain.provideDatabase
 import com.krayapp.buffercompanion.bargen.presentation.models.BarcodeUiModel
 import com.krayapp.buffercompanion.bargen.presentation.models.TagUiModel
-import com.krayapp.buffercompanion.bargen.domain.provideDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-suspend fun BarcodeEntity.toBarcodeUiModel(cachedTags: List<TagEntity>? = null): BarcodeUiModel =
+suspend fun BarcodeEntity.toBarcodeUiModel(): BarcodeUiModel =
     withContext(Dispatchers.IO) {
         val tagsModel = mutableListOf<TagUiModel>()
-        val allTags = cachedTags ?: provideDatabase<BargenDB>().tagsDao().getTags()
+        val allTags = provideDatabase<BargenDB>().tagsDao().getTags()
 
         allTags
             .filter { this@toBarcodeUiModel.tags.contains(it.id) }

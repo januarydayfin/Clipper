@@ -18,14 +18,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.krayapp.buffercompanion.bargen.R
-import com.krayapp.buffercompanion.bargen.presentation.models.SettingsUiModel
+import com.krayapp.buffercompanion.bargen.presentation.models.SettingsState
 import com.krayapp.buffercompanion.bargen.presentation.utils.Space
 import com.krayapp.buffercompanion.bargen.presentation.viewmodels.SettingsViewModel
 import com.krayapp.buffercompanion.bargen.theme.mSize
 import com.krayapp.buffercompanion.bargen.theme.sSize
 
 @Composable
-fun AppThemeBlock(state: State<SettingsUiModel>, viewModel: SettingsViewModel) {
+fun AppThemeBlock(state: State<SettingsState>, viewModel: SettingsViewModel) {
     val buttonModel = state.value.theme
     Column(
         modifier = Modifier

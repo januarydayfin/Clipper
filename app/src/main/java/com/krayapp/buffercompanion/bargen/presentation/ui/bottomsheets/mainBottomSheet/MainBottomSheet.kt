@@ -45,9 +45,8 @@ fun MainBottomSheet(
     onDismiss: () -> Unit = {},
     onSharePicture: (Bitmap?) -> Unit = {},
     onSaveStoragePicture: (Bitmap?) -> Unit = {},
+    onApplyBarcode: (BarcodeUiModel) -> Unit = {}
 ) {
-    val viewmodel: BargenViewModel = viewModel()
-    val tagsViewModel: TagsViewModel = viewModel()
     val sheetState = rememberModalBottomSheetState()
     val modelState = remember { mutableStateOf(model) }
     val scrollState = rememberScrollState()
@@ -90,11 +89,8 @@ fun MainBottomSheet(
             Spacer(modifier = Modifier.weight(1f))
 
             TextButton(onClick = {
-                scope.launch {
-                    viewmodel.createBarcodeRecord(modelState.value.toBarcodeEntity())
-                    tagsViewModel.saveTags(modelState.value.tags)
-                    onDismiss()
-                }
+                onApplyBarcode(modelState.value)
+                onDismiss()
 
             }) { Text(text = stringResource(R.string.apply)) }
         }
