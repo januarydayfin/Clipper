@@ -10,7 +10,6 @@ interface BarcodeRepo {
     suspend fun removeBarcodesByIds(ids: List<String>)
     suspend fun incrementUsageCount(id: String)
     suspend fun removeTagFromBarcodes(tagId: String)
-    suspend fun getAllBarcodes(sort: SortType = SortType.NAME): List<BarcodeEntity>
     fun getAllBarcodesPaging(sort: SortType) : PagingSource<Int, BarcodeEntity>
     fun getFilteredBarcodesByNamePaging(filter: String) : PagingSource<Int, BarcodeEntity>
 }

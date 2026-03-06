@@ -1,6 +1,6 @@
 package com.krayapp.buffercompanion.bargen.presentation.mapper
 
-import com.krayapp.buffercompanion.bargen.data.room.bargen.BargenDB
+import com.krayapp.buffercompanion.bargen.data.room.BargenDB
 import com.krayapp.buffercompanion.bargen.data.room.entity.BarcodeEntity
 import com.krayapp.buffercompanion.bargen.domain.provideDatabase
 import com.krayapp.buffercompanion.bargen.presentation.models.BarcodeUiModel
@@ -23,7 +23,8 @@ suspend fun BarcodeEntity.toBarcodeUiModel(): BarcodeUiModel =
             description = this@toBarcodeUiModel.description,
             barcodeType = this@toBarcodeUiModel.type,
             tags = tagsModel,
-            content = this@toBarcodeUiModel.content
+            content = this@toBarcodeUiModel.content,
+            pinOrder = this@toBarcodeUiModel.pinnedPosition
         )
     }
 

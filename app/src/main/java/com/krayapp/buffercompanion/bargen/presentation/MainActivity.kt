@@ -8,11 +8,13 @@ import android.view.KeyEvent
 import android.view.MotionEvent
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.lifecycleScope
 import com.google.android.play.core.review.ReviewManagerFactory
 import com.gun0912.tedpermission.normal.TedPermission
@@ -44,24 +46,22 @@ import com.krayapp.buffercompanion.bargen.utils.launchWithDelay
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
-import org.orbitmvi.orbit.compose.collectAsState
 import kotlin.random.Random
 
 
 class MainActivity : AppCompatActivity() {
     private val viewmodel: BargenViewModel by viewModels()
     private val tagsRouter = TagsRouter
-    private val tagSelector: TagSelector by inject()
 
     private val onBackPressed = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             lifecycleScope.io {
                 when {
                     viewmodel.inSelection -> {
-                        viewmodel.cardSelector.cleanSelection()
+                        viewmodel.onIntent(MainIntent.CleanCardSelection)
                     }
 
-                    tagSelector.tagsFilterFlow.value.isNotEmpty() -> tagSelector.cleanSelection()
+                    viewmodel.filterState.value.tagIds.isNotEmpty() -> viewmodel.onIntent(MainIntent.CleanTagsSelection)
                     else -> finishAndRemoveTask()
                 }
             }
@@ -70,12 +70,21 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+        enableEdgeToEdge(
+            navigationBarStyle = SystemBarStyle.auto(
+                android.graphics.Color.TRANSPARENT,
+                android.graphics.Color.TRANSPARENT
+            ),
+            statusBarStyle = SystemBarStyle.auto(
+                android.graphics.Color.TRANSPARENT,
+                android.graphics.Color.TRANSPARENT
+            )
+        )
 
         onBackPressedDispatcher.addCallback(onBackPressed)
         setContent {
             AppTheme {
-                val state = viewmodel.collectAsState().value
+                val state = viewmodel.state.collectAsState().value
 
                 when {
                     state.canShowMainBottomSheet -> ShowMainBottomSheet(state.mainBottomSheetState!!)
@@ -115,7 +124,7 @@ class MainActivity : AppCompatActivity() {
                 ScanDialog(viewModel = viewmodel) { result, tags ->
                     result ?: return@ScanDialog
                     viewmodel.onIntent(
-                        MainIntent.CreateNewRecordFromRawData(
+                        MainIntent.CreateNewRecord(
                             text = result.text,
                             format = result.barcodeFormat,
                             tagIds = tags
@@ -154,7 +163,7 @@ class MainActivity : AppCompatActivity() {
             },
             onApplyBarcode = { model ->
                 lifecycleScope.launch(Dispatchers.IO) {
-                    viewmodel.onIntent(MainIntent.CreateNewRecordFromEntity(model.toBarcodeEntity()))
+                    viewmodel.onIntent(MainIntent.CreateNewRecord(barcodeEntity = model.toBarcodeEntity()))
                     tagsRouter.saveTags(model.tags)
                 }
             }
@@ -201,7 +210,7 @@ class MainActivity : AppCompatActivity() {
             val text = manager.primaryClip?.getItemAt(0)?.text.toString()
 
             if (text.isNotEmpty() && text != "null")
-                viewmodel.onIntent(MainIntent.CreateNewRecordFromRawData(text = text))
+                viewmodel.onIntent(MainIntent.CreateNewRecord(text = text))
         }
     }
 }

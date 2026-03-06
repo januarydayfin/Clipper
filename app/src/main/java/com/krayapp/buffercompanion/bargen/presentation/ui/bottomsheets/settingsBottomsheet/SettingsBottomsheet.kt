@@ -23,6 +23,7 @@ import com.krayapp.buffercompanion.bargen.presentation.utils.Space
 import com.krayapp.buffercompanion.bargen.presentation.utils.backup.bargen_backup_filename
 import com.krayapp.buffercompanion.bargen.presentation.utils.backup.readFromFile
 import com.krayapp.buffercompanion.bargen.presentation.utils.backup.writeToFile
+import com.krayapp.buffercompanion.bargen.presentation.utils.colorizeBottomsheetNavBar
 import com.krayapp.buffercompanion.bargen.presentation.utils.toast
 import com.krayapp.buffercompanion.bargen.presentation.viewmodels.SettingsViewModel
 import com.krayapp.buffercompanion.bargen.theme.mSize
@@ -71,10 +72,12 @@ fun SettingsBottomSheet(
         onDismissRequest = {
             onDismiss()
         }) {
+        colorizeBottomsheetNavBar()
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = mSize),
+                .padding(horizontal = mSize)
+            ,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             AppThemeBlock(state, viewmodel)

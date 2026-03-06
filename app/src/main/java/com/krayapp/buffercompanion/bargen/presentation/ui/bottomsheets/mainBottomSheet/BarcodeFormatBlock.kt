@@ -9,8 +9,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.res.painterResource
 import com.krayapp.buffercompanion.bargen.R
 import com.krayapp.buffercompanion.bargen.presentation.models.BarcodeUiModel
 
@@ -27,7 +26,7 @@ internal fun BarcodeFormatBlock(state: State<BarcodeUiModel>, openDialog: () -> 
             openDialog()
         }) {
             Icon(
-                ImageVector.vectorResource(R.drawable.ic_arrow_down),
+                painter = painterResource(R.drawable.ic_arrow_down),
                 modifier =
                     Modifier.size(SplitButtonDefaults.TrailingIconSize),
                 contentDescription = "Localized description",

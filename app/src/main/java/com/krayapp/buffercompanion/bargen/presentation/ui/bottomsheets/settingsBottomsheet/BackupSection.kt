@@ -13,7 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
@@ -48,7 +48,7 @@ fun BackupSection(
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(
                             modifier = Modifier.padding(end = 4.dp),
-                            imageVector = ImageVector.vectorResource(R.drawable.ic_download),
+                            painter = painterResource(R.drawable.ic_download),
                             contentDescription = null,
                         )
                         Text(
@@ -67,7 +67,7 @@ fun BackupSection(
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(
                             modifier = Modifier.padding(end = 4.dp),
-                            imageVector = ImageVector.vectorResource(R.drawable.ic_share),
+                            painter = painterResource(R.drawable.ic_share),
                             contentDescription = null,
                         )
                         Text(

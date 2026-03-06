@@ -27,7 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -168,7 +168,7 @@ private fun AutoTagSection(
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Icon(
                                 modifier = Modifier.padding(end = 4.dp),
-                                imageVector = ImageVector.vectorResource(R.drawable.ic_label),
+                                painter = painterResource(R.drawable.ic_label),
                                 contentDescription = stringResource(R.string.tags),
                             )
                             Text(
@@ -188,12 +188,12 @@ private fun AutoTagSection(
                     {
                         if (torchState.value)
                             Icon(
-                                imageVector = ImageVector.vectorResource(R.drawable.baseline_flashlight_off_24),
+                                painter = painterResource(R.drawable.baseline_flashlight_off_24),
                                 contentDescription = null
                             )
                         else
                             Icon(
-                                imageVector = ImageVector.vectorResource(R.drawable.baseline_flashlight_on_24),
+                                painter = painterResource(R.drawable.baseline_flashlight_on_24),
                                 contentDescription = null
                             )
                     }

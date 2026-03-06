@@ -7,6 +7,11 @@ data class MviState(
     val showTagBottomSheet:  Boolean = false,
     val showSettingsBottomSheet:  Boolean = false,
     val showSortBottomSheet: Boolean = false,
-)
+    val pinnedBarcodes: List<BarcodeUiModel> = emptyList(),
+    val selectedBarcodesIds: List<String> = emptyList(),
+) {
+    val inSelectionMode: Boolean
+        get() = selectedBarcodesIds.isNotEmpty()
+}
 
 data class BottomSheetStateData(val model: BarcodeUiModel)

@@ -1,6 +1,6 @@
 package com.krayapp.buffercompanion.bargen.domain.repository
 
-import com.krayapp.buffercompanion.bargen.data.room.bargen.BargenDB
+import com.krayapp.buffercompanion.bargen.data.room.BargenDB
 import com.krayapp.buffercompanion.bargen.data.room.entity.TagEntity
 import com.krayapp.buffercompanion.bargen.domain.provideDatabase
 import com.krayapp.buffercompanion.bargen.utils.withIO

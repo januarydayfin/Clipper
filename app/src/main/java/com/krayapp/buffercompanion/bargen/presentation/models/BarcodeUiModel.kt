@@ -9,8 +9,13 @@ data class BarcodeUiModel(
     val description: String,
     val tags: List<TagUiModel>,
     val content: String,
+    val pinOrder: Int,
 ) {
+    val isPinned: Boolean
+        get() = pinOrder != NOT_PINNED
+
     companion object {
+        const val NOT_PINNED = -1
         val UNDEFINED
             get() = BarcodeUiModel(
                 id = UUID.randomUUID().toString(),
@@ -18,7 +23,8 @@ data class BarcodeUiModel(
                 barcodeType = "QR_CODE",
                 tags = emptyList(),
                 description = "",
-                content = ""
+                content = "",
+                pinOrder = NOT_PINNED
             )
     }
 }

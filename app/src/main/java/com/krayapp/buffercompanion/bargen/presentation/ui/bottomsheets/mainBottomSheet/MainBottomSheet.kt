@@ -30,6 +30,7 @@ import com.krayapp.buffercompanion.bargen.R
 import com.krayapp.buffercompanion.bargen.presentation.models.BarcodeUiModel
 import com.krayapp.buffercompanion.bargen.presentation.ui.composables.SheetDragger
 import com.krayapp.buffercompanion.bargen.presentation.ui.dialogs.BarcodeFormatDialog
+import com.krayapp.buffercompanion.bargen.presentation.utils.colorizeBottomsheetNavBar
 import com.krayapp.buffercompanion.bargen.theme.lSize
 import com.krayapp.buffercompanion.bargen.theme.mSize
 import kotlinx.coroutines.launch
@@ -77,6 +78,7 @@ fun MainBottomSheet(
             onDismiss()
         }) {
 
+        colorizeBottomsheetNavBar()
         Row(Modifier.padding(horizontal = mSize)) {
             TextButton(onClick = {
                 onDismiss()

@@ -1,6 +1,5 @@
 package com.krayapp.buffercompanion.bargen.presentation.viewmodels
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
@@ -18,19 +17,20 @@ import com.krayapp.buffercompanion.bargen.domain.usecase.barcode.GetAllBarcodesP
 import com.krayapp.buffercompanion.bargen.domain.usecase.barcode.GetFilteredByNamePagingSource
 import com.krayapp.buffercompanion.bargen.domain.usecase.barcode.IncrementBarcodeUsageCountUsecase
 import com.krayapp.buffercompanion.bargen.domain.usecase.barcode.RemoveBarcodesByIds
-import com.krayapp.buffercompanion.bargen.domain.usecase.tags.TagsUsecase
 import com.krayapp.buffercompanion.bargen.presentation.mapper.toBarcodeUiModel
 import com.krayapp.buffercompanion.bargen.presentation.models.BarcodeUiModel
-import com.krayapp.buffercompanion.bargen.presentation.mvi.main.BottomSheetStateData
 import com.krayapp.buffercompanion.bargen.presentation.mvi.main.FilterState
 import com.krayapp.buffercompanion.bargen.presentation.mvi.main.MainIntent
 import com.krayapp.buffercompanion.bargen.presentation.mvi.main.MviState
 import com.krayapp.buffercompanion.bargen.presentation.mvi.main.SideEffect
+import com.krayapp.buffercompanion.bargen.presentation.mvi.processing.MviProcessor
+import com.krayapp.buffercompanion.bargen.presentation.mvi.processing.MviProcessorHandler
 import com.krayapp.buffercompanion.bargen.presentation.utils.currentSortType
 import com.krayapp.buffercompanion.bargen.utils.launchInIO
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
@@ -38,33 +38,34 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import org.orbitmvi.orbit.ContainerHost
-import org.orbitmvi.orbit.viewmodel.container
 import java.util.UUID
 
-class BargenViewModel : ContainerHost<MviState, SideEffect>, ViewModel(), KoinComponent {
-    override val container = container<MviState, SideEffect>(MviState())
-
-    val cardSelector: CardSelector by inject()
+class BargenViewModel : ViewModel(), KoinComponent {
     private val tagsSelector: TagSelector by inject()
+    private val mviProcessor = MviProcessor(viewModel = this, MviProcessorHandler(this))
 
+    val state: StateFlow<MviState>
+        get() = mviProcessor.container.stateFlow
+
+    val sideEffects: Flow<SideEffect>
+        get() = mviProcessor.container.sideEffectFlow
 
     private val _sortType = MutableStateFlow(currentSortType)
     val sortType = _sortType.asStateFlow()
 
-    private val filterState = MutableStateFlow(FilterState())
+    private val _filterState = MutableStateFlow(FilterState())
+    val filterState = _filterState.asStateFlow()
 
-    val inSelection
-        get() = cardSelector.selectedBarcodes.value.isNotEmpty()
+
+    val inSelection get() = mviProcessor.inCardSelectionMode
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val barcodePagingData: Flow<PagingData<BarcodeUiModel>> =
-        filterState.combine(_sortType) { filter, sort ->
+        _filterState.combine(_sortType) { filter, sort ->
             filter to sort
         }.flatMapLatest { filterSort ->
             val filterState = filterSort.first
             val sort = filterSort.second
-            // Создаём новый Pager при каждом изменении filterState
             Pager(
                 config = PagingConfig(
                     pageSize = 25,
@@ -95,58 +96,20 @@ class BargenViewModel : ContainerHost<MviState, SideEffect>, ViewModel(), KoinCo
     init {
         launchInIO {
             tagsSelector.tagsFilterFlow.collectLatest {
-                filterState.value = filterState.value.copy(tagIds = it.map { tag -> tag })
+                _filterState.value = _filterState.value.copy(tagIds = it.map { tag -> tag })
             }
         }
     }
 
     fun onIntent(intent: MainIntent) {
-        when (intent) {
-            is MainIntent.ShowEmptyMainBottomSheet -> showMainBottomSheet()
-            is MainIntent.HideBottomSheet -> hideBottomSheets()
-            is MainIntent.ShowExistCodeBottomsheet -> showMainBottomSheet(intent.uiModel)
-            is MainIntent.ShowSettingsBottomsheet -> showSettingsBottomSheet()
-            is MainIntent.ShowTagsMenu -> showTagsBottomsheet()
-            is MainIntent.CreateNewRecordFromRawData -> createBarcodeRecord(intent)
-            is MainIntent.CreateNewRecordFromEntity -> createBarcodeRecord(intent)
-        }
-    }
-
-
-    private fun showMainBottomSheet(uiModel: BarcodeUiModel = BarcodeUiModel.UNDEFINED) = intent {
-        reduce {
-            state.copy(mainBottomSheetState = BottomSheetStateData(uiModel))
-        }
-    }
-
-    private fun showSettingsBottomSheet() = intent {
-        reduce {
-            state.copy(showSettingsBottomSheet = true)
-        }
-    }
-
-    private fun showTagsBottomsheet() = intent {
-        reduce {
-            state.copy(showTagBottomSheet = true)
-        }
-    }
-
-    private fun hideBottomSheets() = intent {
-        reduce {
-            state.copy(
-                mainBottomSheetState = null,
-                showTagBottomSheet = false,
-                showSettingsBottomSheet = false,
-                showSortBottomSheet = false
-            )
-        }
+        mviProcessor.onIntent(intent)
     }
 
 
     fun updatePager() {
         launchInIO {
-            filterState.emit(
-                filterState.value.copy(
+            _filterState.emit(
+                _filterState.value.copy(
                     manualUpdate = UUID.randomUUID().toString()
                 )
             )
@@ -155,35 +118,24 @@ class BargenViewModel : ContainerHost<MviState, SideEffect>, ViewModel(), KoinCo
 
 
     private fun createBarcodeRecord(
-        intent: MainIntent.CreateNewRecordFromRawData,
+        intent: MainIntent.CreateNewRecord,
     ) {
-        val text = intent.text
-        val format = intent.format.toString()
-        val tagIds = intent.tagIds
-
         launchInIO {
-            val entity = CreateBarcodeUsecase(text = text, format = format, tagIds = tagIds)
+            val entity = intent.barcodeEntity?.run {
+                CreateBarcodeUsecase(this)
+            } ?: run {
+                val text = intent.text
+                val format = intent.format.toString()
+                val tagIds = intent.tagIds
 
+                CreateBarcodeUsecase(text = text, format = format, tagIds = tagIds)
+            }
             updatePager()
 
             if (ClipperApp.getPrefs().openCardAfterScan)
-                showMainBottomSheet(entity.toBarcodeUiModel())
+                mviProcessor.onIntent(MainIntent.ShowExistCodeBottomsheet(entity.toBarcodeUiModel()))
         }
     }
-
-    private fun createBarcodeRecord(
-        intent: MainIntent.CreateNewRecordFromEntity,
-    ) {
-        launchInIO {
-            val entity = CreateBarcodeUsecase(intent.barcodeEntity)
-
-            updatePager()
-
-            if (ClipperApp.getPrefs().openCardAfterScan)
-                showMainBottomSheet(entity.toBarcodeUiModel())
-        }
-    }
-
 
 
     fun changeSort(sortType: SortType) {
@@ -209,7 +161,7 @@ class BargenViewModel : ContainerHost<MviState, SideEffect>, ViewModel(), KoinCo
 
     fun updateNameFilter(name: String) {
         launchInIO {
-            filterState.emit(filterState.value.copy(searchFilter = name))
+            _filterState.emit(_filterState.value.copy(searchFilter = name))
         }
     }
 }

@@ -19,6 +19,7 @@ data class BarcodeEntity(
     val modificationTime: Long = Date().time,
     val name: String = "",
     val type: String,
+    val pinnedPosition: Int = -1,
     val tags: List<String> = emptyList()
 )
 

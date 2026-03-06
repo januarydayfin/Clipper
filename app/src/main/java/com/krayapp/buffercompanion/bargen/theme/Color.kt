@@ -1,4 +1,5 @@
 package com.krayapp.buffercompanion.bargen.theme
+import androidx.compose.material3.CardDefaults
 import androidx.compose.ui.graphics.Color
 
 val primaryLight = Color(0xFF00696E)
@@ -73,6 +74,8 @@ val surfaceContainerLowDark = Color(0xFF161D1D)
 val surfaceContainerDark = Color(0xFF1A2121)
 val surfaceContainerHighDark = Color(0xFF252B2B)
 val surfaceContainerHighestDark = Color(0xFF303636)
+
+
 
 
 

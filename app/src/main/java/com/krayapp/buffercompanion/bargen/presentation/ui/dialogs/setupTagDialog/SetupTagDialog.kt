@@ -20,13 +20,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import com.krayapp.buffercompanion.bargen.R
+import com.krayapp.buffercompanion.bargen.presentation.models.TagUiModel
 import com.krayapp.buffercompanion.bargen.presentation.ui.dialogs.ColorPart
 import com.krayapp.buffercompanion.bargen.presentation.ui.dialogs.ConfirmationDialog
-import com.krayapp.buffercompanion.bargen.presentation.models.TagUiModel
 import com.krayapp.buffercompanion.bargen.presentation.utils.BargenChip
 import com.krayapp.buffercompanion.bargen.presentation.utils.Space
 import com.krayapp.buffercompanion.bargen.theme.lSize
@@ -101,7 +100,7 @@ fun SetupTagDialog(
                         )
                 ) {
                     Icon(
-                        ImageVector.vectorResource(R.drawable.ic_delete),
+                        painter = painterResource(R.drawable.ic_delete),
                         contentDescription = null
                     )
                     Text(text = stringResource(R.string.delete))

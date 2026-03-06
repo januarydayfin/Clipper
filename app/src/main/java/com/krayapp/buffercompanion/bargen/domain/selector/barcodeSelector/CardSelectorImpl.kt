@@ -18,12 +18,6 @@ class CardSelectorImpl(private val barcodeRepo: BarcodeRepo) :
         }
     }
 
-    override suspend fun selectAll() {
-        withIO {
-            val list = barcodeRepo.getAllBarcodes().map { it.id }
-            _selectedBarcodes.value = list
-        }
-    }
 
     override suspend fun checkBarcodeForSelection(id: String) {
         withIO {

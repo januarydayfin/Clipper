@@ -22,11 +22,12 @@ import androidx.compose.ui.res.stringResource
 import com.krayapp.buffercompanion.bargen.R
 import com.krayapp.buffercompanion.bargen.domain.selector.tagSelector.TagSelector
 import com.krayapp.buffercompanion.bargen.presentation.models.TagUiModel
-import com.krayapp.buffercompanion.bargen.presentation.screens.mainScreen.SearchBar
+import com.krayapp.buffercompanion.bargen.presentation.ui.mainScreen.SearchBar
 import com.krayapp.buffercompanion.bargen.presentation.ui.composables.SheetDragger
 import com.krayapp.buffercompanion.bargen.presentation.ui.dialogs.setupTagDialog.SetupTagDialog
 import com.krayapp.buffercompanion.bargen.presentation.utils.BargenChip
 import com.krayapp.buffercompanion.bargen.presentation.utils.TagsRouter
+import com.krayapp.buffercompanion.bargen.presentation.utils.colorizeBottomsheetNavBar
 import com.krayapp.buffercompanion.bargen.theme.mSize
 import com.krayapp.buffercompanion.bargen.utils.io
 import com.krayapp.buffercompanion.bargen.utils.launchWithDelay
@@ -88,6 +89,7 @@ fun TagsBottomSheet(onDismiss: () -> Unit) {
     }, sheetState = sheetState, onDismissRequest = {
         onDismiss()
     }) {
+        colorizeBottomsheetNavBar()
         Column(
             modifier = Modifier
                 .padding(horizontal = mSize)

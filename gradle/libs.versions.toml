@@ -27,6 +27,7 @@ colorpicker = "1.1.2"
 kotlinSerialization = "1.8.1"
 tedpermission = "3.4.2"
 zxing = "4.3.0"
+reorderable = "3.0.0"
 
 # Версии для тестирования
 junit = "4.13.2"
@@ -93,6 +94,7 @@ tedpermission-normal = { group = "io.github.ParkSangGwon", name = "tedpermission
 zxing-android-embedded = { group = "com.journeyapps", name = "zxing-android-embedded", version.ref = "zxing" }
 skydoves-colorpickerview = { group = "com.github.skydoves", name = "colorpicker-compose", version.ref = "colorpicker" }
 google-play-review = { group = "com.google.android.play", name = "review", version.ref = "playReview" }
+reorderable = { module = "sh.calvin.reorderable:reorderable", version.ref = "reorderable" }
 
 # --- Тестирование ---
 junit-junit = { group = "junit", name = "junit", version.ref = "junit" }
