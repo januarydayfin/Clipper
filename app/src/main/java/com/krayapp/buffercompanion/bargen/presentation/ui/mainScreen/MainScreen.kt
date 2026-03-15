@@ -1,5 +1,6 @@
 package com.krayapp.buffercompanion.bargen.presentation.ui.mainScreen
 
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
@@ -21,7 +22,9 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
+import com.krayapp.buffercompanion.bargen.presentation.models.BarcodeUiModel
 import com.krayapp.buffercompanion.bargen.presentation.mvi.main.MainIntent
+import com.krayapp.buffercompanion.bargen.presentation.ui.composables.HorizontalDivider
 import com.krayapp.buffercompanion.bargen.presentation.utils.BarcodeCard
 import com.krayapp.buffercompanion.bargen.presentation.utils.Space
 import com.krayapp.buffercompanion.bargen.presentation.viewmodels.BargenViewModel
@@ -47,14 +50,41 @@ fun MainScreen(
 //        hapticFeedback.performHapticFeedback(HapticFeedbackType.SegmentFrequentTick)
 //    }
 
-
+    @Composable
+    fun Card(item : BarcodeUiModel) {
+        BarcodeCard(
+            modifier = Modifier.padding(horizontal = mSize),
+            inSelectionMode = uiState.inSelectionMode,
+            isCheckedForDeletion = item.id in uiState.selectedBarcodesIds,
+            uiModel = item,
+            onSelectClick = {
+                viewmodel.onIntent(MainIntent.CheckBarcodeForSelection(item.id))
+            },
+            onCardClick = {
+                focus.clearFocus(true)
+                if (uiState.inSelectionMode)
+                    viewmodel.onIntent(MainIntent.CheckBarcodeForSelection(item.id))
+                else
+                    viewmodel.onIntent(MainIntent.ShowExistCodeBottomsheet(item))
+            },
+            onDeleteClicked = { id ->
+                viewmodel.deleteBarcodes(id)
+            },
+            onPin = {
+                viewmodel.onIntent(MainIntent.PinBarcode(id = item.id, 1))
+            }, onUnpin = {
+                viewmodel.onIntent(MainIntent.UnpinBarcode(id = item.id))
+            })
+    }
     Surface {
         Column(
             Modifier
                 .fillMaxSize()
         ) {
             MainTopBar(
-                modifier = Modifier.windowInsetsPadding(WindowInsets.statusBars).padding(top = sSize),
+                modifier = Modifier
+                    .windowInsetsPadding(WindowInsets.statusBars)
+                    .padding(top = sSize),
                 inSelectionMode = uiState.inSelectionMode,
                 onTextChanged = { text ->
                     viewmodel.updateNameFilter(text)
@@ -69,31 +99,29 @@ fun MainScreen(
                     state = lazyListState,
                     modifier = Modifier
                         .wrapContentHeight()
-                        .padding(top = mSize, start = mSize, end = mSize)
+                        .padding(top = mSize)
                 ) {
+                    items(
+                        count = uiState.pinnedBarcodes.size,
+                        key = { index -> uiState.pinnedBarcodes[index].id }
+                    ) {
+                        val uiItem = uiState.pinnedBarcodes[it]
+                        Card(uiItem)
+                        Space(height = mSize)
+                    }
+
+                    if (uiState.hasPinnedBarcodes)
+                        item {
+                            HorizontalDivider()
+                            Space(height = mSize)
+                        }
                     items(
                         count = lazyItems.itemCount,
                         key = lazyItems.itemKey { item -> item.hashCode() }
                     ) { index ->
                         val item = lazyItems[index]
                         if (item != null) {
-                            BarcodeCard(
-                                inSelectionMode = uiState.inSelectionMode,
-                                isCheckedForDeletion = item.id in uiState.selectedBarcodesIds,
-                                uiModel = item,
-                                onSelectClick = {
-                                    viewmodel.onIntent(MainIntent.CheckBarcodeForSelection(item.id))
-                                },
-                                onCardClick = {
-                                    focus.clearFocus(true)
-                                    if (uiState.inSelectionMode)
-                                        viewmodel.onIntent(MainIntent.CheckBarcodeForSelection(item.id))
-                                    else
-                                        viewmodel.onIntent(MainIntent.ShowExistCodeBottomsheet(item))
-                                },
-                                onDeleteClicked = { id ->
-                                    viewmodel.deleteBarcodes(id)
-                                })
+                            Card(item)
                             Space(height = mSize)
                         }
                     }
@@ -113,7 +141,3 @@ fun MainScreen(
         }
     }
 }
-
-
-
-

@@ -4,60 +4,61 @@ import com.krayapp.buffercompanion.bargen.ClipperApp
 import com.krayapp.buffercompanion.bargen.domain.selector.barcodeSelector.CardSelector
 import com.krayapp.buffercompanion.bargen.domain.selector.tagSelector.TagSelector
 import com.krayapp.buffercompanion.bargen.domain.usecase.barcode.CreateBarcodeUsecase
+import com.krayapp.buffercompanion.bargen.domain.usecase.barcode.PinnerBarcodeUsecase
 import com.krayapp.buffercompanion.bargen.presentation.mapper.toBarcodeUiModel
+import com.krayapp.buffercompanion.bargen.presentation.models.BarcodeUiModel
 import com.krayapp.buffercompanion.bargen.presentation.mvi.main.MainIntent
 import com.krayapp.buffercompanion.bargen.presentation.viewmodels.BargenViewModel
 import com.krayapp.buffercompanion.bargen.utils.launchInIO
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class MviProcessorHandler(private val viewModel: BargenViewModel) : KoinComponent {
+class MviProcessorHandler : KoinComponent {
     private val cardSelector: CardSelector by inject()
     private val tagsSelector: TagSelector by inject()
     val cardSelectionFlow = cardSelector.selectedBarcodes
     val tagSelectionFlow = tagsSelector.tagsFilterFlow
 
 
-    fun onCleanCardSelection() {
-        viewModel.launchInIO {
-            cardSelector.cleanSelection()
-        }
+    suspend fun onCleanCardSelection() {
+        cardSelector.cleanSelection()
     }
 
-    fun onCleanTagsSelection() {
-        viewModel.launchInIO {
-            tagsSelector.cleanSelection()
-        }
+    suspend fun onCleanTagsSelection() {
+        tagsSelector.cleanSelection()
     }
 
-    fun onDeleteAllSelectedCards() {
-        viewModel.launchInIO {
-            cardSelector.deleteAllSelected {
-                viewModel.updatePager()
-            }
-        }
+    suspend fun onDeleteAllSelectedCards() {
+        cardSelector.deleteAllSelected()
     }
 
-    fun createBarcodeRecord(intent: MainIntent.CreateNewRecord) {
-        viewModel.launchInIO {
-            val entity = intent.barcodeEntity?.run {
-                CreateBarcodeUsecase(this)
-            } ?: run {
-                val text = intent.text
-                val format = intent.format.toString()
-                val tagIds = intent.tagIds
+    suspend fun createBarcodeRecord(
+        intent: MainIntent.CreateNewRecord,
+        onCreated: (BarcodeUiModel) -> Unit
+    ) {
+        val entity = intent.barcodeEntity?.run {
+            CreateBarcodeUsecase(this)
+        } ?: run {
+            val text = intent.text
+            val format = intent.format.toString()
+            val tagIds = intent.tagIds
 
-                CreateBarcodeUsecase(text = text, format = format, tagIds = tagIds)
-            }
-            viewModel.updatePager()
-
-            if (ClipperApp.getPrefs().openCardAfterScan)
-                viewModel.onIntent(MainIntent.ShowExistCodeBottomsheet(entity.toBarcodeUiModel()))
+            CreateBarcodeUsecase(text = text, format = format, tagIds = tagIds)
         }
+
+        if (ClipperApp.getPrefs().openCardAfterScan)
+            onCreated(entity.toBarcodeUiModel())
     }
-    fun checkBarcodeForSelection(id: String) {
-        viewModel.launchInIO {
-            cardSelector.checkBarcodeForSelection(id)
-        }
+
+    suspend fun checkBarcodeForSelection(id: String) {
+        cardSelector.checkBarcodeForSelection(id)
+    }
+
+    suspend fun pinBarcode(id: String, position: Int) {
+        PinnerBarcodeUsecase.pinBarcode(id = id, position = position)
+    }
+
+    suspend fun unpinBarcode(id: String) {
+        PinnerBarcodeUsecase.unpinBarcode(id = id)
     }
 }

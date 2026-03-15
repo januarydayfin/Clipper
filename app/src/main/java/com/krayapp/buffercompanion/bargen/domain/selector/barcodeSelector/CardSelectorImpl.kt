@@ -35,10 +35,9 @@ class CardSelectorImpl(private val barcodeRepo: BarcodeRepo) :
         }
     }
 
-    override suspend fun deleteAllSelected(onDeleted: () -> Unit) {
+    override suspend fun deleteAllSelected() {
         withIO {
             barcodeRepo.removeBarcodesByIds(_selectedBarcodes.value)
-            onDeleted()
             cleanSelection()
         }
     }

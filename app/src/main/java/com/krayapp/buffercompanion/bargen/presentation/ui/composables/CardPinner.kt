@@ -1,6 +1,7 @@
 package com.krayapp.buffercompanion.bargen.presentation.ui.composables
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,6 +30,9 @@ fun CardPinner(modifier: Modifier = Modifier, pinned: Boolean, onClick: () -> Un
                 shape = CircleShape
             )
             .padding(if (pinned) xxsSize else 0.dp)
+            .clickable {
+                onClick()
+            }
     ) {
         Icon(
             painter = painterResource(if (pinned) R.drawable.keep_off else R.drawable.keep),

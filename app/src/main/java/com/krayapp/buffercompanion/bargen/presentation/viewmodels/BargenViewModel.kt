@@ -27,6 +27,7 @@ import com.krayapp.buffercompanion.bargen.presentation.mvi.processing.MviProcess
 import com.krayapp.buffercompanion.bargen.presentation.mvi.processing.MviProcessorHandler
 import com.krayapp.buffercompanion.bargen.presentation.utils.currentSortType
 import com.krayapp.buffercompanion.bargen.utils.launchInIO
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -36,13 +37,18 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.UUID
 
 class BargenViewModel : ViewModel(), KoinComponent {
     private val tagsSelector: TagSelector by inject()
-    private val mviProcessor = MviProcessor(viewModel = this, MviProcessorHandler(this))
+    private val mviProcessor =
+        MviProcessor(viewModel = this,
+            handler = MviProcessorHandler(),
+            updatePager = { updatePager() }
+        )
 
     val state: StateFlow<MviState>
         get() = mviProcessor.container.stateFlow
@@ -55,9 +61,6 @@ class BargenViewModel : ViewModel(), KoinComponent {
 
     private val _filterState = MutableStateFlow(FilterState())
     val filterState = _filterState.asStateFlow()
-
-
-    val inSelection get() = mviProcessor.inCardSelectionMode
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val barcodePagingData: Flow<PagingData<BarcodeUiModel>> =
@@ -99,14 +102,19 @@ class BargenViewModel : ViewModel(), KoinComponent {
                 _filterState.value = _filterState.value.copy(tagIds = it.map { tag -> tag })
             }
         }
+        launchInIO {
+            mviProcessor.onIntent(MainIntent.Init)
+        }
     }
 
     fun onIntent(intent: MainIntent) {
-        mviProcessor.onIntent(intent)
+        viewModelScope.launch(Dispatchers.IO) {
+            mviProcessor.onIntent(intent)
+        }
     }
 
 
-    fun updatePager() {
+    private fun updatePager() {
         launchInIO {
             _filterState.emit(
                 _filterState.value.copy(
@@ -115,28 +123,6 @@ class BargenViewModel : ViewModel(), KoinComponent {
             )
         }
     }
-
-
-    private fun createBarcodeRecord(
-        intent: MainIntent.CreateNewRecord,
-    ) {
-        launchInIO {
-            val entity = intent.barcodeEntity?.run {
-                CreateBarcodeUsecase(this)
-            } ?: run {
-                val text = intent.text
-                val format = intent.format.toString()
-                val tagIds = intent.tagIds
-
-                CreateBarcodeUsecase(text = text, format = format, tagIds = tagIds)
-            }
-            updatePager()
-
-            if (ClipperApp.getPrefs().openCardAfterScan)
-                mviProcessor.onIntent(MainIntent.ShowExistCodeBottomsheet(entity.toBarcodeUiModel()))
-        }
-    }
-
 
     fun changeSort(sortType: SortType) {
         this._sortType.value = sortType

@@ -4,7 +4,7 @@ import com.krayapp.buffercompanion.bargen.data.room.BargenDB
 import com.krayapp.buffercompanion.bargen.data.room.entity.BarcodeEntity
 import com.krayapp.buffercompanion.bargen.domain.provideDatabase
 import com.krayapp.buffercompanion.bargen.domain.type.SortType
-import com.krayapp.buffercompanion.bargen.utils.withIO
+import com.krayapp.buffercompanion.bargen.presentation.models.BarcodeUiModel.Companion.NOT_PINNED
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -13,12 +13,12 @@ class BarcodeRepoImpl : BarcodeRepo {
     override suspend fun recordsCount() = withContext(Dispatchers.IO) { barcodes.count() }
 
     override suspend fun upsertBarcode(barcodeEntity: BarcodeEntity) {
-        withIO { barcodes.upsertBarcode(barcodeEntity) }
+        barcodes.upsertBarcode(barcodeEntity)
     }
 
 
     override suspend fun removeBarcodesByIds(ids: List<String>) {
-        withIO { barcodes.removeBarcodesById(ids) }
+        barcodes.removeBarcodesById(ids)
     }
 
     override suspend fun incrementUsageCount(id: String) = withContext(Dispatchers.IO) {
@@ -30,17 +30,16 @@ class BarcodeRepoImpl : BarcodeRepo {
 
 
     override suspend fun removeTagFromBarcodes(tagId: String) {
-        withIO {
-            val modifiedList = mutableListOf<BarcodeEntity>()
+        val modifiedList = mutableListOf<BarcodeEntity>()
 
-            barcodes.getAll().forEach {
-                val clearedTags = it.tags.filter { tag -> tag != tagId }
-                val newEntity = it.copy(tags = clearedTags)
-                modifiedList.add(newEntity)
-            }
-
-            barcodes.upsertBarcodes(modifiedList)
+        barcodes.getAll().forEach {
+            val clearedTags = it.tags.filter { tag -> tag != tagId }
+            val newEntity = it.copy(tags = clearedTags)
+            modifiedList.add(newEntity)
         }
+
+        barcodes.upsertBarcodes(modifiedList)
+
     }
 
 
@@ -52,6 +51,20 @@ class BarcodeRepoImpl : BarcodeRepo {
             SortType.USAGE -> barcodes.getBarcodesByUsagePaging()
         }
 
+    override suspend fun getPinnedBarcodes(): List<BarcodeEntity> {
+        return barcodes.getAllPinnedBarcodes()
+    }
+
     override fun getFilteredBarcodesByNamePaging(filter: String) =
         barcodes.getFilteredBarcodesPaging(filter)
+
+    override suspend fun pinBarcode(id: String, position: Int) {
+        barcodes.getBarcodeById(id)?.copy(pinnedPosition = position)
+            ?.run { barcodes.upsertBarcode(this) }
+    }
+
+    override suspend fun unpinBarcode(id: String) {
+        barcodes.getBarcodeById(id)?.copy(pinnedPosition = NOT_PINNED)
+            ?.run { barcodes.upsertBarcode(this) }
+    }
 }

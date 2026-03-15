@@ -7,5 +7,5 @@ interface CardSelector {
 
     suspend fun cleanSelection()
     suspend fun checkBarcodeForSelection(id: String)
-    suspend fun deleteAllSelected(onDeleted: () -> Unit)
+    suspend fun deleteAllSelected()
 }

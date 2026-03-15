@@ -46,16 +46,17 @@ import com.krayapp.buffercompanion.bargen.presentation.ui.composables.CardPinner
 import com.krayapp.buffercompanion.bargen.presentation.ui.dialogs.ConfirmationDialog
 import com.krayapp.buffercompanion.bargen.theme.AppTheme
 import com.krayapp.buffercompanion.bargen.theme.barcodePreviewSize
+import com.krayapp.buffercompanion.bargen.theme.cardColorsSelector
 import com.krayapp.buffercompanion.bargen.theme.keepPinSize
 import com.krayapp.buffercompanion.bargen.theme.lSize
 import com.krayapp.buffercompanion.bargen.theme.mSize
 import com.krayapp.buffercompanion.bargen.theme.sSize
-import com.krayapp.buffercompanion.bargen.theme.selectedCardColors
 import com.krayapp.buffercompanion.bargen.theme.xsSize
 import kotlinx.coroutines.launch
 
 @Composable
 fun BarcodeCard(
+    modifier: Modifier = Modifier,
     uiModel: BarcodeUiModel,
     inSelectionMode: Boolean,
     isCheckedForDeletion: Boolean,
@@ -78,6 +79,7 @@ fun BarcodeCard(
         }
     }
     SwipeToDismissBox(
+        modifier = modifier,
         enableDismissFromStartToEnd = false,
         state = dismissState,
         onDismiss = {
@@ -91,7 +93,7 @@ fun BarcodeCard(
         }) {
         Card(
             shape = RoundedCornerShape(size = lSize),
-            colors = if (isCheckedForDeletion) selectedCardColors() else CardDefaults.cardColors(),
+            colors = cardColorsSelector(model = uiModel, isCheckedForDelete = isCheckedForDeletion),
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()

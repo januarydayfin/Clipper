@@ -44,6 +44,7 @@ import com.krayapp.buffercompanion.bargen.theme.AppTheme
 import com.krayapp.buffercompanion.bargen.utils.io
 import com.krayapp.buffercompanion.bargen.utils.launchWithDelay
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import kotlin.random.Random
@@ -57,7 +58,7 @@ class MainActivity : AppCompatActivity() {
         override fun handleOnBackPressed() {
             lifecycleScope.io {
                 when {
-                    viewmodel.inSelection -> {
+                    viewmodel.state.first().inSelectionMode -> {
                         viewmodel.onIntent(MainIntent.CleanCardSelection)
                     }
 
@@ -146,9 +147,8 @@ class MainActivity : AppCompatActivity() {
             model = data.model, onDismiss = {
                 viewmodel.onIntent(MainIntent.HideBottomSheet)
 
-                if (ClipperApp.getPrefs().maxBrightOnCode)
+//                if (ClipperApp.getPrefs().maxBrightOnCode)
                     restoreBright()
-                viewmodel.updatePager()
             }, onSharePicture = {
                 shareBitmap(bitmap = it, title = Random.nextInt().toString())
             },
@@ -174,7 +174,6 @@ class MainActivity : AppCompatActivity() {
     private fun ShowTagBottomsheet() {
         TagsBottomSheet {
             viewmodel.onIntent(MainIntent.HideBottomSheet)
-            viewmodel.updatePager()
         }
     }
 

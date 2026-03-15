@@ -12,6 +12,9 @@ data class MviState(
 ) {
     val inSelectionMode: Boolean
         get() = selectedBarcodesIds.isNotEmpty()
+
+    val hasPinnedBarcodes: Boolean
+        get() = pinnedBarcodes.isNotEmpty()
 }
 
 data class BottomSheetStateData(val model: BarcodeUiModel)
