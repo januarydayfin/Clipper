@@ -1,8 +1,8 @@
 package com.krayapp.buffercompanion.bargen.domain.usecase.tags
 
 import com.krayapp.buffercompanion.bargen.data.room.entity.TagEntity
-import com.krayapp.buffercompanion.bargen.domain.repository.BarcodeRepo
-import com.krayapp.buffercompanion.bargen.domain.repository.TagsRepo
+import com.krayapp.buffercompanion.bargen.data.room.repository.BarcodeRepo
+import com.krayapp.buffercompanion.bargen.data.room.repository.TagsRepo
 import com.krayapp.buffercompanion.bargen.utils.withIO
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

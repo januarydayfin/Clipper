@@ -16,6 +16,7 @@ data class BarcodeUiModel(
 
     companion object {
         const val NOT_PINNED = -1
+        const val AUTO_POSITION = -2
         val UNDEFINED
             get() = BarcodeUiModel(
                 id = UUID.randomUUID().toString(),

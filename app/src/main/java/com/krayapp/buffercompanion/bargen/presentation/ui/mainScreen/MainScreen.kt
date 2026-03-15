@@ -1,6 +1,5 @@
 package com.krayapp.buffercompanion.bargen.presentation.ui.mainScreen
 
-import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
@@ -30,6 +29,8 @@ import com.krayapp.buffercompanion.bargen.presentation.utils.Space
 import com.krayapp.buffercompanion.bargen.presentation.viewmodels.BargenViewModel
 import com.krayapp.buffercompanion.bargen.theme.mSize
 import com.krayapp.buffercompanion.bargen.theme.sSize
+import sh.calvin.reorderable.ReorderableItem
+import sh.calvin.reorderable.rememberReorderableLazyListState
 
 @Composable
 fun MainScreen(
@@ -42,18 +43,18 @@ fun MainScreen(
     val lazyItems = viewmodel.barcodePagingData.collectAsLazyPagingItems()
     val lazyListState = rememberLazyListState()
 
-//    val reorderableLazyListState = rememberReorderableLazyListState(lazyListState) { from, to ->
-//        list = list.toMutableList().apply {
-//            add(to.index, removeAt(from.index))
-//        }
-//
-//        hapticFeedback.performHapticFeedback(HapticFeedbackType.SegmentFrequentTick)
-//    }
+    val reorderableLazyListState = rememberReorderableLazyListState(lazyListState) { from, to ->
+        viewmodel.onIntent(MainIntent.PinIntent.SwapBarcodes(from = from.index, to = to.index))
+    }
 
     @Composable
-    fun Card(item : BarcodeUiModel) {
+    fun Card(
+        modifier: Modifier = Modifier,
+        item: BarcodeUiModel,
+        reorderModifier: Modifier = Modifier
+    ) {
         BarcodeCard(
-            modifier = Modifier.padding(horizontal = mSize),
+            modifier = modifier.padding(horizontal = mSize),
             inSelectionMode = uiState.inSelectionMode,
             isCheckedForDeletion = item.id in uiState.selectedBarcodesIds,
             uiModel = item,
@@ -71,10 +72,13 @@ fun MainScreen(
                 viewmodel.deleteBarcodes(id)
             },
             onPin = {
-                viewmodel.onIntent(MainIntent.PinBarcode(id = item.id, 1))
-            }, onUnpin = {
-                viewmodel.onIntent(MainIntent.UnpinBarcode(id = item.id))
-            })
+                viewmodel.onIntent(MainIntent.PinIntent.PinBarcode(id = item.id))
+            },
+            onUnpin = {
+                viewmodel.onIntent(MainIntent.PinIntent.UnpinBarcode(id = item.id))
+            },
+            reorderModifier = reorderModifier
+        )
     }
     Surface {
         Column(
@@ -106,7 +110,16 @@ fun MainScreen(
                         key = { index -> uiState.pinnedBarcodes[index].id }
                     ) {
                         val uiItem = uiState.pinnedBarcodes[it]
-                        Card(uiItem)
+                        ReorderableItem(
+                            state = reorderableLazyListState, key = uiItem.id
+                        ) {
+                            Card(
+                                item = uiItem,
+                                reorderModifier = Modifier.draggableHandle(onDragStopped = {
+                                    viewmodel.onIntent(MainIntent.PinIntent.SaveOrder)
+                                })
+                            )
+                        }
                         Space(height = mSize)
                     }
 
@@ -121,7 +134,7 @@ fun MainScreen(
                     ) { index ->
                         val item = lazyItems[index]
                         if (item != null) {
-                            Card(item)
+                            Card(item = item)
                             Space(height = mSize)
                         }
                     }

@@ -1,5 +1,6 @@
 package com.krayapp.buffercompanion.bargen.presentation.utils
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -65,6 +66,7 @@ fun BarcodeCard(
     onSelectClick: () -> Unit = {},
     onPin: () -> Unit = {},
     onUnpin: () -> Unit = {},
+    reorderModifier: Modifier = Modifier,
 ) {
     val scope = rememberCoroutineScope()
     val haptic = LocalHapticFeedback.current
@@ -97,16 +99,21 @@ fun BarcodeCard(
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
-                .pointerInput(true) {
-                    detectTapGestures(onTap = {
-                        if (inSelectionMode)
-                            onSelectClick()
-                        else
-                            onCardClick()
-                    }, onLongPress = {
-                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                        onSelectClick()
-                    })
+                .pointerInput(inSelectionMode) {
+                    detectTapGestures(
+                        onTap = {
+                            if (inSelectionMode)
+                                onSelectClick()
+                            else
+                                onCardClick()
+                        },
+                        onLongPress = if (inSelectionMode) null else {
+                            {
+                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                onSelectClick()
+                            }
+                        }
+                    )
                 }
         ) {
             Row(
@@ -147,7 +154,9 @@ fun BarcodeCard(
                     if (uiModel.isPinned) {
                         Space(sSize)
                         Icon(
-                            modifier = Modifier.size(keepPinSize),
+                            modifier = Modifier
+                                .size(keepPinSize)
+                                .then(reorderModifier),
                             painter = painterResource(R.drawable.menu),
                             contentDescription = null,
                             tint = CardDefaults.cardColors().contentColor

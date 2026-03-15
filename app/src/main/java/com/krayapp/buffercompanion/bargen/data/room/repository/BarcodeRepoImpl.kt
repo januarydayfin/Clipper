@@ -1,4 +1,4 @@
-package com.krayapp.buffercompanion.bargen.domain.repository
+package com.krayapp.buffercompanion.bargen.data.room.repository
 
 import com.krayapp.buffercompanion.bargen.data.room.BargenDB
 import com.krayapp.buffercompanion.bargen.data.room.entity.BarcodeEntity
@@ -10,10 +10,15 @@ import kotlinx.coroutines.withContext
 
 class BarcodeRepoImpl : BarcodeRepo {
     private val barcodes = provideDatabase<BargenDB>().barcodeDao()
-    override suspend fun recordsCount() = withContext(Dispatchers.IO) { barcodes.count() }
+    override suspend fun recordsCount() =  barcodes.count()
+    override suspend fun pinnedCount() = barcodes.pinnedCount()
 
     override suspend fun upsertBarcode(barcodeEntity: BarcodeEntity) {
         barcodes.upsertBarcode(barcodeEntity)
+    }
+
+    override suspend fun upsertBarcode(list: List<BarcodeEntity>) {
+        barcodes.upsertBarcodes(list)
     }
 
 
@@ -39,7 +44,6 @@ class BarcodeRepoImpl : BarcodeRepo {
         }
 
         barcodes.upsertBarcodes(modifiedList)
-
     }
 
 

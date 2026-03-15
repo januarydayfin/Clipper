@@ -53,12 +53,4 @@ class MviProcessorHandler : KoinComponent {
     suspend fun checkBarcodeForSelection(id: String) {
         cardSelector.checkBarcodeForSelection(id)
     }
-
-    suspend fun pinBarcode(id: String, position: Int) {
-        PinnerBarcodeUsecase.pinBarcode(id = id, position = position)
-    }
-
-    suspend fun unpinBarcode(id: String) {
-        PinnerBarcodeUsecase.unpinBarcode(id = id)
-    }
 }

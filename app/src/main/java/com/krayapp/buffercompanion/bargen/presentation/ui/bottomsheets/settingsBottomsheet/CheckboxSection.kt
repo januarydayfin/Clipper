@@ -27,7 +27,7 @@ fun CheckboxSection(state: State<SettingsState>, viewmodel: SettingsViewModel) {
                 isChecked = state.value.openCardAfterScan,
                 textRes = R.string.show_card_after_scan
             ) {
-                viewmodel.onIntent(SettingsIntent.UpdateOpenScanByButton(it))
+                viewmodel.onIntent(SettingsIntent.UpdateOpenAfterScan(it))
             }
 
             TextCheckbox(

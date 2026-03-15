@@ -1,4 +1,4 @@
-package com.krayapp.buffercompanion.bargen.domain.repository
+package com.krayapp.buffercompanion.bargen.data.room.repository
 
 import androidx.paging.PagingSource
 import com.krayapp.buffercompanion.bargen.data.room.entity.BarcodeEntity
@@ -13,12 +13,15 @@ interface BarcodeRepo {
      */
     suspend fun recordsCount(): Int
 
+    suspend fun pinnedCount(): Int
+
     /**
      * Добавляет новый или обновляет существующий штрих-код.
      *
      * @param barcodeEntity Объект штрих-кода.
      */
     suspend fun upsertBarcode(barcodeEntity: BarcodeEntity)
+    suspend fun upsertBarcode(list: List<BarcodeEntity>)
 
     /**
      * Удаляет штрих-коды по списку их идентификаторов.

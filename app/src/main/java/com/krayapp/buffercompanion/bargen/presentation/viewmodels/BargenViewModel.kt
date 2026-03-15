@@ -102,9 +102,6 @@ class BargenViewModel : ViewModel(), KoinComponent {
                 _filterState.value = _filterState.value.copy(tagIds = it.map { tag -> tag })
             }
         }
-        launchInIO {
-            mviProcessor.onIntent(MainIntent.Init)
-        }
     }
 
     fun onIntent(intent: MainIntent) {

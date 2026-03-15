@@ -17,7 +17,7 @@ interface BarcodeDao {
     @Query("DELETE FROM barcodes WHERE :id == id")
     suspend fun removeBarcodeById(id: String)
 
-    @Query("SELECT * FROM barcodes WHERE pinnedPosition != -1")
+    @Query("SELECT * FROM barcodes WHERE pinnedPosition != -1 ORDER BY pinnedPosition ASC")
     suspend fun getAllPinnedBarcodes(): List<BarcodeEntity>
 
     @Query("SELECT * FROM barcodes WHERE name LIKE '%' || :filter || '%' OR content LIKE '%' || :filter || '%'")
@@ -55,6 +55,9 @@ interface BarcodeDao {
 
     @Query("select count(id) from barcodes")
     suspend fun count(): Int
+
+    @Query("select count(id) from barcodes where pinnedPosition != -1")
+    suspend fun pinnedCount(): Int
 
     @Query("delete from barcodes")
     suspend fun clean()

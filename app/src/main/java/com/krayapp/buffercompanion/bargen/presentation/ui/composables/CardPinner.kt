@@ -12,6 +12,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -29,6 +30,7 @@ fun CardPinner(modifier: Modifier = Modifier, pinned: Boolean, onClick: () -> Un
                 color = if (pinned) MaterialTheme.colorScheme.primary else Color.Transparent,
                 shape = CircleShape
             )
+            .clip(CircleShape)
             .padding(if (pinned) xxsSize else 0.dp)
             .clickable {
                 onClick()

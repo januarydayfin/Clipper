@@ -1,4 +1,4 @@
-package com.krayapp.buffercompanion.bargen.domain.repository
+package com.krayapp.buffercompanion.bargen.data.room.repository
 
 import com.krayapp.buffercompanion.bargen.data.room.entity.TagEntity
 

@@ -5,7 +5,6 @@ import com.krayapp.buffercompanion.bargen.data.room.entity.BarcodeEntity
 import com.krayapp.buffercompanion.bargen.presentation.models.BarcodeUiModel
 
 sealed interface MainIntent {
-    data object Init: MainIntent
     data class ShowExistCodeBottomsheet(val uiModel: BarcodeUiModel) : MainIntent
     data object ShowEmptyMainBottomSheet : MainIntent
     data object ShowTagsMenu : MainIntent
@@ -23,6 +22,11 @@ sealed interface MainIntent {
         val barcodeEntity: BarcodeEntity? = null
     ) : MainIntent
 
-    data class PinBarcode(val id: String, val position: Int): MainIntent
-    data class UnpinBarcode(val id: String): MainIntent
+    sealed interface PinIntent: MainIntent {
+        data class SwapBarcodes(val from: Int, val to: Int): PinIntent
+        data class PinBarcode(val id: String): PinIntent
+        data class UnpinBarcode(val id: String): PinIntent
+
+        data object SaveOrder: PinIntent
+    }
 }
