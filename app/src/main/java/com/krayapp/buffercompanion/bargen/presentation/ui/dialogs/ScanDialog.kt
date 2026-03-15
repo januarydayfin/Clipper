@@ -41,13 +41,14 @@ import com.krayapp.buffercompanion.bargen.ClipperApp
 import com.krayapp.buffercompanion.bargen.R
 import com.krayapp.buffercompanion.bargen.domain.bargenCore.BarReader
 import com.krayapp.buffercompanion.bargen.domain.selector.tagSelector.TagSelector
+import com.krayapp.buffercompanion.bargen.domain.usecase.tags.TagsUsecase
+import com.krayapp.buffercompanion.bargen.presentation.mapper.toTagUiModel
 import com.krayapp.buffercompanion.bargen.presentation.models.TagUiModel
 import com.krayapp.buffercompanion.bargen.presentation.models.setChecked
 import com.krayapp.buffercompanion.bargen.presentation.mvi.main.MainIntent
 import com.krayapp.buffercompanion.bargen.presentation.utils.BargenChip
 import com.krayapp.buffercompanion.bargen.presentation.utils.Space
 import com.krayapp.buffercompanion.bargen.presentation.viewmodels.BargenViewModel
-import com.krayapp.buffercompanion.bargen.presentation.utils.TagsRouter
 import com.krayapp.buffercompanion.bargen.theme.AppTheme
 import com.krayapp.buffercompanion.bargen.theme.mSize
 import kotlinx.coroutines.flow.collectLatest
@@ -120,7 +121,7 @@ private fun AutoTagSection(
     mainViewModel: BargenViewModel,
     barReader: BarReader
 ) {
-    val tagRouter = TagsRouter
+val tagUsecase: TagsUsecase = koinInject()
     val tagSelector: TagSelector = koinInject()
     AppTheme {
         val tagsState = tagSelector.tagsFilterFlow.collectAsState()
@@ -128,10 +129,9 @@ private fun AutoTagSection(
         val tagsUiState = remember { mutableStateListOf<TagUiModel>() }
         val torchState = remember { mutableStateOf(false) }
         LaunchedEffect(Unit) {
-            tagRouter.loadTagsUiModelsByIds(tagsState.value) { input ->
-                tagsUiState.clear()
-                tagsUiState.addAll(input)
-            }
+            val tagByIds = tagUsecase.loadTagsUiModelsByIds(tagsState.value)
+            tagsUiState.clear()
+            tagsUiState.addAll(tagByIds.map { it.toTagUiModel() })
         }
 
         Surface {

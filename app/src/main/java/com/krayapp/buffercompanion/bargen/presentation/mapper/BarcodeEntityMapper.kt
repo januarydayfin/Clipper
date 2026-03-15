@@ -39,6 +39,7 @@ suspend fun BarcodeUiModel.toBarcodeEntity(): BarcodeEntity {
             content = model.content,
             name = model.name,
             description = model.description,
+            pinnedPosition = model.pinOrder,
             tags = model.tags.map { it.id },
             type = model.barcodeType
         )

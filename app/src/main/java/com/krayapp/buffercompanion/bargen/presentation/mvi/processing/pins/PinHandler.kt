@@ -1,6 +1,5 @@
 package com.krayapp.buffercompanion.bargen.presentation.mvi.processing.pins
 
-import android.util.Log
 import com.krayapp.buffercompanion.bargen.data.room.entity.BarcodeEntity
 import com.krayapp.buffercompanion.bargen.domain.usecase.barcode.PinnerBarcodeUsecase
 import com.krayapp.buffercompanion.bargen.domain.usecase.barcode.UpdateBarcodeList
@@ -14,12 +13,12 @@ import org.orbitmvi.orbit.ContainerHost
 
 class PinHandler(
     private val host: ContainerHost<MviState, SideEffect>,
-    private val updatePager: () -> Unit
 ) : KoinComponent {
 
     suspend fun init() {
         refreshPinnedBarcodes()
     }
+
     suspend fun onIntent(intent: MainIntent.PinIntent) {
         when (intent) {
             is MainIntent.PinIntent.SwapBarcodes -> swapPinned(intent.from, intent.to)
@@ -65,13 +64,13 @@ class PinHandler(
         }
         UpdateBarcodeList(replaced)
     }
-    private suspend fun refreshPinnedBarcodes() {
+
+    suspend fun refreshPinnedBarcodes() {
         val pinnedBarcodes = PinnerBarcodeUsecase.getPinnedBarcodes().map { it.toBarcodeUiModel() }
         host.intent {
             reduce {
                 state.copy(pinnedBarcodes = pinnedBarcodes)
             }
         }
-        updatePager()
     }
 }

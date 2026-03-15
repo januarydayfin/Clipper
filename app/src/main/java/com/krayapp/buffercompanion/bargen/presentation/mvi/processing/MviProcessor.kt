@@ -1,5 +1,8 @@
 package com.krayapp.buffercompanion.bargen.presentation.mvi.processing
 
+import android.util.Log
+import com.krayapp.buffercompanion.bargen.ClipperApp
+import com.krayapp.buffercompanion.bargen.presentation.mapper.toBarcodeUiModel
 import com.krayapp.buffercompanion.bargen.presentation.models.BarcodeUiModel
 import com.krayapp.buffercompanion.bargen.presentation.mvi.main.BottomSheetStateData
 import com.krayapp.buffercompanion.bargen.presentation.mvi.main.MainIntent
@@ -18,9 +21,7 @@ class MviProcessor(
     private val updatePager: () -> Unit,
 ) : ContainerHost<MviState, SideEffect> {
     override val container = viewModel.container<MviState, SideEffect>(MviState())
-    private val pinHandler = PinHandler(this) {
-        updatePager()
-    }
+    private val pinHandler = PinHandler(this)
 
     init {
         viewModel.launchInIO {
@@ -44,6 +45,7 @@ class MviProcessor(
     }
 
     suspend fun onIntent(intent: MainIntent) {
+        Log.d("FATA", String.format("%s", intent))
         when (intent) {
             is MainIntent.PinIntent -> pinHandler.onIntent(intent)
             is MainIntent.ShowEmptyMainBottomSheet -> showMainBottomSheet()
@@ -56,9 +58,10 @@ class MviProcessor(
             is MainIntent.ShowSettingsBottomsheet -> showSettingsBottomSheet()
             is MainIntent.ShowTagsMenu -> showTagsBottomsheet()
             is MainIntent.CreateNewRecord -> {
-                handler.createBarcodeRecord(intent) {
-                    showMainBottomSheet(it)
-                }
+                val createdEntity = handler.createBarcodeRecord(intent)
+                if (intent.showAfterCreate && ClipperApp.getPrefs().openCardAfterScan)
+                    showMainBottomSheet(createdEntity.toBarcodeUiModel())
+
                 updatePager()
             }
 
@@ -73,6 +76,9 @@ class MviProcessor(
         }
     }
 
+    suspend fun refreshPins() {
+        pinHandler.refreshPinnedBarcodes()
+    }
 
     private fun showMainBottomSheet(uiModel: BarcodeUiModel = BarcodeUiModel.UNDEFINED) = intent {
         reduce {

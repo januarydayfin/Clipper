@@ -14,7 +14,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.krayapp.buffercompanion.bargen.R
 import com.krayapp.buffercompanion.bargen.domain.backup.applyBackupToDatabase
 import com.krayapp.buffercompanion.bargen.domain.backup.convertAllDbToJson
@@ -28,6 +27,7 @@ import com.krayapp.buffercompanion.bargen.presentation.utils.toast
 import com.krayapp.buffercompanion.bargen.presentation.viewmodels.SettingsViewModel
 import com.krayapp.buffercompanion.bargen.theme.mSize
 import com.krayapp.buffercompanion.bargen.utils.io
+import org.koin.androidx.compose.koinViewModel
 import org.orbitmvi.orbit.compose.collectAsState
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -35,7 +35,7 @@ import org.orbitmvi.orbit.compose.collectAsState
 fun SettingsBottomSheet(
     onDismiss: () -> Unit,
 ) {
-    val viewmodel: SettingsViewModel = viewModel()
+    val viewmodel: SettingsViewModel = koinViewModel()
     val scope = rememberCoroutineScope()
     val state = viewmodel.collectAsState()
     val context = LocalContext.current

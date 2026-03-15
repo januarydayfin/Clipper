@@ -19,7 +19,8 @@ sealed interface MainIntent {
         val text: String = "",
         val format: BarcodeFormat = BarcodeFormat.QR_CODE,
         val tagIds: List<String> = emptyList(),
-        val barcodeEntity: BarcodeEntity? = null
+        val barcodeEntity: BarcodeEntity? = null,
+        val showAfterCreate: Boolean = false,
     ) : MainIntent
 
     sealed interface PinIntent: MainIntent {

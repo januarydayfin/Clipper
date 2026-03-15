@@ -1,6 +1,7 @@
 package com.krayapp.buffercompanion.bargen.presentation.mvi.processing
 
 import com.krayapp.buffercompanion.bargen.ClipperApp
+import com.krayapp.buffercompanion.bargen.data.room.entity.BarcodeEntity
 import com.krayapp.buffercompanion.bargen.domain.selector.barcodeSelector.CardSelector
 import com.krayapp.buffercompanion.bargen.domain.selector.tagSelector.TagSelector
 import com.krayapp.buffercompanion.bargen.domain.usecase.barcode.CreateBarcodeUsecase
@@ -34,8 +35,7 @@ class MviProcessorHandler : KoinComponent {
 
     suspend fun createBarcodeRecord(
         intent: MainIntent.CreateNewRecord,
-        onCreated: (BarcodeUiModel) -> Unit
-    ) {
+    ): BarcodeEntity {
         val entity = intent.barcodeEntity?.run {
             CreateBarcodeUsecase(this)
         } ?: run {
@@ -45,9 +45,7 @@ class MviProcessorHandler : KoinComponent {
 
             CreateBarcodeUsecase(text = text, format = format, tagIds = tagIds)
         }
-
-        if (ClipperApp.getPrefs().openCardAfterScan)
-            onCreated(entity.toBarcodeUiModel())
+        return entity
     }
 
     suspend fun checkBarcodeForSelection(id: String) {

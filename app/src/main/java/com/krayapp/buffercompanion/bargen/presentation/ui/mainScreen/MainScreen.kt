@@ -18,7 +18,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import com.krayapp.buffercompanion.bargen.presentation.models.BarcodeUiModel
@@ -29,6 +28,7 @@ import com.krayapp.buffercompanion.bargen.presentation.utils.Space
 import com.krayapp.buffercompanion.bargen.presentation.viewmodels.BargenViewModel
 import com.krayapp.buffercompanion.bargen.theme.mSize
 import com.krayapp.buffercompanion.bargen.theme.sSize
+import org.koin.androidx.compose.koinViewModel
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyListState
 
@@ -36,7 +36,7 @@ import sh.calvin.reorderable.rememberReorderableLazyListState
 fun MainScreen(
     onScanClicked: () -> Unit
 ) {
-    val viewmodel: BargenViewModel = viewModel()
+    val viewmodel: BargenViewModel = koinViewModel()
     val uiState by viewmodel.state.collectAsState()
 
     val focus = LocalFocusManager.current

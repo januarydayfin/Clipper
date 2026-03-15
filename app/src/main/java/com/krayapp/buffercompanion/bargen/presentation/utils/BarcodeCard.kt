@@ -99,7 +99,7 @@ fun BarcodeCard(
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
-                .pointerInput(inSelectionMode) {
+                .pointerInput(uiModel, inSelectionMode) {
                     detectTapGestures(
                         onTap = {
                             if (inSelectionMode)

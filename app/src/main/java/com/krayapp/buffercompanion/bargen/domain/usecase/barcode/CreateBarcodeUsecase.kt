@@ -1,5 +1,6 @@
 package com.krayapp.buffercompanion.bargen.domain.usecase.barcode
 
+import android.util.Log
 import com.krayapp.buffercompanion.bargen.data.room.entity.BarcodeEntity
 import com.krayapp.buffercompanion.bargen.data.room.repository.BarcodeRepo
 import kotlinx.coroutines.Dispatchers

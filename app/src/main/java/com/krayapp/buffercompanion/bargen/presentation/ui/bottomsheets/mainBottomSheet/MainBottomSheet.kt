@@ -25,7 +25,6 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.krayapp.buffercompanion.bargen.R
 import com.krayapp.buffercompanion.bargen.presentation.models.BarcodeUiModel
 import com.krayapp.buffercompanion.bargen.presentation.ui.composables.SheetDragger
@@ -113,11 +112,6 @@ fun MainBottomSheet(
             }
             TagBlock(
                 initialValue = model.tags,
-                onScrollToBottom = {
-                    scope.launch {
-                        scrollState.scrollTo(scrollState.maxValue)
-                    }
-                },
                 onTagsAdded = { tags ->
                     modelState.value = modelState.value.copy(tags = tags)
                 })

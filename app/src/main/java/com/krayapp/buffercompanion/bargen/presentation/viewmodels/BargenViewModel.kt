@@ -9,10 +9,8 @@ import androidx.paging.cachedIn
 import androidx.paging.map
 import com.krayapp.buffercompanion.bargen.ClipperApp
 import com.krayapp.buffercompanion.bargen.domain.pagingSource.BarcodeFilterTagsPagingSource
-import com.krayapp.buffercompanion.bargen.domain.selector.barcodeSelector.CardSelector
 import com.krayapp.buffercompanion.bargen.domain.selector.tagSelector.TagSelector
 import com.krayapp.buffercompanion.bargen.domain.type.SortType
-import com.krayapp.buffercompanion.bargen.domain.usecase.barcode.CreateBarcodeUsecase
 import com.krayapp.buffercompanion.bargen.domain.usecase.barcode.GetAllBarcodesPaging
 import com.krayapp.buffercompanion.bargen.domain.usecase.barcode.GetFilteredByNamePagingSource
 import com.krayapp.buffercompanion.bargen.domain.usecase.barcode.IncrementBarcodeUsageCountUsecase
@@ -30,6 +28,7 @@ import com.krayapp.buffercompanion.bargen.utils.launchInIO
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -38,14 +37,13 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
-import java.util.UUID
 
-class BargenViewModel : ViewModel(), KoinComponent {
-    private val tagsSelector: TagSelector by inject()
+class BargenViewModel(
+    private val tagsSelector: TagSelector
+) : ViewModel() {
     private val mviProcessor =
-        MviProcessor(viewModel = this,
+        MviProcessor(
+            viewModel = this,
             handler = MviProcessorHandler(),
             updatePager = { updatePager() }
         )
@@ -59,12 +57,20 @@ class BargenViewModel : ViewModel(), KoinComponent {
     private val _sortType = MutableStateFlow(currentSortType)
     val sortType = _sortType.asStateFlow()
 
-    private val _filterState = MutableStateFlow(FilterState())
-    val filterState = _filterState.asStateFlow()
+
+    var currentFilterValue = FilterState()
+        private set(value) {
+            field = value
+            launchInIO {
+                filterState.emit(value)
+            }
+        }
+
+    private val filterState = MutableSharedFlow<FilterState>(replay = 1)
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val barcodePagingData: Flow<PagingData<BarcodeUiModel>> =
-        _filterState.combine(_sortType) { filter, sort ->
+        filterState.combine(_sortType) { filter, sort ->
             filter to sort
         }.flatMapLatest { filterSort ->
             val filterState = filterSort.first
@@ -99,7 +105,7 @@ class BargenViewModel : ViewModel(), KoinComponent {
     init {
         launchInIO {
             tagsSelector.tagsFilterFlow.collectLatest {
-                _filterState.value = _filterState.value.copy(tagIds = it.map { tag -> tag })
+                currentFilterValue = currentFilterValue.copy(tagIds = it.map { tag -> tag })
             }
         }
     }
@@ -113,11 +119,8 @@ class BargenViewModel : ViewModel(), KoinComponent {
 
     private fun updatePager() {
         launchInIO {
-            _filterState.emit(
-                _filterState.value.copy(
-                    manualUpdate = UUID.randomUUID().toString()
-                )
-            )
+            filterState.emit(currentFilterValue)
+            mviProcessor.refreshPins()
         }
     }
 
@@ -144,7 +147,7 @@ class BargenViewModel : ViewModel(), KoinComponent {
 
     fun updateNameFilter(name: String) {
         launchInIO {
-            _filterState.emit(_filterState.value.copy(searchFilter = name))
+            currentFilterValue = currentFilterValue.copy(searchFilter = name)
         }
     }
 }

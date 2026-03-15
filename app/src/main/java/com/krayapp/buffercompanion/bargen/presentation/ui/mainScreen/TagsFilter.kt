@@ -25,11 +25,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import com.krayapp.buffercompanion.bargen.R
 import com.krayapp.buffercompanion.bargen.domain.selector.tagSelector.TagSelector
+import com.krayapp.buffercompanion.bargen.domain.usecase.tags.TagsUsecase
+import com.krayapp.buffercompanion.bargen.presentation.mapper.toTagUiModel
 import com.krayapp.buffercompanion.bargen.presentation.models.TagUiModel
 import com.krayapp.buffercompanion.bargen.presentation.models.setChecked
 import com.krayapp.buffercompanion.bargen.presentation.utils.BargenChip
 import com.krayapp.buffercompanion.bargen.presentation.utils.Space
-import com.krayapp.buffercompanion.bargen.presentation.utils.TagsRouter
 import com.krayapp.buffercompanion.bargen.theme.mSize
 import com.krayapp.buffercompanion.bargen.theme.sSize
 import com.krayapp.buffercompanion.bargen.utils.io
@@ -39,7 +40,7 @@ import org.koin.compose.koinInject
 
 @Composable
 fun SelectedFilterTags() {
-    val router = TagsRouter
+    val tagsUsecase: TagsUsecase = koinInject()
     val tagSelector: TagSelector = koinInject()
     val scope = rememberCoroutineScope()
     val tagsUi = remember { mutableStateListOf<TagUiModel>() }
@@ -47,10 +48,9 @@ fun SelectedFilterTags() {
     LaunchedEffect(Unit) {
         scope.io {
             tagSelector.tagsFilterFlow.collectLatest { filter ->
-                router.loadTagsUiModelsByIds(filter) { input ->
-                    tagsUi.clear()
-                    tagsUi.addAll(input)
-                }
+                val tagsWithId = tagsUsecase.loadTagsUiModelsByIds(filter)
+                tagsUi.clear()
+                tagsUi.addAll(tagsWithId.map { it.toTagUiModel() })
             }
         }
     }

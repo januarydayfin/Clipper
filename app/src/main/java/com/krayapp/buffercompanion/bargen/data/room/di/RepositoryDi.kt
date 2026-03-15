@@ -1,4 +1,4 @@
-package com.krayapp.buffercompanion.bargen.data.room.repository.di
+package com.krayapp.buffercompanion.bargen.data.room.di
 
 import com.krayapp.buffercompanion.bargen.data.room.repository.BarcodeRepo
 import com.krayapp.buffercompanion.bargen.data.room.repository.BarcodeRepoImpl
