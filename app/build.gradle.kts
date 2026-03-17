@@ -1,61 +1,89 @@
 plugins {
-	id("com.android.application")
-	id("org.jetbrains.kotlin.android")
-	id("com.google.devtools.ksp") version "1.9.21-1.0.15"
+    id("com.android.application")
+    id("org.jetbrains.kotlin.android")
+    id("com.google.devtools.ksp") version "2.0.21-1.0.25"
+    id("org.jetbrains.kotlin.plugin.compose")
+    alias(libs.plugins.kotlinx.serialization)
+
 }
 
 android {
-	namespace = "com.krayapp.buffercompanion"
-	compileSdk = 35
+    namespace = "com.krayapp.buffercompanion.bargen"
+    compileSdk = 36
 
-	defaultConfig {
-		applicationId = "com.krayapp.buffercompanion"
-		minSdk = 28
-		targetSdk = 35
-		versionCode = 110
-		versionName = "1.10"
+    defaultConfig {
+        applicationId = "com.krayapp.buffercompanion.bargen"
+        minSdk = 30
+        targetSdk = 36
+        versionCode = 310
+        versionName = "3.1.0"
 
-		testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-	}
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
 
-	buildTypes {
-		release {
-			isMinifyEnabled = false
-			proguardFiles(
-				getDefaultProguardFile("proguard-android-optimize.txt"),
-				"proguard-rules.pro"
-			)
-		}
-	}
+    buildTypes {
+        release {
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+        }
+    }
 
-	buildFeatures {
-		viewBinding = true
-	}
-	compileOptions {
-		sourceCompatibility = JavaVersion.VERSION_1_8
-		targetCompatibility = JavaVersion.VERSION_1_8
-	}
-	kotlinOptions {
-		jvmTarget = "1.8"
-	}
+    buildFeatures {
+        viewBinding = true
+        compose = true
+    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 }
 
 dependencies {
-	implementation("androidx.navigation:navigation-fragment-ktx:2.7.7")
-	implementation("androidx.navigation:navigation-ui-ktx:2.7.7")
-	val room_version = "2.6.1"
-	implementation("androidx.activity:activity-ktx:1.8.2")
-	implementation("androidx.room:room-runtime:$room_version")
-	annotationProcessor("androidx.room:room-compiler:$room_version")
-	implementation("androidx.room:room-ktx:$room_version")
+    // --- Основные зависимости (implementation) ---
+    implementation(libs.androidx.activity.ktx)
+    implementation(libs.kotlin.reflect)
+    implementation(libs.kotlinx.serialization.json)
 
-	ksp("androidx.room:room-compiler:$room_version")
-	implementation("androidx.core:core-ktx:1.12.0")
-	implementation(platform("com.google.firebase:firebase-bom:32.7.1"))
-	implementation("androidx.appcompat:appcompat:1.6.1")
-	implementation("androidx.recyclerview:recyclerview:1.3.2")
-	implementation("com.google.android.material:material:1.11.0")
-	testImplementation("junit:junit:4.13.2")
-	androidTestImplementation("androidx.test.ext:junit:1.1.5")
-	androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    // Core/UI
+    implementation(libs.bundles.core) // Включает core-ktx, appcompat, recyclerview, material
+
+    implementation(libs.bundles.koin)
+    // Navigation
+    implementation(libs.bundles.navigation)
+
+    implementation(libs.bundles.orbit)
+
+    // Room
+    implementation(libs.bundles.room) // Включает room-runtime и room-ktx
+
+    // Compose (Material3, UI, Activity, ViewModel)
+    implementation(libs.bundles.compose)
+
+    // Сторонние
+    implementation(libs.google.play.review)
+    implementation(libs.zxing.android.embedded)
+    implementation(libs.tedpermission.normal)
+    implementation(libs.skydoves.colorpickerview)
+    implementation(libs.androidx.ui.text.google.fonts)
+    implementation(libs.androidx.paging.common.android)
+
+    // --- Процессоры аннотаций/KSP ---
+    // Room compiler используется для обоих
+    annotationProcessor(libs.androidx.room.compiler)
+    ksp(libs.androidx.room.compiler)
+
+    // --- Debug ---
+    debugImplementation(libs.androidx.compose.ui.tooling)
+
+    // --- Тестирование ---
+    testImplementation(libs.junit.junit)
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.androidx.test.espresso.core)
 }

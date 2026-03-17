@@ -1,0 +1,81 @@
+<resources>
+    <string name="app_name">Bargen</string>
+    <string name="open_manager">Open Clipper</string>
+    <string name="enter_for_input">Нажмите Enter для ввода</string>
+    <string name="use_dynamic_colors">Использовать Dynamic Colors</string>
+    <string name="app_theme">Тема приложения</string>
+    <string name="refresh_widget">Обновить виджет</string>
+    <string name="sign_google">Вход с Google</string>
+    <string name="widget_settings">Настройки виджета</string>
+
+    <string name="empty_hint">Пусто</string>
+    <string name="settings_title">Настройки</string>
+
+    <string name="light_theme">Светлая</string>
+    <string name="system_theme">Системная</string>
+    <string name="dark_theme">Темная</string>
+
+    <string name="next">Далее</string>
+    <string name="copied">Скопировано</string>
+
+    <string name="tutorial">Как пользоваться?</string>
+    <string name="check_all">Выделить все</string>
+
+    <string name="camera_required">Приложению необходим доступ к камере, чтобы сканировать</string>
+    <string name="create_from_buffer">QR из буфера</string>
+    <string name="already_exist">Уже существует</string>
+    <string name="text_editing">Редактирование текста</string>
+    <string name="save">Сохранить</string>
+    <string name="cancel">Отмена</string>
+    <string name="empty">Пусто</string>
+    <string name="filter">Фильтр</string>
+    <string name="tutor_create_title">Создание текста</string>
+    <string name="tutor_create_desc">Введите текст или нажмите кнопку, чтобы вставить его из буфера обмена</string>
+
+    <string name="tutor_manage_title">Управление текстом</string>
+    <string name="tutor_manage_desc">Сдвиньте текст влево, чтобы вызвать меню</string>
+
+    <string name="tutor_copy_title">Копирование</string>
+    <string name="tutor_copy_desc">Нажмите на текст, чтобы скопировать его в буфер обмена</string>
+
+    <string name="tutor_widget_title">Виджет</string>
+    <string name="tutor_widget_desc">Нажмите на элемент в виджете, чтобы копировать его в буфер</string>
+
+    <string name="scan">Сканировать</string>
+    <string name="create">Создать</string>
+    <string name="apply">Применить</string>
+    <string name="name">Название</string>
+    <string name="description">Описание</string>
+    <string name="content">Содержимое</string>
+    <string name="tags">Теги</string>
+    <string name="search">Поиск</string>
+    <string name="close">Закрыть</string>
+    <string name="edit">Изменить</string>
+    <string name="delete">Удалить</string>
+    <string name="choose">Выбрать</string>
+    <string name="by_date_asc">По дате - старое</string>
+    <string name="by_date_desc">По дате - свежее</string>
+    <string name="by_name">По имени</string>
+    <string name="by_usage">По частоте использования</string>
+    <string name="action_unrevertable">Это действие необратимо</string>
+    <string name="tag_background">Цвет тега</string>
+    <string name="tag_font_color">Цвет текста тега</string>
+    <string name="found_tags">Найденные теги:</string>
+    <string name="tag_longtap_hint">Долгое нажатие на тег открывает меню</string>
+    <string name="show_card_after_scan">Показывать окно редактирования сразу после сканирования</string>
+    <string name="volume_button_open_scanner">Кнопка громкости открывает сканер</string>
+    <string name="share">Поделиться</string>
+    <string name="saved_to">Сохранено в</string>
+
+    <string name="backup_restore">Сохранить/восстановить данные</string>
+
+    <string name="restore">Восстановить</string>
+    <string name="backup">Выгрузить</string>
+    <string name="app_will_close">Приложение закрывается</string>
+    <string name="delete_record">Удалить запись?</string>
+    <string name="label_to_scans">Теги будут автоматически присвоены к коду</string>
+
+    <string name="backup_error">Ошибка восстановления</string>
+    <string name="error">Ошибка</string>
+    <string name="max_bright">Максимальная яркость на экране кода</string>
+</resources>
