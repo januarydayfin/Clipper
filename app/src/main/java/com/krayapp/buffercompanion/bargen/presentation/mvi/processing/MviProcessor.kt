@@ -1,6 +1,5 @@
 package com.krayapp.buffercompanion.bargen.presentation.mvi.processing
 
-import android.util.Log
 import com.krayapp.buffercompanion.bargen.ClipperApp
 import com.krayapp.buffercompanion.bargen.presentation.mapper.toBarcodeUiModel
 import com.krayapp.buffercompanion.bargen.presentation.models.BarcodeUiModel
@@ -37,15 +36,27 @@ class MviProcessor(
             }
         }
 
+        /**
+         * Фильтруются только закрепы, остальные карточки фильтруются в BargenViewModel в пейджере
+         */
         viewModel.launchInIO {
-            handler.tagSelectionFlow.collectLatest {
-                //todo добавить выбор тегов
+            handler.tagFilterFlow.collectLatest { pinnedIds ->
+                val filtered =
+                    pinHandler.getAllPinnedBarcodes().map { it.toBarcodeUiModel() }.toMutableList()
+
+                if (pinnedIds.isNotEmpty())
+                    filtered.removeIf { it.id !in pinnedIds }
+
+                intent {
+                    reduce {
+                        state.copy(pinnedBarcodes = filtered)
+                    }
+                }
             }
         }
     }
 
     suspend fun onIntent(intent: MainIntent) {
-        Log.d("FATA", String.format("%s", intent))
         when (intent) {
             is MainIntent.PinIntent -> pinHandler.onIntent(intent)
             is MainIntent.ShowEmptyMainBottomSheet -> showMainBottomSheet()
@@ -76,7 +87,15 @@ class MviProcessor(
         }
     }
 
-    suspend fun refreshPins() {
+    fun hidePinned() {
+        intent {
+            reduce {
+                state.copy(pinnedBarcodes = emptyList())
+            }
+        }
+    }
+
+    suspend fun showPinned() {
         pinHandler.refreshPinnedBarcodes()
     }
 

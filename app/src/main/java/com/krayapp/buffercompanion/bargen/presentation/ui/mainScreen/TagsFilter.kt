@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -82,6 +83,7 @@ fun SelectedFilterTags() {
                         contentDescription = null,
                         modifier = Modifier
                             .padding(all = sSize)
+                            .clip(CircleShape)
                             .clickable {
                                 scope.io {
                                     tagSelector.cleanSelection()

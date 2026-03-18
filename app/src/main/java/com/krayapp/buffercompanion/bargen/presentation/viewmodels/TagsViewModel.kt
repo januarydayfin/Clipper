@@ -1,6 +1,5 @@
 package com.krayapp.buffercompanion.bargen.presentation.viewmodels
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.krayapp.buffercompanion.bargen.domain.selector.tagSelector.TagSelector
 import com.krayapp.buffercompanion.bargen.domain.usecase.tags.TagsUsecase
@@ -26,15 +25,18 @@ class TagsViewModel(
         get() = container.stateFlow
 
     private val allTags = mutableListOf<TagUiModel>()
+    private val checkedTagsIds = mutableListOf<String>()
 
     init {
         launchInIO {
+            allTags.addAll(tagsUsecase.getTags("").map { it.toTagUiModel() })
             tagSelector.tagsFilterFlow.collectLatest { checkedList ->
+                checkedTagsIds.clear()
+                checkedTagsIds.addAll(checkedList)
+                val checkedList = allTags.map { it.copy(checked = it.id in checkedTagsIds) }
                 intent {
                     reduce {
-                        val actualChecked =
-                            state.list.map { it.copy(checked = it.id in checkedList) }
-                        state.copy(list = actualChecked)
+                        state.copy(list = checkedList)
                     }
                 }
             }
@@ -49,9 +51,10 @@ class TagsViewModel(
                         val list = tagsUsecase.getTags("").map { it.toTagUiModel() }
                         allTags.clear()
                         allTags.addAll(list)
+                        val checkedList = list.map { it.copy(checked = it.id in checkedTagsIds) }
                         intent {
                             reduce {
-                                state.copy(list = list)
+                                state.copy(list = checkedList)
                             }
                         }
                     }
@@ -107,11 +110,11 @@ class TagsViewModel(
     private fun updateTagInState(model: TagUiModel) {
         intent {
             reduce {
-                val removedState = state.list.toMutableList().apply {
-                    removeIf { it.id == model.id }
+                val indexOfModel = state.list.indexOfFirst { it.id == model.id }
+                val replaced = state.list.toMutableList().apply {
+                    set(indexOfModel, model)
                 }
-                removedState.add(model)
-                state.copy(list = removedState)
+                state.copy(list = replaced)
             }
         }
     }

@@ -14,6 +14,7 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -36,7 +37,7 @@ fun TagsBottomSheet(onDismiss: () -> Unit) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val viewmodel: TagsViewModel = koinViewModel()
     val showEditDialog = remember { mutableStateOf<TagUiModel?>(null) }
-    val tagsState = viewmodel.state.collectAsState()
+    val tagsState by viewmodel.state.collectAsState()
 
     if (showEditDialog.value != null) {
         val dialogModel = showEditDialog.value ?: return
@@ -72,7 +73,7 @@ fun TagsBottomSheet(onDismiss: () -> Unit) {
                 style = MaterialTheme.typography.labelMedium
             )
             FlowRow(Modifier.wrapContentHeight()) {
-                tagsState.value.list.forEach { tag ->
+                tagsState.list.forEach { tag ->
                     BargenChip(
                         model = tag,
                         onLongClick = {

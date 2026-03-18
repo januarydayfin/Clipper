@@ -66,7 +66,6 @@ fun TagBlock(
             horizontalArrangement = Arrangement.Start,
             modifier = Modifier.minimumInteractiveComponentSize()
         ) {
-            Log.d("FATA", String.format("%s", applyingTagsState))
             applyingTagsState.forEach {
                 BargenChip(it)
             }
@@ -86,7 +85,6 @@ fun TagBlock(
                     BargenChip(onClick = {
                         val allText = tagsTextFieldState.text.toString()
                         val forRemove = allText.substringAfterLast(',')
-                        Log.d("FATA", String.format("%s", forRemove))
                         val newText = allText.replace(forRemove, it.name)
                         tagsTextFieldState.setTextAndPlaceCursorAtEnd(newText)
                     }, model = it)

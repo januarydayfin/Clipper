@@ -1,5 +1,6 @@
 package com.krayapp.buffercompanion.bargen.presentation.mvi.processing.pins
 
+import android.util.Log
 import com.krayapp.buffercompanion.bargen.data.room.entity.BarcodeEntity
 import com.krayapp.buffercompanion.bargen.domain.usecase.barcode.PinnerBarcodeUsecase
 import com.krayapp.buffercompanion.bargen.domain.usecase.barcode.UpdateBarcodeList
@@ -64,6 +65,8 @@ class PinHandler(
         }
         UpdateBarcodeList(replaced)
     }
+
+    suspend fun getAllPinnedBarcodes() = PinnerBarcodeUsecase.getPinnedBarcodes()
 
     suspend fun refreshPinnedBarcodes() {
         val pinnedBarcodes = PinnerBarcodeUsecase.getPinnedBarcodes().map { it.toBarcodeUiModel() }

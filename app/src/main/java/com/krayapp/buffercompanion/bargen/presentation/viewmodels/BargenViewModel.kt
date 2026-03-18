@@ -120,7 +120,6 @@ class BargenViewModel(
     private fun updatePager() {
         launchInIO {
             filterState.emit(currentFilterValue)
-            mviProcessor.refreshPins()
         }
     }
 
@@ -148,6 +147,11 @@ class BargenViewModel(
     fun updateNameFilter(name: String) {
         launchInIO {
             currentFilterValue = currentFilterValue.copy(searchFilter = name)
+
+            if (name.isEmpty())
+                mviProcessor.showPinned()
+            else
+                mviProcessor.hidePinned()
         }
     }
 }
