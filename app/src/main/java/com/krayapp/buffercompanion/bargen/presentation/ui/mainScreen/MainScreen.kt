@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
@@ -11,15 +12,19 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.style.TextAlign
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
+import com.krayapp.buffercompanion.bargen.data.room.MAX_PINNED_COUNT
 import com.krayapp.buffercompanion.bargen.presentation.models.BarcodeUiModel
 import com.krayapp.buffercompanion.bargen.presentation.mvi.main.MainIntent
 import com.krayapp.buffercompanion.bargen.presentation.ui.composables.HorizontalDivider
@@ -51,6 +56,7 @@ fun MainScreen(
     fun Card(
         modifier: Modifier = Modifier,
         item: BarcodeUiModel,
+        pinAvailable: Boolean,
         reorderModifier: Modifier = Modifier
     ) {
         BarcodeCard(
@@ -58,6 +64,7 @@ fun MainScreen(
             inSelectionMode = uiState.inSelectionMode,
             isCheckedForDeletion = item.id in uiState.selectedBarcodesIds,
             uiModel = item,
+            pinAvailable = pinAvailable,
             onSelectClick = {
                 viewmodel.onIntent(MainIntent.CheckBarcodeForSelection(item.id))
             },
@@ -115,9 +122,11 @@ fun MainScreen(
                         ) {
                             Card(
                                 item = uiItem,
-                                reorderModifier = Modifier.draggableHandle(onDragStopped = {
-                                    viewmodel.onIntent(MainIntent.PinIntent.SaveOrder)
-                                })
+                                pinAvailable = true,
+                                reorderModifier = Modifier.draggableHandle(
+                                    onDragStopped = {
+                                        viewmodel.onIntent(MainIntent.PinIntent.SaveOrder)
+                                    })
                             )
                         }
                         Space(height = mSize)
@@ -125,6 +134,14 @@ fun MainScreen(
 
                     if (uiState.hasPinnedBarcodes)
                         item {
+                            if (uiState.inSelectionMode)
+                                Text(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    textAlign = TextAlign.Center,
+                                    text = "${uiState.pinnedBarcodes.size}/$MAX_PINNED_COUNT",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.surfaceContainerHighest
+                                )
                             HorizontalDivider()
                             Space(height = mSize)
                         }
@@ -134,7 +151,10 @@ fun MainScreen(
                     ) { index ->
                         val item = lazyItems[index]
                         if (item != null) {
-                            Card(item = item)
+                            Card(
+                                item = item,
+                                pinAvailable = uiState.pinnedBarcodes.size < MAX_PINNED_COUNT
+                            )
                             Space(height = mSize)
                         }
                     }

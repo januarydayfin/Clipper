@@ -61,6 +61,7 @@ fun BarcodeCard(
     uiModel: BarcodeUiModel,
     inSelectionMode: Boolean,
     isCheckedForDeletion: Boolean,
+    pinAvailable: Boolean,
     onDeleteClicked: (String) -> Unit = {},
     onCardClick: () -> Unit = {},
     onSelectClick: () -> Unit = {},
@@ -140,7 +141,7 @@ fun BarcodeCard(
                 if (uiModel.isPinned && !inSelectionMode)
                     CardPinner(modifier = Modifier.size(keepPinSize), pinned = !uiModel.isPinned)
 
-                if (inSelectionMode) {
+                if (inSelectionMode && pinAvailable) {
                     CardPinner(
                         modifier = Modifier.size(keepPinSize),
                         pinned = uiModel.isPinned,
@@ -272,7 +273,8 @@ private fun BarcodeCardPreview() {
                     pinOrder = 2
                 ),
                 inSelectionMode = false,
-                isCheckedForDeletion = true
+                isCheckedForDeletion = true,
+                pinAvailable = true
             )
             BarcodeCard(
                 uiModel = BarcodeUiModel(
@@ -289,7 +291,8 @@ private fun BarcodeCardPreview() {
 
                 ),
                 inSelectionMode = true,
-                isCheckedForDeletion = true
+                isCheckedForDeletion = true,
+                pinAvailable = true
             )
         }
 
