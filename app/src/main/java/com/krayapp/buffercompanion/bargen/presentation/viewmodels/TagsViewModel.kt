@@ -112,7 +112,10 @@ class TagsViewModel(
             reduce {
                 val indexOfModel = state.list.indexOfFirst { it.id == model.id }
                 val replaced = state.list.toMutableList().apply {
-                    set(indexOfModel, model)
+                    if (indexOfModel != -1)
+                        set(indexOfModel, model)
+                    else
+                        add(model)
                 }
                 state.copy(list = replaced)
             }

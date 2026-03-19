@@ -11,6 +11,7 @@
     <string name="widget_settings">Widget settings</string>
     <string name="filter">Filter</string>
     <string name="scroll_to_top">to top</string>
+    <string name="selected">Selected</string>
 
     <string name="empty_hint">Empty</string>
     <string name="settings_title">Settings</string>

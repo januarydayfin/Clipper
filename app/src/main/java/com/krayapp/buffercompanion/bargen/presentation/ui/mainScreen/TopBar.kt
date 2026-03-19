@@ -1,28 +1,27 @@
 package com.krayapp.buffercompanion.bargen.presentation.ui.mainScreen
 
-import android.util.Log
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.text.input.clearText
-import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,12 +41,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.krayapp.buffercompanion.bargen.R
+import com.krayapp.buffercompanion.bargen.domain.selector.barcodeSelector.CardSelector
 import com.krayapp.buffercompanion.bargen.presentation.mvi.main.MainIntent
 import com.krayapp.buffercompanion.bargen.presentation.ui.dialogs.ConfirmationDialog
 import com.krayapp.buffercompanion.bargen.presentation.ui.menus.SortDropdownMenu
 import com.krayapp.buffercompanion.bargen.presentation.viewmodels.BargenViewModel
+import com.krayapp.buffercompanion.bargen.theme.maxRoundedCornerShape
 import com.krayapp.buffercompanion.bargen.theme.sSize
+import com.krayapp.buffercompanion.bargen.theme.xsSize
 import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.koinInject
 
 
 @Composable
@@ -77,9 +80,10 @@ private fun SelectionTopBar(
     undoSelectionMode: () -> Unit,
     delete: () -> Unit
 ) {
-
+    val selector: CardSelector = koinInject()
     val confirmationDialogShowState = remember { mutableStateOf(false) }
 
+    val selectedBarcodeSize by selector.selectedBarcodes.collectAsState()
     if (confirmationDialogShowState.value)
         ConfirmationDialog(onDismiss = {
             confirmationDialogShowState.value = false
@@ -87,21 +91,40 @@ private fun SelectionTopBar(
             delete()
         }
 
-    Row(modifier = Modifier.fillMaxWidth()) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
 
         TextButton(onClick = {
             undoSelectionMode()
         }) {
             Text(text = stringResource(R.string.cancel))
         }
-        Spacer(modifier = Modifier.weight(1f))
+
+        Box(
+            modifier = Modifier.background(
+                color = colorScheme.surfaceContainer,
+                shape = maxRoundedCornerShape
+            ),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                modifier = Modifier.padding(horizontal = sSize, vertical = xsSize),
+                text = "${stringResource(R.string.selected)}: ${selectedBarcodeSize.size}",
+                style = typography.bodyMedium,
+                color = colorScheme.onSurface
+            )
+        }
+
 
         TextButton(onClick = {
             confirmationDialogShowState.value = true
         }) {
             Text(
                 text = stringResource(R.string.delete),
-                color = MaterialTheme.colorScheme.error
+                color = colorScheme.error
             )
         }
     }
@@ -137,7 +160,7 @@ private fun BasicTopBar(
                 },
             painter = painterResource(R.drawable.ic_settings),
             contentDescription = "settings_icon",
-            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurfaceVariant),
+            colorFilter = ColorFilter.tint(colorScheme.onSurfaceVariant),
         )
 
         SearchBar(modifier = Modifier.weight(1f), onTextChanged = onTextChanged)
@@ -152,7 +175,7 @@ private fun BasicTopBar(
                 },
             painter = painterResource(R.drawable.ic_sort),
             contentDescription = "sort_icon",
-            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurfaceVariant)
+            colorFilter = ColorFilter.tint(colorScheme.onSurfaceVariant)
         )
     }
 }
@@ -186,7 +209,7 @@ fun SearchBar(modifier: Modifier = Modifier, onTextChanged: (String) -> Unit = {
                 Icon(
                     painter = painterResource(R.drawable.ic_search),
                     contentDescription = "icon_search",
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    tint = colorScheme.onSurfaceVariant
                 )
             },
             trailingIcon = {
@@ -198,7 +221,7 @@ fun SearchBar(modifier: Modifier = Modifier, onTextChanged: (String) -> Unit = {
                             onTextChanged("")
                         },
                         painter = painterResource(R.drawable.outline_cancel_24),
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        tint = colorScheme.onSurfaceVariant,
                         contentDescription = null,
                     )
             }

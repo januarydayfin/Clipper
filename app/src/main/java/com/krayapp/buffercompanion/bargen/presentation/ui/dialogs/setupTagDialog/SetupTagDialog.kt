@@ -29,6 +29,7 @@ import com.krayapp.buffercompanion.bargen.presentation.ui.dialogs.ConfirmationDi
 import com.krayapp.buffercompanion.bargen.presentation.utils.BargenChip
 import com.krayapp.buffercompanion.bargen.presentation.utils.Space
 import com.krayapp.buffercompanion.bargen.theme.lSize
+import com.krayapp.buffercompanion.bargen.theme.mRoundedCornerShape
 import com.krayapp.buffercompanion.bargen.theme.mSize
 import com.krayapp.buffercompanion.bargen.theme.sSize
 
@@ -50,7 +51,7 @@ fun SetupTagDialog(
             onDeleteTag(model)
         }
     BasicAlertDialog(onDismissRequest = { onDismiss() }) {
-        Surface(shape = RoundedCornerShape(size = mSize)) {
+        Surface(shape = mRoundedCornerShape) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.padding(all = lSize)

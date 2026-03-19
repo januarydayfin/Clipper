@@ -48,7 +48,7 @@ fun BargenChip(
             shape = RoundedCornerShape(size = 8.dp),
             modifier = modifier
                 .clip(RoundedCornerShape(size = 8.dp))
-                .combinedClickable(onClick = {
+                .combinedClickable(enabled = selectable, onClick = {
                     if (selectable)
                         onClick()
                 }, onLongClick = {
