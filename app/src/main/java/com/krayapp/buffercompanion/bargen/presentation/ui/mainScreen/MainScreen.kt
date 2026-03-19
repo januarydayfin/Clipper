@@ -17,22 +17,29 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.zIndex
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import com.krayapp.buffercompanion.bargen.data.room.MAX_PINNED_COUNT
+import com.krayapp.buffercompanion.bargen.data.room.TOP_BADGE_HIDE_BORDER
 import com.krayapp.buffercompanion.bargen.presentation.models.BarcodeUiModel
 import com.krayapp.buffercompanion.bargen.presentation.mvi.main.MainIntent
 import com.krayapp.buffercompanion.bargen.presentation.ui.composables.HorizontalDivider
+import com.krayapp.buffercompanion.bargen.presentation.ui.composables.ToTopBadge
 import com.krayapp.buffercompanion.bargen.presentation.utils.BarcodeCard
 import com.krayapp.buffercompanion.bargen.presentation.utils.Space
 import com.krayapp.buffercompanion.bargen.presentation.viewmodels.BargenViewModel
 import com.krayapp.buffercompanion.bargen.theme.mSize
 import com.krayapp.buffercompanion.bargen.theme.sSize
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyListState
@@ -44,10 +51,15 @@ fun MainScreen(
     val viewmodel: BargenViewModel = koinViewModel()
     val uiState by viewmodel.state.collectAsState()
 
+    val scope = rememberCoroutineScope()
     val focus = LocalFocusManager.current
     val lazyItems = viewmodel.barcodePagingData.collectAsLazyPagingItems()
     val lazyListState = rememberLazyListState()
-
+    val hideToTopBadge by remember {
+        derivedStateOf {
+            lazyListState.firstVisibleItemIndex < TOP_BADGE_HIDE_BORDER
+        }
+    }
     val reorderableLazyListState = rememberReorderableLazyListState(lazyListState) { from, to ->
         viewmodel.onIntent(MainIntent.PinIntent.SwapBarcodes(from = from.index, to = to.index))
     }
@@ -95,6 +107,7 @@ fun MainScreen(
             MainTopBar(
                 modifier = Modifier
                     .windowInsetsPadding(WindowInsets.statusBars)
+                    .zIndex(2f)
                     .padding(top = sSize),
                 inSelectionMode = uiState.inSelectionMode,
                 onTextChanged = { text ->
@@ -102,10 +115,19 @@ fun MainScreen(
                 },
                 viewModel = viewmodel
             )
-            SelectedFilterTags()
+            SelectedFilterTags(modifier = Modifier.zIndex(2f))
             Box(
                 modifier = Modifier.fillMaxSize(),
             ) {
+                ToTopBadge(
+                    modifier = Modifier
+                        .zIndex(1f)
+                        .padding(vertical = sSize), hide = hideToTopBadge
+                ) {
+                    scope.launch {
+                        lazyListState.animateScrollToItem(0)
+                    }
+                }
                 LazyColumn(
                     state = lazyListState,
                     modifier = Modifier

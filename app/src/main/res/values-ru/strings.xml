@@ -10,6 +10,7 @@
 
     <string name="empty_hint">Пусто</string>
     <string name="settings_title">Настройки</string>
+    <string name="scroll_to_top">в начало</string>
 
     <string name="light_theme">Светлая</string>
     <string name="system_theme">Системная</string>

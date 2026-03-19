@@ -21,16 +21,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
@@ -107,7 +107,7 @@ class ScanDialog(
         }
 
         composeView.setContent {
-            AutoTagSection(mainViewModel = viewModel, barReader = reader)
+            AutoTagSection(viewModel = viewModel, barReader = reader)
         }
     }
 }
@@ -118,20 +118,21 @@ private fun Dialog?.setTransparent() {
 
 @Composable
 private fun AutoTagSection(
-    mainViewModel: BargenViewModel,
+    viewModel: BargenViewModel,
     barReader: BarReader
 ) {
-val tagUsecase: TagsUsecase = koinInject()
+    val tagUsecase: TagsUsecase = koinInject()
     val tagSelector: TagSelector = koinInject()
+    val scope = rememberCoroutineScope()
     AppTheme {
-        val tagsState = tagSelector.tagsFilterFlow.collectAsState()
-        val scope = rememberCoroutineScope()
-        val tagsUiState = remember { mutableStateListOf<TagUiModel>() }
+        val checkedTagIds by tagSelector.tagsFilterFlow.collectAsState()
+
         val torchState = remember { mutableStateOf(false) }
-        LaunchedEffect(Unit) {
-            val tagByIds = tagUsecase.loadTagsUiModelsByIds(tagsState.value)
-            tagsUiState.clear()
-            tagsUiState.addAll(tagByIds.map { it.toTagUiModel() })
+        val tagUiState = remember { mutableStateListOf<TagUiModel>() }
+        LaunchedEffect(checkedTagIds) {
+            val entities = tagUsecase.getTagsEntityByIds(checkedTagIds)
+            tagUiState.clear()
+            tagUiState.addAll(entities.map { it.toTagUiModel() })
         }
 
         Surface {
@@ -152,7 +153,7 @@ val tagUsecase: TagsUsecase = koinInject()
                         .fillMaxWidth()
                         .padding(horizontal = mSize)
                 ) {
-                    tagsUiState.forEach {
+                    tagUiState.forEach {
                         BargenChip(model = it.setChecked(), onClick = {
                             scope.launch {
                                 tagSelector.checkTag(it.id)
@@ -163,7 +164,7 @@ val tagUsecase: TagsUsecase = koinInject()
                 Space(height = mSize)
                 Row {
                     Button(onClick = {
-                        mainViewModel.onIntent(MainIntent.ShowTagsMenu)
+                        viewModel.onIntent(MainIntent.ShowTagsMenu)
                     }) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Icon(

@@ -1,6 +1,5 @@
 package com.krayapp.buffercompanion.bargen.presentation.ui.bottomsheets.mainBottomSheet
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
@@ -83,10 +82,14 @@ fun TagBlock(
             ) {
                 foundTagsState.forEach {
                     BargenChip(onClick = {
-                        val allText = tagsTextFieldState.text.toString()
-                        val forRemove = allText.substringAfterLast(',')
-                        val newText = allText.replace(forRemove, it.name)
-                        tagsTextFieldState.setTextAndPlaceCursorAtEnd(newText)
+                        val newString = buildString {
+                            val allText = tagsTextFieldState.text.toString()
+                            val forRemove = allText.substringAfterLast(',')
+                            val removedText = allText.removeSuffix(forRemove)
+                            append(removedText)
+                            append(it.name)
+                        }
+                        tagsTextFieldState.setTextAndPlaceCursorAtEnd(newString)
                     }, model = it)
                 }
             }

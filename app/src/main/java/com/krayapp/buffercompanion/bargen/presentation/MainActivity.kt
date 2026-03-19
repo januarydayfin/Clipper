@@ -132,7 +132,7 @@ class MainActivity : AppCompatActivity() {
     private fun showScanDialog() {
         TedPermission.create()
             .addPermissionListener(onGranted = {
-                ScanDialog(viewModel = viewmodel) { result, tags ->
+                ScanDialog(viewmodel) { result, tags ->
                     result ?: return@ScanDialog
                     viewmodel.onIntent(
                         MainIntent.CreateNewRecord(

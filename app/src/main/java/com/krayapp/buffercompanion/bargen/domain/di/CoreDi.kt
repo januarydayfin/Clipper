@@ -30,4 +30,5 @@ val bargenCoreModule = module {
     viewModel {
         SettingsViewModel()
     }
+
 }

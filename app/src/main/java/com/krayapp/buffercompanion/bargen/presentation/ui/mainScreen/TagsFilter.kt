@@ -23,7 +23,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import com.krayapp.buffercompanion.bargen.R
 import com.krayapp.buffercompanion.bargen.domain.selector.tagSelector.TagSelector
 import com.krayapp.buffercompanion.bargen.domain.usecase.tags.TagsUsecase
@@ -40,7 +39,7 @@ import org.koin.compose.koinInject
 
 
 @Composable
-fun SelectedFilterTags() {
+fun SelectedFilterTags(modifier: Modifier = Modifier) {
     val tagsUsecase: TagsUsecase = koinInject()
     val tagSelector: TagSelector = koinInject()
     val scope = rememberCoroutineScope()
@@ -49,7 +48,7 @@ fun SelectedFilterTags() {
     LaunchedEffect(Unit) {
         scope.io {
             tagSelector.tagsFilterFlow.collectLatest { filter ->
-                val tagsWithId = tagsUsecase.loadTagsUiModelsByIds(filter)
+                val tagsWithId = tagsUsecase.getTagsEntityByIds(filter)
                 tagsUi.clear()
                 tagsUi.addAll(tagsWithId.map { it.toTagUiModel() })
             }
@@ -60,7 +59,7 @@ fun SelectedFilterTags() {
         Space(height = mSize)
 
     Surface(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = sSize)
             .clip(RoundedCornerShape(mSize)),

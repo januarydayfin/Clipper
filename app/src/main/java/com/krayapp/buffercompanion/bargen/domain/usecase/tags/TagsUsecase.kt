@@ -25,16 +25,12 @@ class TagsUsecase(
         tagsRepo.upsertTags(tags)
     }
 
-    suspend fun loadTagsUiModelsByIds(ids: List<String>) = withContext(Dispatchers.IO) {
+    suspend fun getTagsEntityByIds(ids: List<String>) = withContext(Dispatchers.IO) {
         tagsRepo.getTagsWithIds(ids)
     }
 
     suspend fun removeTagById(id: String) {
         tagsRepo.removeTagById(id)
         barcodeRepo.removeTagFromBarcodes(id)
-    }
-
-    suspend fun findTagsWithName(name: String) = withContext(Dispatchers.IO) {
-        tagsRepo.findTagWithName(name)
     }
 }

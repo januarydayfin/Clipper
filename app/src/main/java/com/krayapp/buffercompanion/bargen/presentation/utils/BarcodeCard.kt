@@ -1,14 +1,12 @@
 package com.krayapp.buffercompanion.bargen.presentation.utils
 
-import android.util.Log
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -35,7 +33,6 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.google.zxing.BarcodeFormat
 import com.journeyapps.barcodescanner.ScanOptions.DATA_MATRIX
 import com.journeyapps.barcodescanner.ScanOptions.PDF_417
@@ -52,7 +49,6 @@ import com.krayapp.buffercompanion.bargen.theme.keepPinSize
 import com.krayapp.buffercompanion.bargen.theme.lSize
 import com.krayapp.buffercompanion.bargen.theme.mSize
 import com.krayapp.buffercompanion.bargen.theme.sSize
-import com.krayapp.buffercompanion.bargen.theme.xsSize
 import kotlinx.coroutines.launch
 
 @Composable
@@ -172,41 +168,28 @@ fun BarcodeCard(
 
 @Composable
 private fun RemoveCardBackground() {
-    Card(
-        shape = RoundedCornerShape(size = 16.dp),
-        colors = CardDefaults.cardColors().copy(
-            containerColor =
-                MaterialTheme.colorScheme.errorContainer
-        ),
+    Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(vertical = xsSize)
+            .background(
+                color = MaterialTheme.colorScheme.errorContainer,
+                shape = RoundedCornerShape(lSize)
+            ),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.End
     ) {
-        Box(
-            modifier = Modifier.fillMaxWidth(),
-            contentAlignment = Alignment.CenterEnd
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .padding(horizontal = mSize),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_delete),
-                    contentDescription = "delete",
-                    tint = MaterialTheme.colorScheme.onErrorContainer
-                )
-
-                Text(
-                    text = stringResource(R.string.delete),
-                    color = MaterialTheme.colorScheme.onErrorContainer,
-                    style = MaterialTheme.typography.labelLarge
-                )
-            }
+        Column(modifier = Modifier.padding(horizontal = mSize), horizontalAlignment = Alignment.CenterHorizontally) {
+            Icon(
+                painter = painterResource(R.drawable.ic_delete),
+                contentDescription = "delete",
+                tint = MaterialTheme.colorScheme.onErrorContainer
+            )
+            Text(
+                text = stringResource(R.string.delete),
+                color = MaterialTheme.colorScheme.onErrorContainer,
+                style = MaterialTheme.typography.labelLarge
+            )
         }
-
     }
 }
 
