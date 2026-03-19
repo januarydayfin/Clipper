@@ -47,6 +47,7 @@ android {
 
 dependencies {
     // --- Основные зависимости (implementation) ---
+    implementation(libs.android.splashscreen)
     implementation(libs.androidx.activity.ktx)
     implementation(libs.kotlin.reflect)
     implementation(libs.kotlinx.serialization.json)

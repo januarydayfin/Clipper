@@ -14,7 +14,7 @@ navigation = "2.9.5"
 playReview = "2.0.2"
 recyclerview = "1.4.0"
 room = "2.8.1"
-
+splashScreen = "1.0.0"
 # Версии Compose
 composeUi = "1.9.2" # Для ui-unit-android
 composeUiTooling = "1.9.2" # Часто используется для ui-tooling
@@ -44,6 +44,7 @@ kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", vers
 
 [libraries]
 # --- AndroidX/Google ---
+android-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "splashScreen" }
 
 
 koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koin" }
