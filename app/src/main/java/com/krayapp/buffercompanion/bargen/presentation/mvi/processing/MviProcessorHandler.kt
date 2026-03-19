@@ -4,6 +4,7 @@ import com.krayapp.buffercompanion.bargen.data.room.entity.BarcodeEntity
 import com.krayapp.buffercompanion.bargen.domain.selector.barcodeSelector.CardSelector
 import com.krayapp.buffercompanion.bargen.domain.selector.tagSelector.TagSelector
 import com.krayapp.buffercompanion.bargen.domain.usecase.barcode.CreateBarcodeUsecase
+import com.krayapp.buffercompanion.bargen.domain.usecase.barcode.RemoveBarcodesByIds
 import com.krayapp.buffercompanion.bargen.presentation.mvi.main.MainIntent
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -25,6 +26,10 @@ class MviProcessorHandler : KoinComponent {
 
     suspend fun onDeleteAllSelectedCards() {
         cardSelector.deleteAllSelected()
+    }
+
+    suspend fun deleteBarcodeById(id: String) {
+        RemoveBarcodesByIds(listOf(id))
     }
 
     suspend fun createBarcodeRecord(

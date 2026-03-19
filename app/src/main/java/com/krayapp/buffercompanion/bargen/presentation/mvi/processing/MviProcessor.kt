@@ -10,6 +10,7 @@ import com.krayapp.buffercompanion.bargen.presentation.mvi.main.SideEffect
 import com.krayapp.buffercompanion.bargen.presentation.mvi.processing.pins.PinHandler
 import com.krayapp.buffercompanion.bargen.presentation.viewmodels.BargenViewModel
 import com.krayapp.buffercompanion.bargen.utils.launchInIO
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.viewmodel.container
@@ -81,9 +82,16 @@ class MviProcessor(
             is MainIntent.DeleteAllSelectedCards -> {
                 handler.onDeleteAllSelectedCards()
                 updatePager()
+                pinHandler.refreshPinnedBarcodes()
             }
 
             is MainIntent.CheckBarcodeForSelection -> handler.checkBarcodeForSelection(intent.id)
+            is MainIntent.DeleteBarcode -> {
+                handler.deleteBarcodeById(intent.id)
+                delay(100)
+                updatePager()
+                pinHandler.refreshPinnedBarcodes()
+            }
         }
     }
 

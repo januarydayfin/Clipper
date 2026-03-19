@@ -13,6 +13,8 @@ sealed interface MainIntent {
     data object CleanCardSelection: MainIntent
     data object CleanTagsSelection: MainIntent
     data object HideBottomSheet : MainIntent
+
+    data class DeleteBarcode(val id: String): MainIntent
     data object DeleteAllSelectedCards: MainIntent
     data class CheckBarcodeForSelection(val id: String): MainIntent
     data class CreateNewRecord(
@@ -24,10 +26,9 @@ sealed interface MainIntent {
     ) : MainIntent
 
     sealed interface PinIntent: MainIntent {
-        data class SwapBarcodes(val from: Int, val to: Int): PinIntent
         data class PinBarcode(val id: String): PinIntent
         data class UnpinBarcode(val id: String): PinIntent
 
-        data object SaveOrder: PinIntent
+        data class SaveOrder(val barOrdered: List<BarcodeUiModel> ): PinIntent
     }
 }

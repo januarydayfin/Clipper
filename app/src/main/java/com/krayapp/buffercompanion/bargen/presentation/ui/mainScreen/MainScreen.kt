@@ -1,5 +1,6 @@
 package com.krayapp.buffercompanion.bargen.presentation.ui.mainScreen
 
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
@@ -16,15 +17,19 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
@@ -54,14 +59,24 @@ fun MainScreen(
     val scope = rememberCoroutineScope()
     val focus = LocalFocusManager.current
     val lazyItems = viewmodel.barcodePagingData.collectAsLazyPagingItems()
+    //используется для адекватного перетаскивания
+    var localPinned by remember { mutableStateOf(emptyList<BarcodeUiModel>()) }
     val lazyListState = rememberLazyListState()
-    val hideToTopBadge by remember {
-        derivedStateOf {
-            lazyListState.firstVisibleItemIndex < TOP_BADGE_HIDE_BORDER
+
+    val reorderableLazyListState = rememberReorderableLazyListState(lazyListState) { from, to ->
+        localPinned = localPinned.toMutableList().apply {
+            add(to.index, removeAt(from.index))
         }
     }
-    val reorderableLazyListState = rememberReorderableLazyListState(lazyListState) { from, to ->
-        viewmodel.onIntent(MainIntent.PinIntent.SwapBarcodes(from = from.index, to = to.index))
+
+    LaunchedEffect(uiState.pinnedBarcodes) {
+        localPinned = uiState.pinnedBarcodes
+    }
+
+    LaunchedEffect(uiState.inSelectionMode) {
+        if (!uiState.inSelectionMode) {
+            viewmodel.onIntent(MainIntent.PinIntent.SaveOrder(localPinned))
+        }
     }
 
     @Composable
@@ -88,7 +103,7 @@ fun MainScreen(
                     viewmodel.onIntent(MainIntent.ShowExistCodeBottomsheet(item))
             },
             onDeleteClicked = { id ->
-                viewmodel.deleteBarcodes(id)
+                viewmodel.onIntent(MainIntent.DeleteBarcode(id))
             },
             onPin = {
                 viewmodel.onIntent(MainIntent.PinIntent.PinBarcode(id = item.id))
@@ -112,17 +127,23 @@ fun MainScreen(
                 inSelectionMode = uiState.inSelectionMode,
                 onTextChanged = { text ->
                     viewmodel.updateNameFilter(text)
-                },
-                viewModel = viewmodel
+                }
             )
             SelectedFilterTags(modifier = Modifier.zIndex(2f))
             Box(
                 modifier = Modifier.fillMaxSize(),
             ) {
+                val hideToTopBadge by remember {
+                    derivedStateOf {
+                        lazyListState.firstVisibleItemIndex < TOP_BADGE_HIDE_BORDER
+                    }
+                }
+
                 ToTopBadge(
                     modifier = Modifier
+                        .align(Alignment.BottomEnd)
                         .zIndex(1f)
-                        .padding(vertical = sSize), hide = hideToTopBadge
+                        .padding(bottom = 120.dp, end = mSize), hide = hideToTopBadge
                 ) {
                     scope.launch {
                         lazyListState.animateScrollToItem(0)
@@ -135,20 +156,19 @@ fun MainScreen(
                         .padding(top = mSize)
                 ) {
                     items(
-                        count = uiState.pinnedBarcodes.size,
-                        key = { index -> uiState.pinnedBarcodes[index].id }
+                        count = localPinned.size,
+                        key = { index -> localPinned[index].id }
                     ) {
-                        val uiItem = uiState.pinnedBarcodes[it]
+                        val uiItem = localPinned[it]
                         ReorderableItem(
                             state = reorderableLazyListState, key = uiItem.id
                         ) {
+                            val interactionSource = remember { MutableInteractionSource() }
+
                             Card(
                                 item = uiItem,
                                 pinAvailable = true,
-                                reorderModifier = Modifier.draggableHandle(
-                                    onDragStopped = {
-                                        viewmodel.onIntent(MainIntent.PinIntent.SaveOrder)
-                                    })
+                                reorderModifier = Modifier.draggableHandle(interactionSource = interactionSource),
                             )
                         }
                         Space(height = mSize)
@@ -175,7 +195,7 @@ fun MainScreen(
                         if (item != null) {
                             Card(
                                 item = item,
-                                pinAvailable = uiState.pinnedBarcodes.size < MAX_PINNED_COUNT
+                                pinAvailable = uiState.pinnedBarcodes.size < MAX_PINNED_COUNT,
                             )
                             Space(height = mSize)
                         }
@@ -185,7 +205,7 @@ fun MainScreen(
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
                         .windowInsetsPadding(WindowInsets.navigationBars),
-                    hideState = lazyListState.lastScrolledForward,
+                    hideState = { lazyListState },
                     onCreateClicked = {
                         viewmodel.onIntent(MainIntent.ShowEmptyMainBottomSheet)
                     },

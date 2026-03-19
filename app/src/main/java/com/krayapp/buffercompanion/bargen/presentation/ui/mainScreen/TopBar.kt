@@ -1,5 +1,6 @@
 package com.krayapp.buffercompanion.bargen.presentation.ui.mainScreen
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -21,10 +22,11 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -45,15 +47,16 @@ import com.krayapp.buffercompanion.bargen.presentation.ui.dialogs.ConfirmationDi
 import com.krayapp.buffercompanion.bargen.presentation.ui.menus.SortDropdownMenu
 import com.krayapp.buffercompanion.bargen.presentation.viewmodels.BargenViewModel
 import com.krayapp.buffercompanion.bargen.theme.sSize
+import org.koin.androidx.compose.koinViewModel
 
 
 @Composable
 fun MainTopBar(
     modifier: Modifier = Modifier,
     inSelectionMode: Boolean,
-    viewModel: BargenViewModel,
     onTextChanged: (String) -> Unit = {}
 ) {
+    val viewModel: BargenViewModel = koinViewModel()
     Box(modifier = modifier) {
         if (inSelectionMode)
             SelectionTopBar(
@@ -157,18 +160,20 @@ private fun BasicTopBar(
 @Preview
 @Composable
 fun SearchBar(modifier: Modifier = Modifier, onTextChanged: (String) -> Unit = {}) {
-    val textFieldState = rememberTextFieldState()
     val focus = LocalFocusManager.current
-    onTextChanged(textFieldState.text.toString())
     Card(
         shape = RoundedCornerShape(size = 100.dp),
         modifier = modifier
     ) {
-
+        var text by remember { mutableStateOf("") }
         TextField(
+            value = text,
             placeholder = { Text(stringResource(R.string.search)) },
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-            state = textFieldState,
+            onValueChange = {
+                text = it
+                onTextChanged(text)
+            },
             modifier = Modifier
                 .fillMaxWidth(),
             colors = TextFieldDefaults.colors().copy(
@@ -185,11 +190,12 @@ fun SearchBar(modifier: Modifier = Modifier, onTextChanged: (String) -> Unit = {
                 )
             },
             trailingIcon = {
-                if (textFieldState.text.isNotEmpty())
+                if (text.isNotEmpty())
                     Icon(
                         modifier = Modifier.clickable {
-                            textFieldState.clearText()
+                            text = ""
                             focus.clearFocus()
+                            onTextChanged("")
                         },
                         painter = painterResource(R.drawable.outline_cancel_24),
                         tint = MaterialTheme.colorScheme.onSurfaceVariant,

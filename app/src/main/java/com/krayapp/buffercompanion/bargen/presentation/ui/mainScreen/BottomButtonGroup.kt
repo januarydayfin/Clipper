@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -32,14 +33,14 @@ import com.krayapp.buffercompanion.bargen.theme.sSize
 @Composable
 fun BottomButtonGroup(
     modifier: Modifier = Modifier,
-    hideState: Boolean = false,
+    hideState: () ->LazyListState,
     onScanClicked: () -> Unit = {},
     onCreateClicked: () -> Unit = {},
     onTagsClicked: () -> Unit = {},
 ) {
 
     val offsetState = animateIntAsState(
-        if (hideState) 500 else 0,
+        if (hideState().lastScrolledForward) 500 else 0,
         animationSpec = tween(defaultAnimationDuration)
     )
     Row(

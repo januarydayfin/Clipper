@@ -129,13 +129,6 @@ class BargenViewModel(
     }
 
 
-    fun deleteBarcodes(vararg ids: String) {
-        launchInIO {
-            RemoveBarcodesByIds(ids.toList())
-            updatePager()
-        }
-    }
-
 
     fun incrementUsageCount(id: String) {
         launchInIO {
