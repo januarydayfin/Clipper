@@ -19,7 +19,7 @@ import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.viewmodel.container
 
 class MviProcessor(
-    private val viewModel: BargenViewModel,
+    viewModel: BargenViewModel,
     private val handler: MviProcessorHandler,
     private val updatePager: () -> Unit,
     private val prefs: GlobalPrefs
@@ -108,16 +108,20 @@ class MviProcessor(
         }
     }
 
-    fun hidePinned() {
+    fun enterSearchMode() {
         intent {
             reduce {
-                state.copy(pinnedBarcodes = emptyList())
+                state.copy(searchMode = true)
             }
         }
     }
 
-    suspend fun showPinned() {
-        pinHandler.refreshPinnedBarcodes()
+    fun exitSearchMode() {
+        intent {
+            reduce {
+                state.copy(searchMode = false)
+            }
+        }
     }
 
     private fun showMainBottomSheet(uiModel: BarcodeUiModel = BarcodeUiModel.UNDEFINED) = intent {

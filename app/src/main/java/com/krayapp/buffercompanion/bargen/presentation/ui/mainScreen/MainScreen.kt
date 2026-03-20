@@ -27,7 +27,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
@@ -63,10 +65,12 @@ fun MainScreen(
     var localPinned by remember { mutableStateOf(emptyList<BarcodeUiModel>()) }
     val lazyListState = rememberLazyListState()
 
+    val haptic = LocalHapticFeedback.current
     val reorderableLazyListState = rememberReorderableLazyListState(lazyListState) { from, to ->
         localPinned = localPinned.toMutableList().apply {
             add(to.index, removeAt(from.index))
         }
+        haptic.performHapticFeedback(HapticFeedbackType.ContextClick)
     }
 
     LaunchedEffect(uiState.pinnedBarcodes) {
@@ -156,38 +160,40 @@ fun MainScreen(
                         .wrapContentHeight()
                         .padding(top = mSize)
                 ) {
-                    items(
-                        count = localPinned.size,
-                        key = { index -> localPinned[index].id }
-                    ) {
-                        val uiItem = localPinned[it]
-                        ReorderableItem(
-                            state = reorderableLazyListState, key = uiItem.id
+                    if (uiState.searchMode.not()) {
+                        items(
+                            count = localPinned.size,
+                            key = { index -> localPinned[index].id }
                         ) {
-                            val interactionSource = remember { MutableInteractionSource() }
+                            val uiItem = localPinned[it]
+                            ReorderableItem(
+                                state = reorderableLazyListState, key = uiItem.id
+                            ) {
+                                val interactionSource = remember { MutableInteractionSource() }
 
-                            Card(
-                                item = uiItem,
-                                pinAvailable = true,
-                                reorderModifier = Modifier.draggableHandle(interactionSource = interactionSource),
-                            )
-                        }
-                        Space(height = mSize)
-                    }
-
-                    if (uiState.hasPinnedBarcodes)
-                        item {
-                            if (uiState.inSelectionMode)
-                                Text(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    textAlign = TextAlign.Center,
-                                    text = "${uiState.pinnedBarcodes.size}/$MAX_PINNED_COUNT",
-                                    style = MaterialTheme.typography.labelSmall,
-                                    color = MaterialTheme.colorScheme.surfaceContainerHighest
+                                Card(
+                                    item = uiItem,
+                                    pinAvailable = true,
+                                    reorderModifier = Modifier.draggableHandle(interactionSource = interactionSource),
                                 )
-                            HorizontalDivider()
+                            }
                             Space(height = mSize)
                         }
+
+                        if (uiState.hasPinnedBarcodes)
+                            item {
+                                if (uiState.inSelectionMode)
+                                    Text(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        textAlign = TextAlign.Center,
+                                        text = "${uiState.pinnedBarcodes.size}/$MAX_PINNED_COUNT",
+                                        style = MaterialTheme.typography.labelSmall,
+                                        color = MaterialTheme.colorScheme.surfaceContainerHighest
+                                    )
+                                HorizontalDivider()
+                                Space(height = mSize)
+                            }
+                    }
                     items(
                         count = lazyItems.itemCount,
                         key = lazyItems.itemKey { item -> item.hashCode() }

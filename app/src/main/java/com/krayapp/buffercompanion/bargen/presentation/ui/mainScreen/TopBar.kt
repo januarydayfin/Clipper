@@ -37,7 +37,6 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.krayapp.buffercompanion.bargen.R
@@ -163,7 +162,11 @@ private fun BasicTopBar(
             colorFilter = ColorFilter.tint(colorScheme.onSurfaceVariant),
         )
 
-        SearchBar(modifier = Modifier.weight(1f), onTextChanged = onTextChanged)
+        SearchBar(
+            modifier = Modifier.weight(1f),
+            viewModel.currentFilterValue.searchFilter,
+            onTextChanged = onTextChanged
+        )
 
         Image(
             modifier = Modifier
@@ -180,15 +183,18 @@ private fun BasicTopBar(
     }
 }
 
-@Preview
 @Composable
-fun SearchBar(modifier: Modifier = Modifier, onTextChanged: (String) -> Unit = {}) {
+fun SearchBar(
+    modifier: Modifier = Modifier,
+    initialValue: String = "",
+    onTextChanged: (String) -> Unit = {}
+) {
     val focus = LocalFocusManager.current
     Card(
         shape = RoundedCornerShape(size = 100.dp),
         modifier = modifier
     ) {
-        var text by remember { mutableStateOf("") }
+        var text by remember { mutableStateOf(initialValue) }
         TextField(
             value = text,
             placeholder = { Text(stringResource(R.string.search)) },

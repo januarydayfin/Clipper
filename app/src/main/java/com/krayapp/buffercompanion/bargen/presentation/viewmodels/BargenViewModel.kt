@@ -14,7 +14,6 @@ import com.krayapp.buffercompanion.bargen.domain.type.SortType
 import com.krayapp.buffercompanion.bargen.domain.usecase.barcode.GetAllBarcodesPaging
 import com.krayapp.buffercompanion.bargen.domain.usecase.barcode.GetFilteredByNamePagingSource
 import com.krayapp.buffercompanion.bargen.domain.usecase.barcode.IncrementBarcodeUsageCountUsecase
-import com.krayapp.buffercompanion.bargen.domain.usecase.barcode.RemoveBarcodesByIds
 import com.krayapp.buffercompanion.bargen.presentation.mapper.toBarcodeUiModel
 import com.krayapp.buffercompanion.bargen.presentation.models.BarcodeUiModel
 import com.krayapp.buffercompanion.bargen.presentation.mvi.main.FilterState
@@ -143,9 +142,9 @@ class BargenViewModel(
             currentFilterValue = currentFilterValue.copy(searchFilter = name)
 
             if (name.isEmpty())
-                mviProcessor.showPinned()
+                mviProcessor.exitSearchMode()
             else
-                mviProcessor.hidePinned()
+                mviProcessor.enterSearchMode()
         }
     }
 }

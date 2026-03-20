@@ -8,6 +8,7 @@ data class MviState(
     val showSettingsBottomSheet:  Boolean = false,
     val showSortBottomSheet: Boolean = false,
     val swipeToDelete: Boolean = true,
+    val searchMode: Boolean = false,
     val pinnedBarcodes: List<BarcodeUiModel> = emptyList(),
     val selectedBarcodesIds: List<String> = emptyList(),
 ) {
