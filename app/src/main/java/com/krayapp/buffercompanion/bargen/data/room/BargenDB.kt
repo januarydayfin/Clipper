@@ -5,7 +5,7 @@ import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.krayapp.buffercompanion.bargen.data.room.bargen.dao.BarcodeDao
-import com.krayapp.buffercompanion.bargen.data.room.bargen.dao.TagDao
+import com.krayapp.buffercompanion.bargen.data.room.dao.TagDao
 import com.krayapp.buffercompanion.bargen.data.room.entity.BarcodeEntity
 import com.krayapp.buffercompanion.bargen.data.room.entity.TagEntity
 

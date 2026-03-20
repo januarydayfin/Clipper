@@ -5,13 +5,13 @@ import com.krayapp.buffercompanion.bargen.GlobalPrefs
 import com.krayapp.buffercompanion.bargen.presentation.mapper.toBarcodeUiModel
 import com.krayapp.buffercompanion.bargen.presentation.models.BarcodeUiModel
 import com.krayapp.buffercompanion.bargen.presentation.mvi.main.BottomSheetStateData
+import com.krayapp.buffercompanion.bargen.presentation.mvi.main.BottomSheetUiState
 import com.krayapp.buffercompanion.bargen.presentation.mvi.main.MainIntent
 import com.krayapp.buffercompanion.bargen.presentation.mvi.main.MviState
 import com.krayapp.buffercompanion.bargen.presentation.mvi.main.SideEffect
 import com.krayapp.buffercompanion.bargen.presentation.mvi.processing.pins.PinHandler
 import com.krayapp.buffercompanion.bargen.presentation.viewmodels.BargenViewModel
 import com.krayapp.buffercompanion.bargen.utils.launchInIO
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -81,7 +81,7 @@ class MviProcessor(
 
             is MainIntent.ShowExistCodeBottomsheet -> showMainBottomSheet(intent.uiModel)
             is MainIntent.ShowSettingsBottomsheet -> showSettingsBottomSheet()
-            is MainIntent.ShowTagsMenu -> showTagsBottomsheet()
+            is MainIntent.ShowTagsMenu -> showTagsBottomSheet()
             is MainIntent.CreateNewRecord -> {
                 val createdEntity = handler.createBarcodeRecord(intent)
                 if (intent.showAfterCreate && prefs.openCardAfterScan)
@@ -101,7 +101,6 @@ class MviProcessor(
             is MainIntent.CheckBarcodeForSelection -> handler.checkBarcodeForSelection(intent.id)
             is MainIntent.DeleteBarcode -> {
                 handler.deleteBarcodeById(intent.id)
-                delay(100)
                 updatePager()
                 pinHandler.refreshPinnedBarcodes()
             }
@@ -126,29 +125,27 @@ class MviProcessor(
 
     private fun showMainBottomSheet(uiModel: BarcodeUiModel = BarcodeUiModel.UNDEFINED) = intent {
         reduce {
-            state.copy(mainBottomSheetState = BottomSheetStateData(uiModel))
+            val bsState = BottomSheetUiState.Barcode(BottomSheetStateData(uiModel))
+            state.copy(bottomSheetUiState = bsState)
         }
     }
 
     private fun showSettingsBottomSheet() = intent {
         reduce {
-            state.copy(showSettingsBottomSheet = true)
+            state.copy(bottomSheetUiState = BottomSheetUiState.Settings)
         }
     }
 
-    private fun showTagsBottomsheet() = intent {
+    private fun showTagsBottomSheet() = intent {
         reduce {
-            state.copy(showTagBottomSheet = true)
+            state.copy(bottomSheetUiState = BottomSheetUiState.Tags)
         }
     }
 
     private fun hideBottomSheets() = intent {
         reduce {
             state.copy(
-                mainBottomSheetState = null,
-                showTagBottomSheet = false,
-                showSettingsBottomSheet = false,
-                showSortBottomSheet = false
+                bottomSheetUiState = BottomSheetUiState.None
             )
         }
     }

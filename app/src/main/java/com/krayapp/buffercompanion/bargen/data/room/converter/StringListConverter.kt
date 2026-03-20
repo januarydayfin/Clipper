@@ -1,4 +1,4 @@
-package com.krayapp.buffercompanion.bargen.data.room.bargen.converter
+package com.krayapp.buffercompanion.bargen.data.room.converter
 
 import androidx.room.TypeConverter
 import kotlinx.serialization.json.Json

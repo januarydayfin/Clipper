@@ -1,4 +1,4 @@
-package com.krayapp.buffercompanion.bargen.data.room.bargen.dao
+package com.krayapp.buffercompanion.bargen.data.room.dao
 
 import androidx.paging.PagingSource
 import androidx.room.Dao

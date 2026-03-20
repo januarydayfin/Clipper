@@ -23,10 +23,9 @@ import com.krayapp.buffercompanion.bargen.R
 import com.krayapp.buffercompanion.bargen.domain.usecase.barcode.CheckDataExistUsecase
 import com.krayapp.buffercompanion.bargen.presentation.mapper.toBarcodeEntity
 import com.krayapp.buffercompanion.bargen.presentation.mvi.main.BottomSheetStateData
+import com.krayapp.buffercompanion.bargen.presentation.mvi.main.BottomSheetUiState
+import com.krayapp.buffercompanion.bargen.presentation.mvi.main.BottomSheetUiState.Barcode
 import com.krayapp.buffercompanion.bargen.presentation.mvi.main.MainIntent
-import com.krayapp.buffercompanion.bargen.presentation.mvi.main.canShowMainBottomSheet
-import com.krayapp.buffercompanion.bargen.presentation.mvi.main.canShowSettingsBottomsheet
-import com.krayapp.buffercompanion.bargen.presentation.mvi.main.canShowTagBottomSheet
 import com.krayapp.buffercompanion.bargen.presentation.mvi.tags.TagIntent
 import com.krayapp.buffercompanion.bargen.presentation.ui.bottomsheets.mainBottomSheet.MainBottomSheet
 import com.krayapp.buffercompanion.bargen.presentation.ui.bottomsheets.settingsBottomsheet.SettingsBottomSheet
@@ -99,12 +98,13 @@ class MainActivity : AppCompatActivity() {
         onBackPressedDispatcher.addCallback(onBackPressed)
         setContent {
             AppTheme {
-                val state = viewmodel.state.collectAsState().value
+                val bottomSheetState = viewmodel.state.collectAsState().value.bottomSheetUiState
 
-                when {
-                    state.canShowMainBottomSheet -> ShowMainBottomSheet(state.mainBottomSheetState!!)
-                    state.canShowTagBottomSheet -> ShowTagBottomsheet()
-                    state.canShowSettingsBottomsheet -> ShowSettingsBottomsheet()
+                when(bottomSheetState) {
+                    is Barcode -> ShowMainBottomSheet(bottomSheetState.model)
+                    BottomSheetUiState.Settings -> ShowSettingsBottomsheet()
+                    BottomSheetUiState.Tags -> ShowTagBottomsheet()
+                    BottomSheetUiState.None -> { }
                 }
 
                 MainScreen {
