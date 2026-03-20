@@ -24,11 +24,11 @@ val bargenCoreModule = module {
     }
 
     viewModel {
-        BargenViewModel(tagsSelector = get())
+        BargenViewModel(tagsSelector = get(), prefs = get())
     }
 
     viewModel {
-        SettingsViewModel()
+        SettingsViewModel(prefs = get())
     }
 
 }

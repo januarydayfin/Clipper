@@ -18,7 +18,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
 import com.google.android.play.core.review.ReviewManagerFactory
 import com.gun0912.tedpermission.normal.TedPermission
-import com.krayapp.buffercompanion.bargen.ClipperApp
+import com.krayapp.buffercompanion.bargen.GlobalPrefs
 import com.krayapp.buffercompanion.bargen.R
 import com.krayapp.buffercompanion.bargen.domain.usecase.barcode.CheckDataExistUsecase
 import com.krayapp.buffercompanion.bargen.presentation.mapper.toBarcodeEntity
@@ -46,6 +46,7 @@ import com.krayapp.buffercompanion.bargen.utils.launchWithDelay
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.random.Random
 
@@ -53,6 +54,7 @@ import kotlin.random.Random
 class MainActivity : AppCompatActivity() {
     private val viewmodel: BargenViewModel by viewModel()
     private val tagsViewModel: TagsViewModel by viewModel()
+    private val prefs: GlobalPrefs by inject()
 
     private val onBackPressed = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
@@ -154,13 +156,13 @@ class MainActivity : AppCompatActivity() {
     @Composable
     private fun ShowMainBottomSheet(data: BottomSheetStateData) {
         viewmodel.incrementUsageCount(data.model.id)
-        if (ClipperApp.getPrefs().maxBrightOnCode)
+        if (prefs.maxBrightOnCode)
             peakBright()
         MainBottomSheet(
             model = data.model, onDismiss = {
                 viewmodel.onIntent(MainIntent.HideBottomSheet)
 
-//                if (ClipperApp.getPrefs().maxBrightOnCode)
+//                if (prefs.maxBrightOnCode)
                     restoreBright()
             }, onSharePicture = {
                 shareBitmap(bitmap = it, title = Random.nextInt().toString())
@@ -198,7 +200,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun dispatchKeyEvent(event: KeyEvent): Boolean {
-        val scanOnVolume = ClipperApp.getPrefs().scanOnVolume
+        val scanOnVolume = prefs.scanOnVolume
 
         if (!scanOnVolume || event.action == MotionEvent.ACTION_UP)
             return super.dispatchKeyEvent(event)

@@ -7,7 +7,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
-import com.krayapp.buffercompanion.bargen.ClipperApp
+import com.krayapp.buffercompanion.bargen.GlobalPrefs
 import com.krayapp.buffercompanion.bargen.domain.pagingSource.BarcodeFilterTagsPagingSource
 import com.krayapp.buffercompanion.bargen.domain.selector.tagSelector.TagSelector
 import com.krayapp.buffercompanion.bargen.domain.type.SortType
@@ -23,7 +23,6 @@ import com.krayapp.buffercompanion.bargen.presentation.mvi.main.MviState
 import com.krayapp.buffercompanion.bargen.presentation.mvi.main.SideEffect
 import com.krayapp.buffercompanion.bargen.presentation.mvi.processing.MviProcessor
 import com.krayapp.buffercompanion.bargen.presentation.mvi.processing.MviProcessorHandler
-import com.krayapp.buffercompanion.bargen.presentation.utils.currentSortType
 import com.krayapp.buffercompanion.bargen.utils.launchInIO
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -39,13 +38,15 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 class BargenViewModel(
-    private val tagsSelector: TagSelector
+    private val tagsSelector: TagSelector,
+    private val prefs: GlobalPrefs
 ) : ViewModel() {
     private val mviProcessor =
         MviProcessor(
             viewModel = this,
             handler = MviProcessorHandler(),
-            updatePager = { updatePager() }
+            updatePager = { updatePager() },
+            prefs = prefs
         )
 
     val state: StateFlow<MviState>
@@ -54,7 +55,7 @@ class BargenViewModel(
     val sideEffects: Flow<SideEffect>
         get() = mviProcessor.container.sideEffectFlow
 
-    private val _sortType = MutableStateFlow(currentSortType)
+    private val _sortType = MutableStateFlow(SortType.valueOf(prefs.sortType))
     val sortType = _sortType.asStateFlow()
 
 
@@ -125,7 +126,7 @@ class BargenViewModel(
 
     fun changeSort(sortType: SortType) {
         this._sortType.value = sortType
-        ClipperApp.getPrefs().sortType = sortType.toString()
+        prefs.sortType = sortType.toString()
     }
 
 

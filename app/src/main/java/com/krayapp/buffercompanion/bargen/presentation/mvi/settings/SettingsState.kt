@@ -1,6 +1,6 @@
 package com.krayapp.buffercompanion.bargen.presentation.mvi.settings
 
-import com.krayapp.buffercompanion.bargen.ClipperApp
+import com.krayapp.buffercompanion.bargen.GlobalPrefs
 
 data class SettingsState(
     val theme: Int,
@@ -10,12 +10,12 @@ data class SettingsState(
     val swipeToDelete: Boolean,
 ) {
     companion object {
-        fun default() = SettingsState(
-            theme = ClipperApp.getPrefs().theme,
-            openScannerByButton = ClipperApp.getPrefs().scanOnVolume,
-            openCardAfterScan = ClipperApp.getPrefs().openCardAfterScan,
-            maxBrightOnCode = ClipperApp.getPrefs().maxBrightOnCode,
-            swipeToDelete = ClipperApp.getPrefs().swipeToDelete
+        fun default(prefs: GlobalPrefs) = SettingsState(
+            theme = prefs.theme,
+            openScannerByButton = prefs.scanOnVolume,
+            openCardAfterScan = prefs.openCardAfterScan,
+            maxBrightOnCode = prefs.maxBrightOnCode,
+            swipeToDelete = prefs.swipeToDelete
         )
     }
 }

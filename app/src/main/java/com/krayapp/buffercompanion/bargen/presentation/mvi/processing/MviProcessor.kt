@@ -1,6 +1,7 @@
 package com.krayapp.buffercompanion.bargen.presentation.mvi.processing
 
-import com.krayapp.buffercompanion.bargen.ClipperApp
+import androidx.lifecycle.viewModelScope
+import com.krayapp.buffercompanion.bargen.GlobalPrefs
 import com.krayapp.buffercompanion.bargen.presentation.mapper.toBarcodeUiModel
 import com.krayapp.buffercompanion.bargen.presentation.models.BarcodeUiModel
 import com.krayapp.buffercompanion.bargen.presentation.mvi.main.BottomSheetStateData
@@ -12,27 +13,33 @@ import com.krayapp.buffercompanion.bargen.presentation.viewmodels.BargenViewMode
 import com.krayapp.buffercompanion.bargen.utils.launchInIO
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.viewmodel.container
 
 class MviProcessor(
-    viewModel: BargenViewModel,
+    private val viewModel: BargenViewModel,
     private val handler: MviProcessorHandler,
     private val updatePager: () -> Unit,
+    private val prefs: GlobalPrefs
 ) : ContainerHost<MviState, SideEffect> {
     override val container = viewModel.container<MviState, SideEffect>(MviState())
     private val pinHandler = PinHandler(this)
-    private val dataStore = ClipperApp.getPrefs()
 
     init {
         viewModel.launchInIO {
             pinHandler.init()
+        }
+
+        prefs.swipeToDeleteFlow.onEach { swipe ->
             intent {
                 reduce {
-                    state.copy(swipeToDelete = dataStore.swipeToDelete)
+                    state.copy(swipeToDelete = swipe)
                 }
             }
-        }
+        }.launchIn(viewModel.viewModelScope)
+
         viewModel.launchInIO {
             handler.cardSelectionFlow.collectLatest {
                 intent {
@@ -77,7 +84,7 @@ class MviProcessor(
             is MainIntent.ShowTagsMenu -> showTagsBottomsheet()
             is MainIntent.CreateNewRecord -> {
                 val createdEntity = handler.createBarcodeRecord(intent)
-                if (intent.showAfterCreate && ClipperApp.getPrefs().openCardAfterScan)
+                if (intent.showAfterCreate && prefs.openCardAfterScan)
                     showMainBottomSheet(createdEntity.toBarcodeUiModel())
 
                 updatePager()

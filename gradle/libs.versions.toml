@@ -21,6 +21,7 @@ composeUiTooling = "1.9.2" # Часто используется для ui-tooli
 composeMaterial3 = "1.5.0-alpha04" # Обновил до более общей версии для Material3
 adaptive = "1.1.0"
 composePaging = "3.3.6"
+datastore = "1.1.2"
 
 # Сторонние библиотеки
 colorpicker = "1.1.2"
@@ -87,6 +88,8 @@ androidx-room-paging = { group = "androidx.room", name = "room-paging", version.
 androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
+
+androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
 
 # --- Сторонние библиотеки ---
 kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect" }

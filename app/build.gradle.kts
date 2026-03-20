@@ -67,6 +67,8 @@ dependencies {
     // Compose (Material3, UI, Activity, ViewModel)
     implementation(libs.bundles.compose)
 
+    implementation(libs.androidx.datastore.preferences)
+
     // Сторонние
     implementation(libs.reorderable)
     implementation(libs.google.play.review)

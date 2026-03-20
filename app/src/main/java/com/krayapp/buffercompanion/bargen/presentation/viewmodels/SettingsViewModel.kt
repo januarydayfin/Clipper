@@ -1,18 +1,43 @@
 package com.krayapp.buffercompanion.bargen.presentation.viewmodels
 
 import androidx.lifecycle.ViewModel
-import com.krayapp.buffercompanion.bargen.ClipperApp
+import androidx.lifecycle.viewModelScope
+import com.krayapp.buffercompanion.bargen.GlobalPrefs
 import com.krayapp.buffercompanion.bargen.presentation.mvi.settings.SettingsIntent
 import com.krayapp.buffercompanion.bargen.presentation.mvi.settings.SettingsSideEffect
 import com.krayapp.buffercompanion.bargen.presentation.mvi.settings.SettingsState
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.viewmodel.container
 
-class SettingsViewModel : ContainerHost<SettingsState, SettingsSideEffect>, ViewModel() {
+class SettingsViewModel(
+    private val prefs: GlobalPrefs
+) : ContainerHost<SettingsState, SettingsSideEffect>, ViewModel() {
 
-    override val container = container<SettingsState, SettingsSideEffect>(SettingsState.default())
+    override val container = container<SettingsState, SettingsSideEffect>(SettingsState.default(prefs))
+
+    init {
+        prefs.themeFlow.onEach { theme ->
+            intent { reduce { state.copy(theme = theme) } }
+        }.launchIn(viewModelScope)
+
+        prefs.openCardAfterScanFlow.onEach { open ->
+            intent { reduce { state.copy(openCardAfterScan = open) } }
+        }.launchIn(viewModelScope)
+
+        prefs.scanOnVolumeFlow.onEach { open ->
+            intent { reduce { state.copy(openScannerByButton = open) } }
+        }.launchIn(viewModelScope)
+
+        prefs.maxBrightOnCodeFlow.onEach { bright ->
+            intent { reduce { state.copy(maxBrightOnCode = bright) } }
+        }.launchIn(viewModelScope)
+
+        prefs.swipeToDeleteFlow.onEach { swipe ->
+            intent { reduce { state.copy(swipeToDelete = swipe) } }
+        }.launchIn(viewModelScope)
+    }
 
     fun onIntent(intent: SettingsIntent) {
         when (intent) {
@@ -25,41 +50,23 @@ class SettingsViewModel : ContainerHost<SettingsState, SettingsSideEffect>, View
     }
 
     private fun updateTheme(theme: Int) = intent {
-        ClipperApp.getPrefs().theme = theme
-        reduce {
-            state.copy(theme = theme)
-        }
+        prefs.theme = theme
     }
 
 
     private fun updateOpenAfterScan(open: Boolean) = intent {
-        ClipperApp.getPrefs().openCardAfterScan = open
-        reduce {
-            state.copy(openCardAfterScan = open)
-        }
+        prefs.openCardAfterScan = open
     }
 
     private fun updateOpenScanByButton(open: Boolean) = intent {
-        ClipperApp.getPrefs().scanOnVolume = open
-        reduce {
-            state.copy(openScannerByButton = open)
-        }
-
+        prefs.scanOnVolume = open
     }
 
     private fun updateMaxBrightOnCard(needToBright: Boolean) = intent {
-        ClipperApp.getPrefs().maxBrightOnCode = needToBright
-        reduce {
-            state.copy(maxBrightOnCode = needToBright)
-        }
+        prefs.maxBrightOnCode = needToBright
     }
 
     private fun updateSwipeToDelete(swipe: Boolean) = intent {
-        ClipperApp.getPrefs().swipeToDelete = swipe
-        reduce {
-            state.copy(swipeToDelete = swipe)
-        }
+        prefs.swipeToDelete = swipe
     }
-
-
 }
