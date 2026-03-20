@@ -82,4 +82,5 @@
     <string name="backup_error">Restore error</string>
     <string name="error">Error</string>
     <string name="max_bright">Maximum brightness on the code screen</string>
+    <string name="swipe_for_delete">Swipe to delete</string>
 </resources>

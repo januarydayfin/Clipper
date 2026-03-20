@@ -89,6 +89,7 @@ fun MainScreen(
         BarcodeCard(
             modifier = modifier.padding(horizontal = mSize),
             inSelectionMode = uiState.inSelectionMode,
+            swipeToDeleteAvailable = uiState.swipeToDelete,
             isCheckedForDeletion = item.id in uiState.selectedBarcodesIds,
             uiModel = item,
             pinAvailable = pinAvailable,
@@ -201,17 +202,18 @@ fun MainScreen(
                         }
                     }
                 }
-                BottomButtonGroup(
-                    modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .windowInsetsPadding(WindowInsets.navigationBars),
-                    hideState = { lazyListState },
-                    onCreateClicked = {
-                        viewmodel.onIntent(MainIntent.ShowEmptyMainBottomSheet)
-                    },
-                    onTagsClicked = { viewmodel.onIntent(MainIntent.ShowTagsMenu) },
-                    onScanClicked = onScanClicked
-                )
+                if (!uiState.inSelectionMode)
+                    BottomButtonGroup(
+                        modifier = Modifier
+                            .align(Alignment.BottomCenter)
+                            .windowInsetsPadding(WindowInsets.navigationBars),
+                        hideState = { lazyListState },
+                        onCreateClicked = {
+                            viewmodel.onIntent(MainIntent.ShowEmptyMainBottomSheet)
+                        },
+                        onTagsClicked = { viewmodel.onIntent(MainIntent.ShowTagsMenu) },
+                        onScanClicked = onScanClicked
+                    )
             }
         }
     }

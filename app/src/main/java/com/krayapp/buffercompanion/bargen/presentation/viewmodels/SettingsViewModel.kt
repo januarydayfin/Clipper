@@ -20,6 +20,7 @@ class SettingsViewModel : ContainerHost<SettingsState, SettingsSideEffect>, View
             is SettingsIntent.UpdateOpenAfterScan -> updateOpenAfterScan(intent.open)
             is SettingsIntent.UpdateOpenScanByButton -> updateOpenScanByButton(intent.open)
             is SettingsIntent.UpdateTheme -> updateTheme(intent.theme)
+            is SettingsIntent.UpdateSwipeToDelete -> updateSwipeToDelete(intent.swipe)
         }
     }
 
@@ -50,6 +51,13 @@ class SettingsViewModel : ContainerHost<SettingsState, SettingsSideEffect>, View
         ClipperApp.getPrefs().maxBrightOnCode = needToBright
         reduce {
             state.copy(maxBrightOnCode = needToBright)
+        }
+    }
+
+    private fun updateSwipeToDelete(swipe: Boolean) = intent {
+        ClipperApp.getPrefs().swipeToDelete = swipe
+        reduce {
+            state.copy(swipeToDelete = swipe)
         }
     }
 

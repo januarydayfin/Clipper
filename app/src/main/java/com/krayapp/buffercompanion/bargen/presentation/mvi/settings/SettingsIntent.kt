@@ -5,4 +5,5 @@ sealed interface SettingsIntent {
     data class UpdateOpenAfterScan(val open: Boolean): SettingsIntent
     data class UpdateOpenScanByButton(val open: Boolean): SettingsIntent
     data class UpdateMaxBrightOnCard(val needToBright: Boolean): SettingsIntent
+    data class UpdateSwipeToDelete(val swipe: Boolean): SettingsIntent
 }

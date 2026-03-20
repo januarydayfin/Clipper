@@ -22,10 +22,16 @@ class MviProcessor(
 ) : ContainerHost<MviState, SideEffect> {
     override val container = viewModel.container<MviState, SideEffect>(MviState())
     private val pinHandler = PinHandler(this)
+    private val dataStore = ClipperApp.getPrefs()
 
     init {
         viewModel.launchInIO {
             pinHandler.init()
+            intent {
+                reduce {
+                    state.copy(swipeToDelete = dataStore.swipeToDelete)
+                }
+            }
         }
         viewModel.launchInIO {
             handler.cardSelectionFlow.collectLatest {

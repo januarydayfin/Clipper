@@ -33,6 +33,10 @@ class GlobalPrefs {
         get() = prefs.getBoolean(MAX_BRIGHT_ON_CODE, false)
         set(value) = prefs.edit { putBoolean(MAX_BRIGHT_ON_CODE, value) }
 
+    var swipeToDelete: Boolean
+        get() = prefs.getBoolean(SWIPE_TO_DELETE, true)
+        set(value) = prefs.edit { putBoolean(SWIPE_TO_DELETE, value) }
+
     companion object {
         private const val PREFS_NAME = "mainSettings"
 
@@ -41,5 +45,6 @@ class GlobalPrefs {
         private const val SORT_TYPE = "SORT_TYPE"
         private const val VOLUME_BUTTON_SCAN = "VOLUME_BUTTON_SCAN "
         private const val OPEN_AFTER_SCAN = "OPEN_AFTER_SCAN"
+        private const val SWIPE_TO_DELETE = "SWIPE_TO_DELETE"
     }
 }

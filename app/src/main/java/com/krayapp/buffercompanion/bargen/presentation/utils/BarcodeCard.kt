@@ -58,6 +58,7 @@ fun BarcodeCard(
     inSelectionMode: Boolean,
     isCheckedForDeletion: Boolean,
     pinAvailable: Boolean,
+    swipeToDeleteAvailable: Boolean = true,
     onDeleteClicked: (String) -> Unit = {},
     onCardClick: () -> Unit = {},
     onSelectClick: () -> Unit = {},
@@ -69,7 +70,6 @@ fun BarcodeCard(
     val haptic = LocalHapticFeedback.current
     val dismissState = rememberSwipeToDismissBoxState()
     val deleteDialogShowState = remember { mutableStateOf("") }
-
     if (deleteDialogShowState.value.isNotEmpty()) {
         ConfirmationDialog(onDismiss = {
             deleteDialogShowState.value = ""
@@ -80,6 +80,7 @@ fun BarcodeCard(
     SwipeToDismissBox(
         modifier = modifier,
         enableDismissFromStartToEnd = false,
+        enableDismissFromEndToStart = swipeToDeleteAvailable,
         state = dismissState,
         onDismiss = {
             scope.launch {

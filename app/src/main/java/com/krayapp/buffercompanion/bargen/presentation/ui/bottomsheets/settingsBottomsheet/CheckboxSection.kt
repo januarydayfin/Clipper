@@ -43,6 +43,13 @@ fun CheckboxSection(state: State<SettingsState>, viewmodel: SettingsViewModel) {
             ) {
                 viewmodel.onIntent(SettingsIntent.UpdateMaxBrightOnCard(it))
             }
+
+            TextCheckbox(
+                isChecked = state.value.swipeToDelete,
+                textRes = R.string.swipe_for_delete
+            ) {
+                viewmodel.onIntent(SettingsIntent.UpdateSwipeToDelete(it))
+            }
         }
     }
 }

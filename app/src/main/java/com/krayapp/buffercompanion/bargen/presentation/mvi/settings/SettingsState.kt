@@ -7,13 +7,15 @@ data class SettingsState(
     val openScannerByButton: Boolean,
     val openCardAfterScan: Boolean,
     val maxBrightOnCode: Boolean,
+    val swipeToDelete: Boolean,
 ) {
     companion object {
         fun default() = SettingsState(
-            theme = ClipperApp.Companion.getPrefs().theme,
-            openScannerByButton = ClipperApp.Companion.getPrefs().scanOnVolume,
-            openCardAfterScan = ClipperApp.Companion.getPrefs().openCardAfterScan,
-            maxBrightOnCode =  ClipperApp.Companion.getPrefs().maxBrightOnCode
+            theme = ClipperApp.getPrefs().theme,
+            openScannerByButton = ClipperApp.getPrefs().scanOnVolume,
+            openCardAfterScan = ClipperApp.getPrefs().openCardAfterScan,
+            maxBrightOnCode = ClipperApp.getPrefs().maxBrightOnCode,
+            swipeToDelete = ClipperApp.getPrefs().swipeToDelete
         )
     }
 }
