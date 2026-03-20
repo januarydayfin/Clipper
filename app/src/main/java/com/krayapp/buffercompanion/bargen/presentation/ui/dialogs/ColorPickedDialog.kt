@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Surface
@@ -28,10 +27,11 @@ import com.github.skydoves.colorpicker.compose.BrightnessSlider
 import com.github.skydoves.colorpicker.compose.HsvColorPicker
 import com.github.skydoves.colorpicker.compose.rememberColorPickerController
 import com.krayapp.buffercompanion.bargen.R
-import com.krayapp.buffercompanion.bargen.presentation.utils.BargenChip
 import com.krayapp.buffercompanion.bargen.presentation.models.TagUiModel
-import com.krayapp.buffercompanion.bargen.theme.mSize
+import com.krayapp.buffercompanion.bargen.presentation.utils.BargenChip
 import com.krayapp.buffercompanion.bargen.presentation.utils.Space
+import com.krayapp.buffercompanion.bargen.theme.mRoundedCornerShape
+import com.krayapp.buffercompanion.bargen.theme.mSize
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -56,7 +56,7 @@ fun ColorPickedDialog(
         }
         modelState.value = newModel
 
-        Surface(shape = RoundedCornerShape(size = mSize)) {
+        Surface(shape = mRoundedCornerShape) {
             Column {
                 Space(height = mSize)
 

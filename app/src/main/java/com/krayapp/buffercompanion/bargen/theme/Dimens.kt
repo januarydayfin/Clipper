@@ -13,3 +13,5 @@ val barcodePreviewSize = 50.dp
 val defaultAnimationDuration = 200
 
 val labelIconSize = 20.dp
+
+val keepPinSize = 25.dp

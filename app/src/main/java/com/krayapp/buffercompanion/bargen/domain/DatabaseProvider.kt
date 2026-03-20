@@ -4,7 +4,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import com.krayapp.buffercompanion.bargen.ClipperApp
-import com.krayapp.buffercompanion.bargen.data.room.bargen.BargenDB
+import com.krayapp.buffercompanion.bargen.data.room.BargenDB
 import java.util.concurrent.ConcurrentHashMap
 
 
@@ -35,7 +35,10 @@ inline fun <reified DB : RoomDatabase> provideDatabase(): DB {
 
 inline fun <reified T : RoomDatabase> getDatabaseConfig(): DatabaseConfig? =
     when (T::class) {
-        BargenDB::class -> DatabaseConfig(dbName = BargenDB.DB_NAME)
+        BargenDB::class -> DatabaseConfig(
+            dbName = BargenDB.DB_NAME,
+            migrations = listOf(BargenDB.MIGRATION_1_2)
+        )
 
         else -> null
     }

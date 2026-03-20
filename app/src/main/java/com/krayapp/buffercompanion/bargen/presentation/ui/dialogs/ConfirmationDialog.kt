@@ -32,7 +32,7 @@ fun ConfirmationDialog(onDismiss: () -> Unit, onConfirm: () -> Unit) {
                 modifier = Modifier.padding(all = mSize),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(text = stringResource(R.string.delete_record), style = MaterialTheme.typography.headlineSmall)
+                Text(text = stringResource(R.string.delete_record), style = MaterialTheme.typography.titleLarge)
 
                 Space(height = mSize * 2)
                 Text(

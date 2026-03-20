@@ -3,19 +3,20 @@ package com.krayapp.buffercompanion.bargen
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
 import com.google.android.material.color.DynamicColors
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.context.GlobalContext
 import org.koin.core.context.startKoin
 
 class ClipperApp : Application() {
 
     companion object {
         private var instance: Application? = null
-        private lateinit var globalPrefs: GlobalPrefs
         fun getApplication(): Application {
             return instance!!
         }
 
         fun getPrefs(): GlobalPrefs {
-            return globalPrefs
+            return GlobalContext.get().get<GlobalPrefs>()
         }
 
         val displayWidth: Int
@@ -26,13 +27,14 @@ class ClipperApp : Application() {
         super.onCreate()
 
         instance = this
-        globalPrefs = GlobalPrefs()
 
         DynamicColors.applyToActivitiesIfAvailable(this)
-        AppCompatDelegate.setDefaultNightMode(globalPrefs.theme)
 
         startKoin {
+            androidContext(this@ClipperApp)
             modules(appModule)
         }
+
+        AppCompatDelegate.setDefaultNightMode(getPrefs().theme)
     }
 }

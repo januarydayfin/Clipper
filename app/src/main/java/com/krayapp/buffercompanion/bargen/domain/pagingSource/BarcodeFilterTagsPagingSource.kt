@@ -2,7 +2,7 @@ package com.krayapp.buffercompanion.bargen.domain.pagingSource
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.krayapp.buffercompanion.bargen.data.room.bargen.BargenDB
+import com.krayapp.buffercompanion.bargen.data.room.BargenDB
 import com.krayapp.buffercompanion.bargen.data.room.entity.BarcodeEntity
 import com.krayapp.buffercompanion.bargen.domain.provideDatabase
 

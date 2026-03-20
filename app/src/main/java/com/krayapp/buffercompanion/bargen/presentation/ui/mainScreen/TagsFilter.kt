@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -20,16 +20,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import com.krayapp.buffercompanion.bargen.R
 import com.krayapp.buffercompanion.bargen.domain.selector.tagSelector.TagSelector
+import com.krayapp.buffercompanion.bargen.domain.usecase.tags.TagsUsecase
+import com.krayapp.buffercompanion.bargen.presentation.mapper.toTagUiModel
 import com.krayapp.buffercompanion.bargen.presentation.models.TagUiModel
 import com.krayapp.buffercompanion.bargen.presentation.models.setChecked
 import com.krayapp.buffercompanion.bargen.presentation.utils.BargenChip
 import com.krayapp.buffercompanion.bargen.presentation.utils.Space
-import com.krayapp.buffercompanion.bargen.presentation.utils.TagsRouter
+import com.krayapp.buffercompanion.bargen.theme.mRoundedCornerShape
 import com.krayapp.buffercompanion.bargen.theme.mSize
 import com.krayapp.buffercompanion.bargen.theme.sSize
 import com.krayapp.buffercompanion.bargen.utils.io
@@ -38,8 +39,8 @@ import org.koin.compose.koinInject
 
 
 @Composable
-fun SelectedFilterTags() {
-    val router = TagsRouter
+fun SelectedFilterTags(modifier: Modifier = Modifier) {
+    val tagsUsecase: TagsUsecase = koinInject()
     val tagSelector: TagSelector = koinInject()
     val scope = rememberCoroutineScope()
     val tagsUi = remember { mutableStateListOf<TagUiModel>() }
@@ -47,10 +48,9 @@ fun SelectedFilterTags() {
     LaunchedEffect(Unit) {
         scope.io {
             tagSelector.tagsFilterFlow.collectLatest { filter ->
-                router.loadTagsUiModelsByIds(filter) { input ->
-                    tagsUi.clear()
-                    tagsUi.addAll(input)
-                }
+                val tagsWithId = tagsUsecase.getTagsEntityByIds(filter)
+                tagsUi.clear()
+                tagsUi.addAll(tagsWithId.map { it.toTagUiModel() })
             }
         }
     }
@@ -59,10 +59,10 @@ fun SelectedFilterTags() {
         Space(height = mSize)
 
     Surface(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = sSize)
-            .clip(RoundedCornerShape(mSize)),
+            .clip(mRoundedCornerShape),
         color = MaterialTheme.colorScheme.surfaceContainer,
     ) {
         Column {
@@ -78,10 +78,11 @@ fun SelectedFilterTags() {
                     )
 
                     Icon(
-                        imageVector = ImageVector.vectorResource(R.drawable.outline_cancel_24),
+                        painter = painterResource(R.drawable.outline_cancel_24),
                         contentDescription = null,
                         modifier = Modifier
                             .padding(all = sSize)
+                            .clip(CircleShape)
                             .clickable {
                                 scope.io {
                                     tagSelector.cleanSelection()

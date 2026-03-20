@@ -7,7 +7,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.DpOffset
@@ -36,7 +36,7 @@ fun SortDropdownMenu(
             }, trailingIcon = {
                 if (it == currentChecked.value)
                     Icon(
-                        imageVector = ImageVector.vectorResource(R.drawable.outline_check_24),
+                        painter = painterResource(R.drawable.outline_check_24),
                         contentDescription = null
                     )
             })

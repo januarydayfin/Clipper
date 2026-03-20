@@ -1,9 +1,7 @@
-package com.krayapp.buffercompanion.bargen.domain.selector.di
+package com.krayapp.buffercompanion.bargen.domain.di
 
 import com.krayapp.buffercompanion.bargen.domain.selector.barcodeSelector.CardSelector
 import com.krayapp.buffercompanion.bargen.domain.selector.barcodeSelector.CardSelectorImpl
-import com.krayapp.buffercompanion.bargen.domain.selector.tagSelector.TagSelector
-import com.krayapp.buffercompanion.bargen.domain.selector.tagSelector.TagSelectorImpl
 import org.koin.dsl.module
 
 val selectorModule = module {
@@ -11,8 +9,6 @@ val selectorModule = module {
         CardSelectorImpl(get())
     }
 
-    single<TagSelector> {
-        TagSelectorImpl()
-    }
+
 }
 

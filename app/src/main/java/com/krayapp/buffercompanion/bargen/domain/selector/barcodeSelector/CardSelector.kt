@@ -6,7 +6,6 @@ interface CardSelector {
     val selectedBarcodes: StateFlow<List<String>>
 
     suspend fun cleanSelection()
-    suspend fun selectAll()
     suspend fun checkBarcodeForSelection(id: String)
-    suspend fun deleteAllSelected(onDeleted: () -> Unit)
+    suspend fun deleteAllSelected()
 }

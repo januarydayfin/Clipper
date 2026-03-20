@@ -15,7 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.vectorResource
@@ -48,7 +48,7 @@ fun BargenChip(
             shape = RoundedCornerShape(size = 8.dp),
             modifier = modifier
                 .clip(RoundedCornerShape(size = 8.dp))
-                .combinedClickable(onClick = {
+                .combinedClickable(enabled = selectable, onClick = {
                     if (selectable)
                         onClick()
                 }, onLongClick = {
@@ -65,7 +65,7 @@ fun BargenChip(
                 if (model.checked && selectable) {
                     Icon(
                         modifier = Modifier.size(size = labelIconSize),
-                        imageVector = ImageVector.vectorResource(R.drawable.outline_check_24),
+                        painter = painterResource(R.drawable.outline_check_24),
                         contentDescription = null,
                     )
                     Space(width = xsSize)

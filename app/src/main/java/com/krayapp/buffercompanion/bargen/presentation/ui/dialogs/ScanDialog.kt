@@ -21,16 +21,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
@@ -41,13 +41,14 @@ import com.krayapp.buffercompanion.bargen.ClipperApp
 import com.krayapp.buffercompanion.bargen.R
 import com.krayapp.buffercompanion.bargen.domain.bargenCore.BarReader
 import com.krayapp.buffercompanion.bargen.domain.selector.tagSelector.TagSelector
+import com.krayapp.buffercompanion.bargen.domain.usecase.tags.TagsUsecase
+import com.krayapp.buffercompanion.bargen.presentation.mapper.toTagUiModel
 import com.krayapp.buffercompanion.bargen.presentation.models.TagUiModel
 import com.krayapp.buffercompanion.bargen.presentation.models.setChecked
 import com.krayapp.buffercompanion.bargen.presentation.mvi.main.MainIntent
 import com.krayapp.buffercompanion.bargen.presentation.utils.BargenChip
 import com.krayapp.buffercompanion.bargen.presentation.utils.Space
 import com.krayapp.buffercompanion.bargen.presentation.viewmodels.BargenViewModel
-import com.krayapp.buffercompanion.bargen.presentation.utils.TagsRouter
 import com.krayapp.buffercompanion.bargen.theme.AppTheme
 import com.krayapp.buffercompanion.bargen.theme.mSize
 import kotlinx.coroutines.flow.collectLatest
@@ -106,7 +107,7 @@ class ScanDialog(
         }
 
         composeView.setContent {
-            AutoTagSection(mainViewModel = viewModel, barReader = reader)
+            AutoTagSection(viewModel = viewModel, barReader = reader)
         }
     }
 }
@@ -117,21 +118,21 @@ private fun Dialog?.setTransparent() {
 
 @Composable
 private fun AutoTagSection(
-    mainViewModel: BargenViewModel,
+    viewModel: BargenViewModel,
     barReader: BarReader
 ) {
-    val tagRouter = TagsRouter
+    val tagUsecase: TagsUsecase = koinInject()
     val tagSelector: TagSelector = koinInject()
+    val scope = rememberCoroutineScope()
     AppTheme {
-        val tagsState = tagSelector.tagsFilterFlow.collectAsState()
-        val scope = rememberCoroutineScope()
-        val tagsUiState = remember { mutableStateListOf<TagUiModel>() }
+        val checkedTagIds by tagSelector.tagsFilterFlow.collectAsState()
+
         val torchState = remember { mutableStateOf(false) }
-        LaunchedEffect(Unit) {
-            tagRouter.loadTagsUiModelsByIds(tagsState.value) { input ->
-                tagsUiState.clear()
-                tagsUiState.addAll(input)
-            }
+        val tagUiState = remember { mutableStateListOf<TagUiModel>() }
+        LaunchedEffect(checkedTagIds) {
+            val entities = tagUsecase.getTagsEntityByIds(checkedTagIds)
+            tagUiState.clear()
+            tagUiState.addAll(entities.map { it.toTagUiModel() })
         }
 
         Surface {
@@ -152,7 +153,7 @@ private fun AutoTagSection(
                         .fillMaxWidth()
                         .padding(horizontal = mSize)
                 ) {
-                    tagsUiState.forEach {
+                    tagUiState.forEach {
                         BargenChip(model = it.setChecked(), onClick = {
                             scope.launch {
                                 tagSelector.checkTag(it.id)
@@ -163,12 +164,12 @@ private fun AutoTagSection(
                 Space(height = mSize)
                 Row {
                     Button(onClick = {
-                        mainViewModel.onIntent(MainIntent.ShowTagsMenu)
+                        viewModel.onIntent(MainIntent.ShowTagsMenu)
                     }) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Icon(
                                 modifier = Modifier.padding(end = 4.dp),
-                                imageVector = ImageVector.vectorResource(R.drawable.ic_label),
+                                painter = painterResource(R.drawable.ic_label),
                                 contentDescription = stringResource(R.string.tags),
                             )
                             Text(
@@ -188,12 +189,12 @@ private fun AutoTagSection(
                     {
                         if (torchState.value)
                             Icon(
-                                imageVector = ImageVector.vectorResource(R.drawable.baseline_flashlight_off_24),
+                                painter = painterResource(R.drawable.baseline_flashlight_off_24),
                                 contentDescription = null
                             )
                         else
                             Icon(
-                                imageVector = ImageVector.vectorResource(R.drawable.baseline_flashlight_on_24),
+                                painter = painterResource(R.drawable.baseline_flashlight_on_24),
                                 contentDescription = null
                             )
                     }

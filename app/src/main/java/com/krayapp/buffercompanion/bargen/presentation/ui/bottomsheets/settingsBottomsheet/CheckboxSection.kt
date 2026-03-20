@@ -27,7 +27,7 @@ fun CheckboxSection(state: State<SettingsState>, viewmodel: SettingsViewModel) {
                 isChecked = state.value.openCardAfterScan,
                 textRes = R.string.show_card_after_scan
             ) {
-                viewmodel.onIntent(SettingsIntent.UpdateOpenScanByButton(it))
+                viewmodel.onIntent(SettingsIntent.UpdateOpenAfterScan(it))
             }
 
             TextCheckbox(
@@ -42,6 +42,13 @@ fun CheckboxSection(state: State<SettingsState>, viewmodel: SettingsViewModel) {
                 textRes = R.string.max_bright
             ) {
                 viewmodel.onIntent(SettingsIntent.UpdateMaxBrightOnCard(it))
+            }
+
+            TextCheckbox(
+                isChecked = state.value.swipeToDelete,
+                textRes = R.string.swipe_for_delete
+            ) {
+                viewmodel.onIntent(SettingsIntent.UpdateSwipeToDelete(it))
             }
         }
     }

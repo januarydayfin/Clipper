@@ -10,15 +10,25 @@ sealed interface MainIntent {
     data object ShowTagsMenu : MainIntent
     data object ShowSettingsBottomsheet : MainIntent
 
+    data object CleanCardSelection: MainIntent
+    data object CleanTagsSelection: MainIntent
     data object HideBottomSheet : MainIntent
 
-    data class CreateNewRecordFromRawData(
-        val text: String,
+    data class DeleteBarcode(val id: String): MainIntent
+    data object DeleteAllSelectedCards: MainIntent
+    data class CheckBarcodeForSelection(val id: String): MainIntent
+    data class CreateNewRecord(
+        val text: String = "",
         val format: BarcodeFormat = BarcodeFormat.QR_CODE,
-        val tagIds: List<String> = emptyList()
+        val tagIds: List<String> = emptyList(),
+        val barcodeEntity: BarcodeEntity? = null,
+        val showAfterCreate: Boolean = false,
     ) : MainIntent
 
-    data class CreateNewRecordFromEntity(
-        val barcodeEntity: BarcodeEntity
-    ) : MainIntent
+    sealed interface PinIntent: MainIntent {
+        data class PinBarcode(val id: String): PinIntent
+        data class UnpinBarcode(val id: String): PinIntent
+
+        data class SaveOrder(val barOrdered: List<BarcodeUiModel> ): PinIntent
+    }
 }

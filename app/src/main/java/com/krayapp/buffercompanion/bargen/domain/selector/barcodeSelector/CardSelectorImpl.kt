@@ -1,6 +1,6 @@
 package com.krayapp.buffercompanion.bargen.domain.selector.barcodeSelector
 
-import com.krayapp.buffercompanion.bargen.domain.repository.BarcodeRepo
+import com.krayapp.buffercompanion.bargen.data.room.repository.BarcodeRepo
 import com.krayapp.buffercompanion.bargen.utils.withIO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,12 +18,6 @@ class CardSelectorImpl(private val barcodeRepo: BarcodeRepo) :
         }
     }
 
-    override suspend fun selectAll() {
-        withIO {
-            val list = barcodeRepo.getAllBarcodes().map { it.id }
-            _selectedBarcodes.value = list
-        }
-    }
 
     override suspend fun checkBarcodeForSelection(id: String) {
         withIO {
@@ -41,10 +35,9 @@ class CardSelectorImpl(private val barcodeRepo: BarcodeRepo) :
         }
     }
 
-    override suspend fun deleteAllSelected(onDeleted: () -> Unit) {
+    override suspend fun deleteAllSelected() {
         withIO {
             barcodeRepo.removeBarcodesByIds(_selectedBarcodes.value)
-            onDeleted()
             cleanSelection()
         }
     }

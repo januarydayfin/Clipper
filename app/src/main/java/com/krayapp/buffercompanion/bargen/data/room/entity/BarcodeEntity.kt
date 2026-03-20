@@ -3,7 +3,7 @@ package com.krayapp.buffercompanion.bargen.data.room.entity
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
-import com.krayapp.buffercompanion.bargen.data.room.bargen.converter.StringListConverter
+import com.krayapp.buffercompanion.bargen.data.room.converter.StringListConverter
 import kotlinx.serialization.Serializable
 import java.util.Date
 import java.util.UUID
@@ -19,6 +19,7 @@ data class BarcodeEntity(
     val modificationTime: Long = Date().time,
     val name: String = "",
     val type: String,
+    val pinnedPosition: Int = -1,
     val tags: List<String> = emptyList()
 )
 

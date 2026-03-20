@@ -1,7 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-    id("com.google.devtools.ksp") version "2.0.21-1.0.25"
+    id("com.google.devtools.ksp") version "2.3.2"
     id("org.jetbrains.kotlin.plugin.compose")
     alias(libs.plugins.kotlinx.serialization)
 
@@ -15,8 +15,8 @@ android {
         applicationId = "com.krayapp.buffercompanion.bargen"
         minSdk = 30
         targetSdk = 36
-        versionCode = 310
-        versionName = "3.1.0"
+        versionCode = 321
+        versionName = "3.2.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -47,6 +47,7 @@ android {
 
 dependencies {
     // --- Основные зависимости (implementation) ---
+    implementation(libs.android.splashscreen)
     implementation(libs.androidx.activity.ktx)
     implementation(libs.kotlin.reflect)
     implementation(libs.kotlinx.serialization.json)
@@ -66,7 +67,10 @@ dependencies {
     // Compose (Material3, UI, Activity, ViewModel)
     implementation(libs.bundles.compose)
 
+    implementation(libs.androidx.datastore.preferences)
+
     // Сторонние
+    implementation(libs.reorderable)
     implementation(libs.google.play.review)
     implementation(libs.zxing.android.embedded)
     implementation(libs.tedpermission.normal)

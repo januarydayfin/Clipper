@@ -14,19 +14,21 @@ navigation = "2.9.5"
 playReview = "2.0.2"
 recyclerview = "1.4.0"
 room = "2.8.1"
-
+splashScreen = "1.0.0"
 # Версии Compose
 composeUi = "1.9.2" # Для ui-unit-android
 composeUiTooling = "1.9.2" # Часто используется для ui-tooling
 composeMaterial3 = "1.5.0-alpha04" # Обновил до более общей версии для Material3
 adaptive = "1.1.0"
 composePaging = "3.3.6"
+datastore = "1.1.2"
 
 # Сторонние библиотеки
 colorpicker = "1.1.2"
 kotlinSerialization = "1.8.1"
 tedpermission = "3.4.2"
 zxing = "4.3.0"
+reorderable = "3.0.0"
 
 # Версии для тестирования
 junit = "4.13.2"
@@ -43,6 +45,7 @@ kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", vers
 
 [libraries]
 # --- AndroidX/Google ---
+android-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "splashScreen" }
 
 
 koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koin" }
@@ -86,6 +89,8 @@ androidx-room-runtime = { group = "androidx.room", name = "room-runtime", versio
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 
+androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
+
 # --- Сторонние библиотеки ---
 kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinSerialization" }
@@ -93,6 +98,7 @@ tedpermission-normal = { group = "io.github.ParkSangGwon", name = "tedpermission
 zxing-android-embedded = { group = "com.journeyapps", name = "zxing-android-embedded", version.ref = "zxing" }
 skydoves-colorpickerview = { group = "com.github.skydoves", name = "colorpicker-compose", version.ref = "colorpicker" }
 google-play-review = { group = "com.google.android.play", name = "review", version.ref = "playReview" }
+reorderable = { module = "sh.calvin.reorderable:reorderable", version.ref = "reorderable" }
 
 # --- Тестирование ---
 junit-junit = { group = "junit", name = "junit", version.ref = "junit" }

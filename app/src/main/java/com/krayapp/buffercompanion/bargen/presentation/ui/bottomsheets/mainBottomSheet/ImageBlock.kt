@@ -8,9 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,15 +21,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import com.google.zxing.BarcodeFormat
 import com.krayapp.buffercompanion.bargen.R
 import com.krayapp.buffercompanion.bargen.domain.bargenCore.BarGenerator
 import com.krayapp.buffercompanion.bargen.presentation.models.BarcodeUiModel
 import com.krayapp.buffercompanion.bargen.presentation.utils.Space
+import com.krayapp.buffercompanion.bargen.theme.mRoundedCornerShape
 import com.krayapp.buffercompanion.bargen.theme.mSize
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
@@ -63,7 +61,7 @@ fun ImageBlock(
     if (bmp != null) {
         Image(
             bitmap = bmp.asImageBitmap(),
-            modifier = Modifier.clip(RoundedCornerShape(mSize)),
+            modifier = Modifier.clip(mRoundedCornerShape),
             contentDescription = "image"
         )
         Space(height = mSize)
@@ -95,7 +93,7 @@ private fun OutlinedIconButton(onClick: () -> Unit, textRes: Int, iconRes: Int) 
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(
                 modifier = Modifier.padding(end = 4.dp),
-                imageVector = ImageVector.vectorResource(iconRes),
+                painter = painterResource(iconRes),
                 contentDescription = stringResource(textRes),
             )
             Text(

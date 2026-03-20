@@ -1,4 +1,4 @@
-package com.krayapp.buffercompanion.bargen.presentation.screens.mainScreen
+package com.krayapp.buffercompanion.bargen.presentation.ui.mainScreen
 
 import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.animation.core.tween
@@ -9,40 +9,38 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SplitButtonDefaults
 import androidx.compose.material3.SplitButtonLayout
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.krayapp.buffercompanion.bargen.R
-import com.krayapp.buffercompanion.bargen.theme.defaultAnimationDuration
-import com.krayapp.buffercompanion.bargen.theme.mSize
-import com.krayapp.buffercompanion.bargen.theme.sSize
 import com.krayapp.buffercompanion.bargen.presentation.utils.Space
+import com.krayapp.buffercompanion.bargen.theme.defaultAnimationDuration
+import com.krayapp.buffercompanion.bargen.theme.sSize
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun BottomButtonGroup(
     modifier: Modifier = Modifier,
-    hideState: Boolean = false,
+    hideState: () ->LazyListState,
     onScanClicked: () -> Unit = {},
     onCreateClicked: () -> Unit = {},
     onTagsClicked: () -> Unit = {},
 ) {
 
     val offsetState = animateIntAsState(
-        if (hideState) 200 else 0,
+        if (hideState().lastScrolledForward) 500 else 0,
         animationSpec = tween(defaultAnimationDuration)
     )
     Row(
@@ -52,13 +50,12 @@ fun BottomButtonGroup(
             .offset {
                 IntOffset(y = offsetState.value, x = 0)
             }
-            .padding(bottom = mSize)
     ) {
 
         SplitButtonLayout(leadingButton = {
             SplitButtonDefaults.LeadingButton(onClick = onCreateClicked) {
                 Icon(
-                    ImageVector.vectorResource(R.drawable.ic_plus),
+                    painter = painterResource(R.drawable.ic_plus),
                     modifier = Modifier.size(SplitButtonDefaults.LeadingIconSize),
                     contentDescription = "Add new",
                 )
@@ -68,7 +65,7 @@ fun BottomButtonGroup(
         }, trailingButton = {
             SplitButtonDefaults.TrailingButton(onClick = onScanClicked) {
                 Icon(
-                    imageVector = ImageVector.vectorResource(R.drawable.ic_camera),
+                    painter = painterResource(R.drawable.ic_camera),
                     modifier =
                         Modifier.size(SplitButtonDefaults.TrailingIconSize),
                     contentDescription = "Localized description",
@@ -89,7 +86,7 @@ fun BottomButtonGroup(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
                     modifier = Modifier.padding(end = 4.dp),
-                    imageVector = ImageVector.vectorResource(R.drawable.ic_label),
+                    painter = painterResource(R.drawable.ic_label),
                     contentDescription = stringResource(R.string.tags),
                 )
                 Text(

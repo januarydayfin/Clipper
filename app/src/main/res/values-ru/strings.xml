@@ -10,6 +10,8 @@
 
     <string name="empty_hint">Пусто</string>
     <string name="settings_title">Настройки</string>
+    <string name="scroll_to_top">в начало</string>
+    <string name="selected">Выбрано</string>
 
     <string name="light_theme">Светлая</string>
     <string name="system_theme">Системная</string>
@@ -60,7 +62,7 @@
     <string name="action_unrevertable">Это действие необратимо</string>
     <string name="tag_background">Цвет тега</string>
     <string name="tag_font_color">Цвет текста тега</string>
-    <string name="found_tags">Найденные теги:</string>
+    <string name="similar_tags">Похожие теги:</string>
     <string name="tag_longtap_hint">Долгое нажатие на тег открывает меню</string>
     <string name="show_card_after_scan">Показывать окно редактирования сразу после сканирования</string>
     <string name="volume_button_open_scanner">Кнопка громкости открывает сканер</string>
@@ -78,4 +80,6 @@
     <string name="backup_error">Ошибка восстановления</string>
     <string name="error">Ошибка</string>
     <string name="max_bright">Максимальная яркость на экране кода</string>
+    <string name="swipe_for_delete">Свайп для удаления</string>
+
 </resources>

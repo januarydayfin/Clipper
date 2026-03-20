@@ -13,81 +13,55 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.krayapp.buffercompanion.bargen.R
-import com.krayapp.buffercompanion.bargen.domain.selector.tagSelector.TagSelector
 import com.krayapp.buffercompanion.bargen.presentation.models.TagUiModel
-import com.krayapp.buffercompanion.bargen.presentation.screens.mainScreen.SearchBar
+import com.krayapp.buffercompanion.bargen.presentation.mvi.tags.TagIntent
 import com.krayapp.buffercompanion.bargen.presentation.ui.composables.SheetDragger
 import com.krayapp.buffercompanion.bargen.presentation.ui.dialogs.setupTagDialog.SetupTagDialog
+import com.krayapp.buffercompanion.bargen.presentation.ui.mainScreen.SearchBar
 import com.krayapp.buffercompanion.bargen.presentation.utils.BargenChip
-import com.krayapp.buffercompanion.bargen.presentation.utils.TagsRouter
+import com.krayapp.buffercompanion.bargen.presentation.utils.colorizeBottomsheetNavBar
+import com.krayapp.buffercompanion.bargen.presentation.viewmodels.TagsViewModel
 import com.krayapp.buffercompanion.bargen.theme.mSize
-import com.krayapp.buffercompanion.bargen.utils.io
-import com.krayapp.buffercompanion.bargen.utils.launchWithDelay
-import kotlinx.coroutines.launch
-import org.koin.compose.koinInject
+import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TagsBottomSheet(onDismiss: () -> Unit) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    val tagsRouter = TagsRouter
-    val tagSelector: TagSelector = koinInject()
-    val tagsList = remember { mutableStateListOf<TagUiModel>() }
-    val scope = rememberCoroutineScope()
-    val selector: TagSelector = koinInject()
+    val viewmodel: TagsViewModel = koinViewModel()
     val showEditDialog = remember { mutableStateOf<TagUiModel?>(null) }
-    val filterQueryState = remember { mutableStateOf("") }
+    val tagsState by viewmodel.state.collectAsState()
 
-    fun refreshTags() {
-        val checkedTags = tagSelector.tagsFilterFlow.value
-        scope.launch {
-            tagsRouter.getTags(filterQueryState.value) {
-                val newList = it.map { item ->
-                    item.copy(checked = item.id in checkedTags)
-                }
-                tagsList.clear()
-                tagsList.addAll(newList)
-            }
-        }
-    }
-    LaunchedEffect(Unit) {
-        refreshTags()
-    }
     if (showEditDialog.value != null) {
         val dialogModel = showEditDialog.value ?: return
         SetupTagDialog(dialogModel, onDismiss = {
             showEditDialog.value = null
         }, onComplete = { changed ->
-            scope.launch {
-                val position = tagsList.toList().indexOfFirst { it.id == dialogModel.id }
-                tagsList[position] = changed
-                tagsRouter.saveTags(tagsList)
-            }
+            viewmodel.onIntent(TagIntent.SaveTag(listOf(changed)))
         }, onDeleteTag = {
-            scope.launch {
-                selector.forceUncheck(it.id)
-                tagsRouter.removeTagById(it.id)
-                showEditDialog.value = null
-            }
-            scope.launchWithDelay {
-                refreshTags()
-            }
+            viewmodel.onIntent(TagIntent.UncheckTag(it.id))
+            viewmodel.onIntent(TagIntent.DeleteTag(it.id))
+            showEditDialog.value = null
         })
     }
 
+    LaunchedEffect(Unit) {
+        viewmodel.onIntent(TagIntent.Init)
+    }
 
     ModalBottomSheet(dragHandle = {
         SheetDragger()
     }, sheetState = sheetState, onDismissRequest = {
         onDismiss()
     }) {
+        colorizeBottomsheetNavBar()
         Column(
             modifier = Modifier
                 .padding(horizontal = mSize)
@@ -99,19 +73,14 @@ fun TagsBottomSheet(onDismiss: () -> Unit) {
                 style = MaterialTheme.typography.labelMedium
             )
             FlowRow(Modifier.wrapContentHeight()) {
-                tagsList.forEachIndexed { index, _ ->
+                tagsState.list.forEach { tag ->
                     BargenChip(
-                        model = tagsList[index],
+                        model = tag,
                         onLongClick = {
-                            showEditDialog.value = tagsList[index]
+                            showEditDialog.value = tag
                         },
                         onClick = {
-                            tagsList[index] =
-                                tagsList[index].copy(checked = !tagsList[index].checked)
-
-                            scope.io {
-                                selector.checkTag(tagsList[index].id)
-                            }
+                            viewmodel.onIntent(TagIntent.CheckTag(tag.id))
                         }
                     )
                 }
@@ -120,8 +89,7 @@ fun TagsBottomSheet(onDismiss: () -> Unit) {
 
         }
         SearchBar(Modifier.padding(all = mSize)) {
-            filterQueryState.value = it
-            refreshTags()
+            viewmodel.onIntent(TagIntent.FilterTags(it))
         }
     }
 

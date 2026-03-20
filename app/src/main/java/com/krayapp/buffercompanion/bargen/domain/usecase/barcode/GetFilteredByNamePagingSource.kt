@@ -1,6 +1,6 @@
 package com.krayapp.buffercompanion.bargen.domain.usecase.barcode
 
-import com.krayapp.buffercompanion.bargen.domain.repository.BarcodeRepo
+import com.krayapp.buffercompanion.bargen.data.room.repository.BarcodeRepo
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 

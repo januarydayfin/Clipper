@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="SplashTheme" parent="Theme.SplashScreen">
+        <!-- Основной фон сплэш-скрина -->
+        <item name="windowSplashScreenBackground">@color/md_theme_background</item>
+
+        <!-- Устанавливаем фон подложки таким же, как основной фон, чтобы скрыть круг -->
+        <item name="windowSplashScreenIconBackgroundColor">@color/md_theme_background</item>
+
+        <!-- Используем наш новый drawable с инсетами для управления размером иконки -->
+        <item name="windowSplashScreenAnimatedIcon">@drawable/splash_icon</item>
+
+        <!-- Тема, которая применится после исчезновения сплэш-скрина -->
+        <item name="postSplashScreenTheme">@style/Theme.Material3.DayNight.NoActionBar</item>
+    </style>
+</resources>

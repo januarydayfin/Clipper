@@ -10,6 +10,8 @@
     <string name="sign_google">Sign in with Google</string>
     <string name="widget_settings">Widget settings</string>
     <string name="filter">Filter</string>
+    <string name="scroll_to_top">to top</string>
+    <string name="selected">Selected</string>
 
     <string name="empty_hint">Empty</string>
     <string name="settings_title">Settings</string>
@@ -64,7 +66,7 @@
     <string name="tag_background">Tag color</string>
     <string name="tag_font_color">Tag text color</string>
 
-    <string name="found_tags">Found tags:</string>
+    <string name="similar_tags">Similar tags:</string>
     <string name="tag_longtap_hint">Long tap on a tag to open a menu</string>
     <string name="show_card_after_scan">Show editing window immediately after scanning</string>
     <string name="volume_button_open_scanner">Volume button opens scanner</string>
@@ -80,4 +82,5 @@
     <string name="backup_error">Restore error</string>
     <string name="error">Error</string>
     <string name="max_bright">Maximum brightness on the code screen</string>
+    <string name="swipe_for_delete">Swipe to delete</string>
 </resources>
