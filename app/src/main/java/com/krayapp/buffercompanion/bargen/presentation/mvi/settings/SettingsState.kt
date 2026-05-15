@@ -9,6 +9,7 @@ data class SettingsState(
     val maxBrightOnCode: Boolean,
     val swipeToDelete: Boolean,
     val openLandscapeOnBsOpen: Boolean,
+    val hideBsAfterLandscapeClose: Boolean,
 ) {
     companion object {
         fun default(prefs: GlobalPrefs) = SettingsState(
@@ -17,7 +18,8 @@ data class SettingsState(
             openCardAfterScan = prefs.openCardAfterScan,
             maxBrightOnCode = prefs.maxBrightOnCode,
             swipeToDelete = prefs.swipeToDelete,
-            openLandscapeOnBsOpen = prefs.openLandscapeOnBsOpen
+            openLandscapeOnBsOpen = prefs.openLandscapeOnBsOpen,
+            hideBsAfterLandscapeClose = prefs.hideBsAfterLandscapeClose
         )
     }
 }

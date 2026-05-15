@@ -70,21 +70,27 @@ MainBottomSheet
 
 ---
 
-### Опциональный флаг: автооткрытие при открытии BS
+### Опциональный флаг 1: автооткрытие при открытии BS
 
-**Настройка:** «Show barcode in landscape on open» в `SettingsBottomSheet` → `CheckboxSection`.  
+**Настройка:** «Открывать горизонтальный режим при открытии карточки» / «Show barcode in landscape on open»  
 **По умолчанию:** выключен.
 
-Когда флаг включён, `BarcodeInfoDialog` открывается автоматически сразу после появления `MainBottomSheet`. Реализован через `LaunchedEffect(Unit)` внутри `MainBottomSheet` — при `autoOpenLandscape = true` устанавливает `infoDialogOpened = true`.
+Когда флаг включён, `BarcodeInfoDialog` открывается автоматически сразу после появления `MainBottomSheet`. Реализован через `LaunchedEffect(Unit)` — при `autoOpenLandscape = true` устанавливает `infoDialogOpened = true`.
 
-Флаг передаётся по цепочке:
+### Опциональный флаг 2: автоскрытие BS после закрытия диалога
+
+**Настройка:** «Скрывать карточку после закрытия горизонтального режима» / «Hide card after closing landscape view»  
+**По умолчанию:** выключен.
+
+Когда флаг включён, при закрытии `BarcodeInfoDialog` вызывается `onDismiss()` боттомшита, скрывая его вместе с диалогом.
+
+Оба флага передаются по одинаковой цепочке:
 ```
-GlobalPrefs.openLandscapeOnBsOpen
-    └── SettingsViewModel (подписка на Flow + SettingsIntent.UpdateOpenLandscapeOnBsOpen)
+GlobalPrefs.[флаг]
+    └── SettingsViewModel (подписка на Flow + SettingsIntent)
     └── CheckboxSection (UI)
-    └── prefs.openLandscapeOnBsOpen → MainActivity.ShowMainBottomSheet()
-            └── MainBottomSheet(autoOpenLandscape = ...)
-                    └── LaunchedEffect → infoDialogOpened = true
+    └── prefs.[флаг] → MainActivity.ShowMainBottomSheet()
+            └── MainBottomSheet(autoOpenLandscape, hideBsAfterLandscapeClose)
 ```
 
 ---
@@ -94,15 +100,16 @@ GlobalPrefs.openLandscapeOnBsOpen
 | Файл | Изменение |
 |------|-----------|
 | `ImageBlock.kt` | Параметр `onOpenInfoDialog: () -> Unit`, новая кнопка `FilledTonalIconButton` |
-| `MainBottomSheet.kt` | `infoDialogOpened` state, параметр `autoOpenLandscape`, `LaunchedEffect` |
-| `MainActivity.kt` | Передача `autoOpenLandscape = prefs.openLandscapeOnBsOpen` |
+| `MainBottomSheet.kt` | `infoDialogOpened` state, параметры `autoOpenLandscape` и `hideBsAfterLandscapeClose`, `LaunchedEffect` |
+| `MainActivity.kt` | Передача обоих флагов из `prefs` |
 | `BarcodeInfoDialog.kt` | Новый файл |
-| `GlobalPrefs.kt` | Ключ `OPEN_LANDSCAPE_ON_BS_OPEN`, Flow и свойство |
-| `SettingsState.kt` | Поле `openLandscapeOnBsOpen` |
-| `SettingsIntent.kt` | `UpdateOpenLandscapeOnBsOpen(open: Boolean)` |
-| `SettingsViewModel.kt` | Подписка на Flow, обработчик интента |
-| `CheckboxSection.kt` | Новый `TextCheckbox` |
-| `res/values/strings.xml` | Строки `landscape_view`, `open_landscape_on_open` |
+| `GlobalPrefs.kt` | Ключи `OPEN_LANDSCAPE_ON_BS_OPEN`, `HIDE_BS_AFTER_LANDSCAPE_CLOSE`, Flow и свойства |
+| `SettingsState.kt` | Поля `openLandscapeOnBsOpen`, `hideBsAfterLandscapeClose` |
+| `SettingsIntent.kt` | `UpdateOpenLandscapeOnBsOpen`, `UpdateHideBsAfterLandscapeClose` |
+| `SettingsViewModel.kt` | Подписки на Flow, обработчики интентов |
+| `CheckboxSection.kt` | Два новых `TextCheckbox` |
+| `res/values/strings.xml` | `landscape_view`, `open_landscape_on_open`, `hide_bs_after_landscape_close` |
+| `res/values-ru/strings.xml` | Переводы всех трёх строк |
 | `res/drawable/ic_landscape.xml` | Добавлен в git |
 
 ---

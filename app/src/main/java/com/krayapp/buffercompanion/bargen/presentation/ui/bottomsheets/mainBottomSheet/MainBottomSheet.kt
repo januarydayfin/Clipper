@@ -46,6 +46,7 @@ fun MainBottomSheet(
     onSaveStoragePicture: (Bitmap?) -> Unit = {},
     onApplyBarcode: (BarcodeUiModel) -> Unit = {},
     autoOpenLandscape: Boolean = false,
+    hideBsAfterLandscapeClose: Boolean = false,
 ) {
     val sheetState = rememberModalBottomSheetState()
     val modelState = remember { mutableStateOf(model) }
@@ -70,7 +71,10 @@ fun MainBottomSheet(
     if (infoDialogOpened.value)
         BarcodeInfoDialog(
             model = modelState.value,
-            onDismiss = { infoDialogOpened.value = false }
+            onDismiss = {
+                infoDialogOpened.value = false
+                if (hideBsAfterLandscapeClose) onDismiss()
+            }
         )
 
     if (formatDialogOpened.value)

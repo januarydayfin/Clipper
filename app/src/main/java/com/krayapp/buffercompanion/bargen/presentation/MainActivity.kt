@@ -161,6 +161,7 @@ class MainActivity : AppCompatActivity() {
         MainBottomSheet(
             model = data.model,
             autoOpenLandscape = prefs.openLandscapeOnBsOpen,
+            hideBsAfterLandscapeClose = prefs.hideBsAfterLandscapeClose,
             onDismiss = {
                 viewmodel.onIntent(MainIntent.HideBottomSheet)
 

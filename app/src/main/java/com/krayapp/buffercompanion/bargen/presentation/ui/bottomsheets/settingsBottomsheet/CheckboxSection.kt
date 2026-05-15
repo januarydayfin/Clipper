@@ -57,6 +57,13 @@ fun CheckboxSection(state: State<SettingsState>, viewmodel: SettingsViewModel) {
             ) {
                 viewmodel.onIntent(SettingsIntent.UpdateOpenLandscapeOnBsOpen(it))
             }
+
+            TextCheckbox(
+                isChecked = state.value.hideBsAfterLandscapeClose,
+                textRes = R.string.hide_bs_after_landscape_close
+            ) {
+                viewmodel.onIntent(SettingsIntent.UpdateHideBsAfterLandscapeClose(it))
+            }
         }
     }
 }

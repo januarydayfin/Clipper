@@ -34,6 +34,7 @@ class GlobalPrefs(private val context: Context) {
         val MAX_BRIGHT_ON_CODE = booleanPreferencesKey("MAX_BRIGHT_ON_CODE")
         val SWIPE_TO_DELETE = booleanPreferencesKey("SWIPE_TO_DELETE")
         val OPEN_LANDSCAPE_ON_BS_OPEN = booleanPreferencesKey("OPEN_LANDSCAPE_ON_BS_OPEN")
+        val HIDE_BS_AFTER_LANDSCAPE_CLOSE = booleanPreferencesKey("HIDE_BS_AFTER_LANDSCAPE_CLOSE")
     }
 
     val sortTypeFlow: Flow<String> = context.dataStore.data
@@ -137,6 +138,21 @@ class GlobalPrefs(private val context: Context) {
             runBlocking {
                 context.dataStore.edit { preferences ->
                     preferences[Keys.OPEN_LANDSCAPE_ON_BS_OPEN] = value
+                }
+            }
+        }
+
+    val hideBsAfterLandscapeCloseFlow: Flow<Boolean> = context.dataStore.data
+        .map { preferences ->
+            preferences[Keys.HIDE_BS_AFTER_LANDSCAPE_CLOSE] ?: false
+        }
+
+    var hideBsAfterLandscapeClose: Boolean
+        get() = runBlocking { hideBsAfterLandscapeCloseFlow.first() }
+        set(value) {
+            runBlocking {
+                context.dataStore.edit { preferences ->
+                    preferences[Keys.HIDE_BS_AFTER_LANDSCAPE_CLOSE] = value
                 }
             }
         }
