@@ -29,6 +29,7 @@ import com.krayapp.buffercompanion.bargen.R
 import com.krayapp.buffercompanion.bargen.presentation.models.BarcodeUiModel
 import com.krayapp.buffercompanion.bargen.presentation.ui.composables.SheetDragger
 import com.krayapp.buffercompanion.bargen.presentation.ui.dialogs.BarcodeFormatDialog
+import com.krayapp.buffercompanion.bargen.presentation.ui.dialogs.BarcodeInfoDialog
 import com.krayapp.buffercompanion.bargen.presentation.utils.colorizeBottomsheetNavBar
 import com.krayapp.buffercompanion.bargen.theme.lSize
 import com.krayapp.buffercompanion.bargen.theme.mSize
@@ -49,6 +50,7 @@ fun MainBottomSheet(
     val scrollState = rememberScrollState()
     val scope = rememberCoroutineScope()
     val formatDialogOpened = remember { mutableStateOf(false) }
+    val infoDialogOpened = remember { mutableStateOf(false) }
     val isKeyboardVisible by rememberUpdatedState(WindowInsets.isImeVisible)
 
 
@@ -58,6 +60,12 @@ fun MainBottomSheet(
                 sheetState.expand()
             }
     }
+
+    if (infoDialogOpened.value)
+        BarcodeInfoDialog(
+            model = modelState.value,
+            onDismiss = { infoDialogOpened.value = false }
+        )
 
     if (formatDialogOpened.value)
         BarcodeFormatDialog(
@@ -102,7 +110,8 @@ fun MainBottomSheet(
             ImageBlock(
                 state = modelState,
                 onSharePicture = onSharePicture,
-                onSaveStoragePicture = onSaveStoragePicture
+                onSaveStoragePicture = onSaveStoragePicture,
+                onOpenInfoDialog = { infoDialogOpened.value = true }
             )
             BarcodeFormatBlock(modelState) {
                 formatDialogOpened.value = true
