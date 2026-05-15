@@ -70,6 +70,43 @@ MainBottomSheet
 
 ---
 
+### Опциональный флаг: автооткрытие при открытии BS
+
+**Настройка:** «Show barcode in landscape on open» в `SettingsBottomSheet` → `CheckboxSection`.  
+**По умолчанию:** выключен.
+
+Когда флаг включён, `BarcodeInfoDialog` открывается автоматически сразу после появления `MainBottomSheet`. Реализован через `LaunchedEffect(Unit)` внутри `MainBottomSheet` — при `autoOpenLandscape = true` устанавливает `infoDialogOpened = true`.
+
+Флаг передаётся по цепочке:
+```
+GlobalPrefs.openLandscapeOnBsOpen
+    └── SettingsViewModel (подписка на Flow + SettingsIntent.UpdateOpenLandscapeOnBsOpen)
+    └── CheckboxSection (UI)
+    └── prefs.openLandscapeOnBsOpen → MainActivity.ShowMainBottomSheet()
+            └── MainBottomSheet(autoOpenLandscape = ...)
+                    └── LaunchedEffect → infoDialogOpened = true
+```
+
+---
+
+## Затронутые файлы
+
+| Файл | Изменение |
+|------|-----------|
+| `ImageBlock.kt` | Параметр `onOpenInfoDialog: () -> Unit`, новая кнопка `FilledTonalIconButton` |
+| `MainBottomSheet.kt` | `infoDialogOpened` state, параметр `autoOpenLandscape`, `LaunchedEffect` |
+| `MainActivity.kt` | Передача `autoOpenLandscape = prefs.openLandscapeOnBsOpen` |
+| `BarcodeInfoDialog.kt` | Новый файл |
+| `GlobalPrefs.kt` | Ключ `OPEN_LANDSCAPE_ON_BS_OPEN`, Flow и свойство |
+| `SettingsState.kt` | Поле `openLandscapeOnBsOpen` |
+| `SettingsIntent.kt` | `UpdateOpenLandscapeOnBsOpen(open: Boolean)` |
+| `SettingsViewModel.kt` | Подписка на Flow, обработчик интента |
+| `CheckboxSection.kt` | Новый `TextCheckbox` |
+| `res/values/strings.xml` | Строки `landscape_view`, `open_landscape_on_open` |
+| `res/drawable/ic_landscape.xml` | Добавлен в git |
+
+---
+
 ## Ограничения
 
 - Bitmap в диалоге генерируется независимо от уже сгенерированного в `ImageBlock` — незначительный overhead при открытии.

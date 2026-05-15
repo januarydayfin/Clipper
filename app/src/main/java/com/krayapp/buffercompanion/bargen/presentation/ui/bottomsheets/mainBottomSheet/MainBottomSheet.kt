@@ -16,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -43,7 +44,8 @@ fun MainBottomSheet(
     onDismiss: () -> Unit = {},
     onSharePicture: (Bitmap?) -> Unit = {},
     onSaveStoragePicture: (Bitmap?) -> Unit = {},
-    onApplyBarcode: (BarcodeUiModel) -> Unit = {}
+    onApplyBarcode: (BarcodeUiModel) -> Unit = {},
+    autoOpenLandscape: Boolean = false,
 ) {
     val sheetState = rememberModalBottomSheetState()
     val modelState = remember { mutableStateOf(model) }
@@ -52,6 +54,10 @@ fun MainBottomSheet(
     val formatDialogOpened = remember { mutableStateOf(false) }
     val infoDialogOpened = remember { mutableStateOf(false) }
     val isKeyboardVisible by rememberUpdatedState(WindowInsets.isImeVisible)
+
+    LaunchedEffect(Unit) {
+        if (autoOpenLandscape) infoDialogOpened.value = true
+    }
 
 
     SideEffect {

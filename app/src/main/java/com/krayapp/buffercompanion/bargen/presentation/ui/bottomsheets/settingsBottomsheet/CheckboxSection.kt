@@ -50,6 +50,13 @@ fun CheckboxSection(state: State<SettingsState>, viewmodel: SettingsViewModel) {
             ) {
                 viewmodel.onIntent(SettingsIntent.UpdateSwipeToDelete(it))
             }
+
+            TextCheckbox(
+                isChecked = state.value.openLandscapeOnBsOpen,
+                textRes = R.string.open_landscape_on_open
+            ) {
+                viewmodel.onIntent(SettingsIntent.UpdateOpenLandscapeOnBsOpen(it))
+            }
         }
     }
 }

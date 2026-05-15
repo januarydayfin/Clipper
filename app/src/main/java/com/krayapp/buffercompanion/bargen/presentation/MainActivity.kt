@@ -159,7 +159,9 @@ class MainActivity : AppCompatActivity() {
         if (prefs.maxBrightOnCode)
             peakBright()
         MainBottomSheet(
-            model = data.model, onDismiss = {
+            model = data.model,
+            autoOpenLandscape = prefs.openLandscapeOnBsOpen,
+            onDismiss = {
                 viewmodel.onIntent(MainIntent.HideBottomSheet)
 
 //                if (prefs.maxBrightOnCode)
