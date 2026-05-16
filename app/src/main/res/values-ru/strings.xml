@@ -84,5 +84,7 @@
     <string name="landscape_view">Горизонтальный просмотр</string>
     <string name="open_landscape_on_open">Открывать горизонтальный режим при открытии карточки</string>
     <string name="hide_bs_after_landscape_close">Скрывать карточку после закрытия горизонтального режима</string>
+    <string name="pin_automatically">Сразу закреплять</string>
+    <string name="pin_limit_reached">Лимит закреплений достигнут</string>
 
 </resources>

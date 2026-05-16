@@ -2,6 +2,7 @@ package com.krayapp.buffercompanion.bargen.presentation.mvi.processing
 
 import androidx.lifecycle.viewModelScope
 import com.krayapp.buffercompanion.bargen.GlobalPrefs
+import com.krayapp.buffercompanion.bargen.data.room.MAX_PINNED_COUNT
 import com.krayapp.buffercompanion.bargen.presentation.mapper.toBarcodeUiModel
 import com.krayapp.buffercompanion.bargen.presentation.models.BarcodeUiModel
 import com.krayapp.buffercompanion.bargen.presentation.mvi.main.BottomSheetStateData
@@ -86,7 +87,11 @@ class MviProcessor(
                 val createdEntity = handler.createBarcodeRecord(intent)
                 if (intent.showAfterCreate && prefs.openCardAfterScan)
                     showMainBottomSheet(createdEntity.toBarcodeUiModel())
-
+                if (prefs.autoPinOnScan &&
+                    container.stateFlow.value.pinnedBarcodes.size < MAX_PINNED_COUNT
+                ) {
+                    pinHandler.onIntent(MainIntent.PinIntent.PinBarcode(createdEntity.id))
+                }
                 updatePager()
             }
 

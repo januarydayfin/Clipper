@@ -35,6 +35,7 @@ class GlobalPrefs(private val context: Context) {
         val SWIPE_TO_DELETE = booleanPreferencesKey("SWIPE_TO_DELETE")
         val OPEN_LANDSCAPE_ON_BS_OPEN = booleanPreferencesKey("OPEN_LANDSCAPE_ON_BS_OPEN")
         val HIDE_BS_AFTER_LANDSCAPE_CLOSE = booleanPreferencesKey("HIDE_BS_AFTER_LANDSCAPE_CLOSE")
+        val AUTO_PIN_ON_SCAN = booleanPreferencesKey("AUTO_PIN_ON_SCAN")
     }
 
     val sortTypeFlow: Flow<String> = context.dataStore.data
@@ -153,6 +154,19 @@ class GlobalPrefs(private val context: Context) {
             runBlocking {
                 context.dataStore.edit { preferences ->
                     preferences[Keys.HIDE_BS_AFTER_LANDSCAPE_CLOSE] = value
+                }
+            }
+        }
+
+    val autoPinOnScanFlow: Flow<Boolean> = context.dataStore.data
+        .map { preferences -> preferences[Keys.AUTO_PIN_ON_SCAN] ?: false }
+
+    var autoPinOnScan: Boolean
+        get() = runBlocking { autoPinOnScanFlow.first() }
+        set(value) {
+            runBlocking {
+                context.dataStore.edit { preferences ->
+                    preferences[Keys.AUTO_PIN_ON_SCAN] = value
                 }
             }
         }

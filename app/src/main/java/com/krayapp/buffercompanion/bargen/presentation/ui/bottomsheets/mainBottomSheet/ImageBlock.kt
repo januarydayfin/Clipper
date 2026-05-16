@@ -13,7 +13,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,6 +37,7 @@ import org.koin.compose.koinInject
 
 @Composable
 fun ImageBlock(
+    modifier: Modifier = Modifier,
     state: State<BarcodeUiModel>,
     onSharePicture: (Bitmap?) -> Unit = {},
     onSaveStoragePicture: (Bitmap?) -> Unit = {},
@@ -56,14 +57,14 @@ fun ImageBlock(
             )
         }
     }
-    SideEffect {
+    LaunchedEffect(model.content) {
         generateBitmap()
     }
 
     if (bmp != null) {
         Image(
             bitmap = bmp.asImageBitmap(),
-            modifier = Modifier.clip(mRoundedCornerShape),
+            modifier = modifier.clip(mRoundedCornerShape),
             contentDescription = "image"
         )
         Space(height = mSize)

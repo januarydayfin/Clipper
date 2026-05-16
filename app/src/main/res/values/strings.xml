@@ -86,4 +86,6 @@
     <string name="landscape_view">View barcode info</string>
     <string name="open_landscape_on_open">Show barcode in landscape on open</string>
     <string name="hide_bs_after_landscape_close">Hide card after closing landscape view</string>
+    <string name="pin_automatically">Pin immediately</string>
+    <string name="pin_limit_reached">Pin limit reached</string>
 </resources>

@@ -1,6 +1,7 @@
 package com.krayapp.buffercompanion.bargen.presentation.ui.bottomsheets.mainBottomSheet
 
 import android.graphics.Bitmap
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
@@ -17,11 +18,9 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,7 +33,6 @@ import com.krayapp.buffercompanion.bargen.presentation.ui.dialogs.BarcodeInfoDia
 import com.krayapp.buffercompanion.bargen.presentation.utils.colorizeBottomsheetNavBar
 import com.krayapp.buffercompanion.bargen.theme.lSize
 import com.krayapp.buffercompanion.bargen.theme.mSize
-import kotlinx.coroutines.launch
 
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
@@ -51,7 +49,6 @@ fun MainBottomSheet(
     val sheetState = rememberModalBottomSheetState()
     val modelState = remember { mutableStateOf(model) }
     val scrollState = rememberScrollState()
-    val scope = rememberCoroutineScope()
     val formatDialogOpened = remember { mutableStateOf(false) }
     val infoDialogOpened = remember { mutableStateOf(false) }
     val isKeyboardVisible by rememberUpdatedState(WindowInsets.isImeVisible)
@@ -61,11 +58,9 @@ fun MainBottomSheet(
     }
 
 
-    SideEffect {
+    LaunchedEffect(isKeyboardVisible) {
         if (isKeyboardVisible)
-            scope.launch {
-                sheetState.expand()
-            }
+            sheetState.expand()
     }
 
     if (infoDialogOpened.value)
@@ -118,6 +113,9 @@ fun MainBottomSheet(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             ImageBlock(
+                modifier = Modifier.clickable {
+                    infoDialogOpened.value = true
+                },
                 state = modelState,
                 onSharePicture = { onSharePicture(model.filename, it) },
                 onSaveStoragePicture = { onSaveStoragePicture(model.filename, it) },

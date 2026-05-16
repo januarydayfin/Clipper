@@ -2,18 +2,22 @@ package com.krayapp.buffercompanion.bargen.presentation.ui.dialogs
 
 import android.app.Dialog
 import android.content.DialogInterface
+import android.widget.Toast
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.cardview.widget.CardView
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -28,7 +32,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -38,7 +44,9 @@ import com.journeyapps.barcodescanner.BarcodeResult
 import com.journeyapps.barcodescanner.DecoratedBarcodeView
 import com.journeyapps.barcodescanner.Size
 import com.krayapp.buffercompanion.bargen.ClipperApp
+import com.krayapp.buffercompanion.bargen.GlobalPrefs
 import com.krayapp.buffercompanion.bargen.R
+import com.krayapp.buffercompanion.bargen.data.room.MAX_PINNED_COUNT
 import com.krayapp.buffercompanion.bargen.domain.bargenCore.BarReader
 import com.krayapp.buffercompanion.bargen.domain.selector.tagSelector.TagSelector
 import com.krayapp.buffercompanion.bargen.domain.usecase.tags.TagsUsecase
@@ -50,9 +58,12 @@ import com.krayapp.buffercompanion.bargen.presentation.utils.BargenChip
 import com.krayapp.buffercompanion.bargen.presentation.utils.Space
 import com.krayapp.buffercompanion.bargen.presentation.viewmodels.BargenViewModel
 import com.krayapp.buffercompanion.bargen.theme.AppTheme
+import com.krayapp.buffercompanion.bargen.theme.mRoundedCornerShape
 import com.krayapp.buffercompanion.bargen.theme.mSize
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.compose.koinInject
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -123,9 +134,13 @@ private fun AutoTagSection(
 ) {
     val tagUsecase: TagsUsecase = koinInject()
     val tagSelector: TagSelector = koinInject()
+    val prefs: GlobalPrefs = koinInject()
     val scope = rememberCoroutineScope()
     AppTheme {
         val checkedTagIds by tagSelector.tagsFilterFlow.collectAsState()
+        val uiState by viewModel.state.collectAsState()
+        val autoPinEnabled by prefs.autoPinOnScanFlow.collectAsState(initial = false)
+        val pinLimitReached = uiState.pinnedBarcodes.size >= MAX_PINNED_COUNT
 
         val torchState = remember { mutableStateOf(false) }
         val tagUiState = remember { mutableStateListOf<TagUiModel>() }
@@ -133,6 +148,13 @@ private fun AutoTagSection(
             val entities = tagUsecase.getTagsEntityByIds(checkedTagIds)
             tagUiState.clear()
             tagUiState.addAll(entities.map { it.toTagUiModel() })
+        }
+        LaunchedEffect(Unit) {
+            withContext(Dispatchers.IO) {
+                if (pinLimitReached && prefs.autoPinOnScan) {
+                    prefs.autoPinOnScan = false
+                }
+            }
         }
 
         Surface {
@@ -200,6 +222,38 @@ private fun AutoTagSection(
                     }
                 }
 
+                val context = LocalContext.current
+                val limitMessage = stringResource(R.string.pin_limit_reached)
+                Row(
+                    Modifier
+                        .clip(mRoundedCornerShape)
+                        .clickable {
+                            if (pinLimitReached) {
+                                Toast.makeText(context, limitMessage, Toast.LENGTH_SHORT).show()
+                            } else {
+                                scope.launch(Dispatchers.IO) { prefs.autoPinOnScan = !autoPinEnabled }
+                            }
+                        },
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Checkbox(
+                        checked = autoPinEnabled && !pinLimitReached,
+                        onCheckedChange = {
+                            if (!pinLimitReached) scope.launch(Dispatchers.IO) { prefs.autoPinOnScan = it }
+                        },
+                        enabled = !pinLimitReached
+                    )
+                    Text(
+                        modifier = Modifier.padding(end = mSize),
+                        text = stringResource(R.string.pin_automatically),
+                        style = MaterialTheme.typography.labelLarge,
+                        color = if (pinLimitReached)
+                            MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+                        else
+                            MaterialTheme.colorScheme.onSurface
+                    )
+                }
             }
         }
     }

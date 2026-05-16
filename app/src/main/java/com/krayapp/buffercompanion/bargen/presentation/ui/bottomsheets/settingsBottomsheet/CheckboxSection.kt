@@ -13,11 +13,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import com.krayapp.buffercompanion.bargen.R
 import com.krayapp.buffercompanion.bargen.presentation.mvi.settings.SettingsIntent
 import com.krayapp.buffercompanion.bargen.presentation.mvi.settings.SettingsState
 import com.krayapp.buffercompanion.bargen.presentation.viewmodels.SettingsViewModel
+import com.krayapp.buffercompanion.bargen.theme.mRoundedCornerShape
 import com.krayapp.buffercompanion.bargen.theme.mSize
 
 @Composable
@@ -71,9 +73,12 @@ fun CheckboxSection(state: State<SettingsState>, viewmodel: SettingsViewModel) {
 
 @Composable
 private fun TextCheckbox(isChecked: Boolean, textRes: Int, onCheckChanged: (Boolean) -> Unit) {
-    Row(Modifier.fillMaxWidth().clickable {
-        onCheckChanged(!isChecked)
-    }, verticalAlignment = Alignment.CenterVertically) {
+    Row(Modifier
+        .clip(mRoundedCornerShape)
+        .fillMaxWidth()
+        .clickable {
+            onCheckChanged(!isChecked)
+        }, verticalAlignment = Alignment.CenterVertically) {
         Checkbox(checked = isChecked, onCheckedChange = { onCheckChanged(it) })
         Text(text = stringResource(textRes), style = MaterialTheme.typography.labelLarge)
     }
