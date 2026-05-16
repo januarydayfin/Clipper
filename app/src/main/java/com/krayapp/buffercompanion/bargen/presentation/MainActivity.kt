@@ -63,7 +63,10 @@ class MainActivity : AppCompatActivity() {
                         viewmodel.onIntent(MainIntent.CleanCardSelection)
                     }
 
-                    viewmodel.currentFilterValue.tagIds.isNotEmpty() -> viewmodel.onIntent(MainIntent.CleanTagsSelection)
+                    viewmodel.currentFilterValue.tagIds.isNotEmpty() -> viewmodel.onIntent(
+                        MainIntent.CleanTagsSelection
+                    )
+
                     else -> finishAndRemoveTask()
                 }
             }
@@ -100,11 +103,11 @@ class MainActivity : AppCompatActivity() {
             AppTheme {
                 val bottomSheetState = viewmodel.state.collectAsState().value.bottomSheetUiState
 
-                when(bottomSheetState) {
+                when (bottomSheetState) {
                     is Barcode -> ShowMainBottomSheet(bottomSheetState.model)
                     BottomSheetUiState.Settings -> ShowSettingsBottomsheet()
                     BottomSheetUiState.Tags -> ShowTagBottomsheet()
-                    BottomSheetUiState.None -> { }
+                    BottomSheetUiState.None -> {}
                 }
 
                 MainScreen {
@@ -165,13 +168,12 @@ class MainActivity : AppCompatActivity() {
             onDismiss = {
                 viewmodel.onIntent(MainIntent.HideBottomSheet)
 
-//                if (prefs.maxBrightOnCode)
-                    restoreBright()
-            }, onSharePicture = {
-                shareBitmap(bitmap = it, title = Random.nextInt().toString())
+                restoreBright()
+            }, onSharePicture = { filename, bmp ->
+                shareBitmap(bitmap = bmp, title = filename)
             },
-            onSaveStoragePicture = {
-                savePictureInStorage(bmp = it, filename = "${Random.nextInt()}") { path ->
+            onSaveStoragePicture = { filename, bmp ->
+                savePictureInStorage(bmp = bmp, filename = filename) { path ->
                     Toast.makeText(
                         this,
                         "${getString(R.string.saved_to)} $path",

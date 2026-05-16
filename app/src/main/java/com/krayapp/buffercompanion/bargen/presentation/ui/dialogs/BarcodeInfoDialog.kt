@@ -2,6 +2,7 @@ package com.krayapp.buffercompanion.bargen.presentation.ui.dialogs
 
 import android.graphics.Bitmap
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -57,7 +59,8 @@ fun BarcodeInfoDialog(model: BarcodeUiModel, onDismiss: () -> Unit) {
     val bitmapState = remember { mutableStateOf<Bitmap?>(null) }
 
     LaunchedEffect(model.content, model.barcodeType) {
-        bitmapState.value = generator.generate(model.content, BarcodeFormat.valueOf(model.barcodeType))
+        bitmapState.value =
+            generator.generate(model.content, BarcodeFormat.valueOf(model.barcodeType))
     }
 
     BasicAlertDialog(
@@ -91,7 +94,6 @@ fun BarcodeInfoDialog(model: BarcodeUiModel, onDismiss: () -> Unit) {
                 BarcodeImageSection(
                     bitmap = bitmapState.value,
                     modifier = Modifier
-                        .rotate(90f)
                 )
             }
         }
@@ -105,15 +107,17 @@ private fun BarcodeImageSection(bitmap: Bitmap?, modifier: Modifier = Modifier) 
         contentAlignment = Alignment.Center
     ) {
         if (bitmap != null) {
-            Image(
-                bitmap = bitmap.asImageBitmap(),
-                contentDescription = null,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .scale(1.5f)
-                    .clip(mRoundedCornerShape),
-                contentScale = ContentScale.Fit
-            )
+            Box(modifier = Modifier.background(color = Color.White, shape = mRoundedCornerShape)) {
+                Image(
+                    bitmap = bitmap.asImageBitmap(),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .scale(1.5f)
+                        .rotate(90f),
+                    contentScale = ContentScale.Fit
+                )
+            }
         } else {
             CircularProgressIndicator()
         }

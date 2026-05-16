@@ -42,8 +42,8 @@ import kotlinx.coroutines.launch
 fun MainBottomSheet(
     model: BarcodeUiModel,
     onDismiss: () -> Unit = {},
-    onSharePicture: (Bitmap?) -> Unit = {},
-    onSaveStoragePicture: (Bitmap?) -> Unit = {},
+    onSharePicture: (String,Bitmap?) -> Unit = {_, _ -> },
+    onSaveStoragePicture: (String, Bitmap?) -> Unit = {_, _ -> { }},
     onApplyBarcode: (BarcodeUiModel) -> Unit = {},
     autoOpenLandscape: Boolean = false,
     hideBsAfterLandscapeClose: Boolean = false,
@@ -119,8 +119,8 @@ fun MainBottomSheet(
         ) {
             ImageBlock(
                 state = modelState,
-                onSharePicture = onSharePicture,
-                onSaveStoragePicture = onSaveStoragePicture,
+                onSharePicture = { onSharePicture(model.filename, it) },
+                onSaveStoragePicture = { onSaveStoragePicture(model.filename, it) },
                 onOpenInfoDialog = { infoDialogOpened.value = true }
             )
             BarcodeFormatBlock(modelState) {
