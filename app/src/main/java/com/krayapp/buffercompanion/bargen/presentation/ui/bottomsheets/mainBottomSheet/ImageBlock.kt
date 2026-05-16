@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -39,6 +40,7 @@ fun ImageBlock(
     state: State<BarcodeUiModel>,
     onSharePicture: (Bitmap?) -> Unit = {},
     onSaveStoragePicture: (Bitmap?) -> Unit = {},
+    onOpenInfoDialog: () -> Unit = {},
 ) {
     val model = state.value
     val scope = rememberCoroutineScope()
@@ -82,6 +84,15 @@ fun ImageBlock(
                 textRes = R.string.share,
                 iconRes = R.drawable.ic_share
             )
+
+            Spacer(Modifier.width(mSize))
+
+            FilledTonalIconButton(onClick = onOpenInfoDialog) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_landscape),
+                    contentDescription = stringResource(R.string.landscape_view)
+                )
+            }
         }
     }
 }

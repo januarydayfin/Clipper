@@ -81,5 +81,8 @@
     <string name="error">Ошибка</string>
     <string name="max_bright">Максимальная яркость на экране кода</string>
     <string name="swipe_for_delete">Свайп для удаления</string>
+    <string name="landscape_view">Горизонтальный просмотр</string>
+    <string name="open_landscape_on_open">Открывать горизонтальный режим при открытии карточки</string>
+    <string name="hide_bs_after_landscape_close">Скрывать карточку после закрытия горизонтального режима</string>
 
 </resources>

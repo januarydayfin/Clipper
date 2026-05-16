@@ -1,5 +1,6 @@
 package com.krayapp.buffercompanion.bargen.presentation.models
 
+import java.util.Date
 import java.util.UUID
 
 data class BarcodeUiModel(
@@ -13,6 +14,14 @@ data class BarcodeUiModel(
 ) {
     val isPinned: Boolean
         get() = pinOrder != NOT_PINNED
+
+    val filename: String
+        get() {
+            val mainName = name.ifEmpty {
+                content.substring(0, 8)
+            }
+            return "${mainName}_${Date().time}"
+        }
 
     companion object {
         const val NOT_PINNED = -1

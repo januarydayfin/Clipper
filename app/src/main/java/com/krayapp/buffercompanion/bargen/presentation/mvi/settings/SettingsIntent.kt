@@ -6,4 +6,6 @@ sealed interface SettingsIntent {
     data class UpdateOpenScanByButton(val open: Boolean): SettingsIntent
     data class UpdateMaxBrightOnCard(val needToBright: Boolean): SettingsIntent
     data class UpdateSwipeToDelete(val swipe: Boolean): SettingsIntent
+    data class UpdateOpenLandscapeOnBsOpen(val open: Boolean): SettingsIntent
+    data class UpdateHideBsAfterLandscapeClose(val hide: Boolean): SettingsIntent
 }

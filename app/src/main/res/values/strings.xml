@@ -83,4 +83,7 @@
     <string name="error">Error</string>
     <string name="max_bright">Maximum brightness on the code screen</string>
     <string name="swipe_for_delete">Swipe to delete</string>
+    <string name="landscape_view">View barcode info</string>
+    <string name="open_landscape_on_open">Show barcode in landscape on open</string>
+    <string name="hide_bs_after_landscape_close">Hide card after closing landscape view</string>
 </resources>

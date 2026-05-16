@@ -1,5 +1,6 @@
 package com.krayapp.buffercompanion.bargen.presentation.ui.bottomsheets.settingsBottomsheet
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -50,16 +51,30 @@ fun CheckboxSection(state: State<SettingsState>, viewmodel: SettingsViewModel) {
             ) {
                 viewmodel.onIntent(SettingsIntent.UpdateSwipeToDelete(it))
             }
+
+            TextCheckbox(
+                isChecked = state.value.openLandscapeOnBsOpen,
+                textRes = R.string.open_landscape_on_open
+            ) {
+                viewmodel.onIntent(SettingsIntent.UpdateOpenLandscapeOnBsOpen(it))
+            }
+
+            TextCheckbox(
+                isChecked = state.value.hideBsAfterLandscapeClose,
+                textRes = R.string.hide_bs_after_landscape_close
+            ) {
+                viewmodel.onIntent(SettingsIntent.UpdateHideBsAfterLandscapeClose(it))
+            }
         }
     }
 }
 
 @Composable
 private fun TextCheckbox(isChecked: Boolean, textRes: Int, onCheckChanged: (Boolean) -> Unit) {
-    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-        Checkbox(checked = isChecked, onCheckedChange = {
-            onCheckChanged(it)
-        })
+    Row(Modifier.fillMaxWidth().clickable {
+        onCheckChanged(!isChecked)
+    }, verticalAlignment = Alignment.CenterVertically) {
+        Checkbox(checked = isChecked, onCheckedChange = { onCheckChanged(it) })
         Text(text = stringResource(textRes), style = MaterialTheme.typography.labelLarge)
     }
 }

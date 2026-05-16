@@ -16,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -29,6 +30,7 @@ import com.krayapp.buffercompanion.bargen.R
 import com.krayapp.buffercompanion.bargen.presentation.models.BarcodeUiModel
 import com.krayapp.buffercompanion.bargen.presentation.ui.composables.SheetDragger
 import com.krayapp.buffercompanion.bargen.presentation.ui.dialogs.BarcodeFormatDialog
+import com.krayapp.buffercompanion.bargen.presentation.ui.dialogs.BarcodeInfoDialog
 import com.krayapp.buffercompanion.bargen.presentation.utils.colorizeBottomsheetNavBar
 import com.krayapp.buffercompanion.bargen.theme.lSize
 import com.krayapp.buffercompanion.bargen.theme.mSize
@@ -40,16 +42,23 @@ import kotlinx.coroutines.launch
 fun MainBottomSheet(
     model: BarcodeUiModel,
     onDismiss: () -> Unit = {},
-    onSharePicture: (Bitmap?) -> Unit = {},
-    onSaveStoragePicture: (Bitmap?) -> Unit = {},
-    onApplyBarcode: (BarcodeUiModel) -> Unit = {}
+    onSharePicture: (String,Bitmap?) -> Unit = {_, _ -> },
+    onSaveStoragePicture: (String, Bitmap?) -> Unit = {_, _ -> { }},
+    onApplyBarcode: (BarcodeUiModel) -> Unit = {},
+    autoOpenLandscape: Boolean = false,
+    hideBsAfterLandscapeClose: Boolean = false,
 ) {
     val sheetState = rememberModalBottomSheetState()
     val modelState = remember { mutableStateOf(model) }
     val scrollState = rememberScrollState()
     val scope = rememberCoroutineScope()
     val formatDialogOpened = remember { mutableStateOf(false) }
+    val infoDialogOpened = remember { mutableStateOf(false) }
     val isKeyboardVisible by rememberUpdatedState(WindowInsets.isImeVisible)
+
+    LaunchedEffect(Unit) {
+        if (autoOpenLandscape) infoDialogOpened.value = true
+    }
 
 
     SideEffect {
@@ -58,6 +67,15 @@ fun MainBottomSheet(
                 sheetState.expand()
             }
     }
+
+    if (infoDialogOpened.value)
+        BarcodeInfoDialog(
+            model = modelState.value,
+            onDismiss = {
+                infoDialogOpened.value = false
+                if (hideBsAfterLandscapeClose) onDismiss()
+            }
+        )
 
     if (formatDialogOpened.value)
         BarcodeFormatDialog(
@@ -101,8 +119,9 @@ fun MainBottomSheet(
         ) {
             ImageBlock(
                 state = modelState,
-                onSharePicture = onSharePicture,
-                onSaveStoragePicture = onSaveStoragePicture
+                onSharePicture = { onSharePicture(model.filename, it) },
+                onSaveStoragePicture = { onSaveStoragePicture(model.filename, it) },
+                onOpenInfoDialog = { infoDialogOpened.value = true }
             )
             BarcodeFormatBlock(modelState) {
                 formatDialogOpened.value = true

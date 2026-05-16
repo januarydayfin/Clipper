@@ -37,6 +37,14 @@ class SettingsViewModel(
         prefs.swipeToDeleteFlow.onEach { swipe ->
             intent { reduce { state.copy(swipeToDelete = swipe) } }
         }.launchIn(viewModelScope)
+
+        prefs.openLandscapeOnBsOpenFlow.onEach { open ->
+            intent { reduce { state.copy(openLandscapeOnBsOpen = open) } }
+        }.launchIn(viewModelScope)
+
+        prefs.hideBsAfterLandscapeCloseFlow.onEach { hide ->
+            intent { reduce { state.copy(hideBsAfterLandscapeClose = hide) } }
+        }.launchIn(viewModelScope)
     }
 
     fun onIntent(intent: SettingsIntent) {
@@ -46,6 +54,8 @@ class SettingsViewModel(
             is SettingsIntent.UpdateOpenScanByButton -> updateOpenScanByButton(intent.open)
             is SettingsIntent.UpdateTheme -> updateTheme(intent.theme)
             is SettingsIntent.UpdateSwipeToDelete -> updateSwipeToDelete(intent.swipe)
+            is SettingsIntent.UpdateOpenLandscapeOnBsOpen -> updateOpenLandscapeOnBsOpen(intent.open)
+            is SettingsIntent.UpdateHideBsAfterLandscapeClose -> updateHideBsAfterLandscapeClose(intent.hide)
         }
     }
 
@@ -68,5 +78,13 @@ class SettingsViewModel(
 
     private fun updateSwipeToDelete(swipe: Boolean) = intent {
         prefs.swipeToDelete = swipe
+    }
+
+    private fun updateOpenLandscapeOnBsOpen(open: Boolean) = intent {
+        prefs.openLandscapeOnBsOpen = open
+    }
+
+    private fun updateHideBsAfterLandscapeClose(hide: Boolean) = intent {
+        prefs.hideBsAfterLandscapeClose = hide
     }
 }
