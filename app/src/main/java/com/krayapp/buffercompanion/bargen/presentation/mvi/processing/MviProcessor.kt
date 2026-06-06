@@ -93,6 +93,7 @@ class MviProcessor(
                     pinHandler.onIntent(MainIntent.PinIntent.PinBarcode(createdEntity.id))
                 }
                 updatePager()
+                pinHandler.refreshPinnedBarcodes()
             }
 
             is MainIntent.CleanCardSelection -> handler.onCleanCardSelection()

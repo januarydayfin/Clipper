@@ -47,7 +47,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import kotlin.random.Random
 
 
 class MainActivity : AppCompatActivity() {
