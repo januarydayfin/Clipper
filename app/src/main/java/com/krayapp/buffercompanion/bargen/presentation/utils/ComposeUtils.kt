@@ -3,6 +3,8 @@ package com.krayapp.buffercompanion.bargen.presentation.utils
 import android.annotation.SuppressLint
 import android.content.Context
 import android.widget.Toast
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
@@ -11,17 +13,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogWindowProvider
 
 @Composable
-fun Space(width: Dp = 0.dp, height: Dp = 0.dp) {
+fun ColumnScope.Space(height: Dp) {
     Spacer(
         modifier = Modifier
             .height(height)
+    )
+}
+
+@Composable
+fun RowScope.Space(width: Dp) {
+    Spacer(
+        modifier = Modifier
             .width(width)
     )
 }

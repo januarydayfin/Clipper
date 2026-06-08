@@ -8,12 +8,15 @@ import com.krayapp.buffercompanion.bargen.presentation.models.BarcodeUiModel
 import com.krayapp.buffercompanion.bargen.presentation.mvi.main.BottomSheetStateData
 import com.krayapp.buffercompanion.bargen.presentation.mvi.main.BottomSheetUiState
 import com.krayapp.buffercompanion.bargen.presentation.mvi.main.MainIntent
+import com.krayapp.buffercompanion.bargen.presentation.mvi.main.MainIntent.PinIntent.*
 import com.krayapp.buffercompanion.bargen.presentation.mvi.main.MviState
 import com.krayapp.buffercompanion.bargen.presentation.mvi.main.SideEffect
 import com.krayapp.buffercompanion.bargen.presentation.mvi.processing.pins.PinHandler
 import com.krayapp.buffercompanion.bargen.presentation.viewmodels.BargenViewModel
 import com.krayapp.buffercompanion.bargen.utils.launchInIO
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import org.orbitmvi.orbit.ContainerHost
@@ -27,6 +30,8 @@ class MviProcessor(
 ) : ContainerHost<MviState, SideEffect> {
     override val container = viewModel.container<MviState, SideEffect>(MviState())
     private val pinHandler = PinHandler(this)
+
+    private val pinUpdateTrigger = MutableSharedFlow<Unit>()
 
     init {
         viewModel.launchInIO {
@@ -55,7 +60,9 @@ class MviProcessor(
          * Фильтруются только закрепы, остальные карточки фильтруются в BargenViewModel в пейджере
          */
         viewModel.launchInIO {
-            handler.tagFilterFlow.collectLatest { pinnedIds ->
+            handler.tagFilterFlow.combine(pinUpdateTrigger) { ids, _ ->
+                ids
+            }.collectLatest { pinnedIds ->
                 val filtered =
                     pinHandler.getAllPinnedBarcodes().map { it.toBarcodeUiModel() }.toMutableList()
 
@@ -90,25 +97,28 @@ class MviProcessor(
                 if (prefs.autoPinOnScan &&
                     container.stateFlow.value.pinnedBarcodes.size < MAX_PINNED_COUNT
                 ) {
-                    pinHandler.onIntent(MainIntent.PinIntent.PinBarcode(createdEntity.id))
+                    pinHandler.onIntent(PinBarcode(createdEntity.id))
                 }
-                updatePager()
-                pinHandler.refreshPinnedBarcodes()
+                onIntent(MainIntent.RefreshList)
             }
 
             is MainIntent.CleanCardSelection -> handler.onCleanCardSelection()
             is MainIntent.CleanTagsSelection -> handler.onCleanTagsSelection()
             is MainIntent.DeleteAllSelectedCards -> {
                 handler.onDeleteAllSelectedCards()
-                updatePager()
-                pinHandler.refreshPinnedBarcodes()
+                onIntent(MainIntent.RefreshList)
+
             }
 
             is MainIntent.CheckBarcodeForSelection -> handler.checkBarcodeForSelection(intent.id)
             is MainIntent.DeleteBarcode -> {
                 handler.deleteBarcodeById(intent.id)
+                onIntent(MainIntent.RefreshList)
+            }
+
+            MainIntent.RefreshList -> {
                 updatePager()
-                pinHandler.refreshPinnedBarcodes()
+                pinUpdateTrigger.emit(Unit)
             }
         }
     }

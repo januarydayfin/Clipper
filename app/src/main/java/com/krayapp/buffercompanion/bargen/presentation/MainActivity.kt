@@ -193,6 +193,7 @@ class MainActivity : AppCompatActivity() {
     private fun ShowTagBottomsheet() {
         TagsBottomSheet {
             viewmodel.onIntent(MainIntent.HideBottomSheet)
+            viewmodel.onIntent(MainIntent.RefreshList)
         }
     }
 

@@ -14,11 +14,11 @@ import com.krayapp.buffercompanion.bargen.theme.mSize
 import com.krayapp.buffercompanion.bargen.theme.xsSize
 
 @Composable
-fun SheetDragger() {
+fun SheetDragger(modifier: Modifier = Modifier) {
     Card(
         colors = CardDefaults.cardColors()
             .copy(containerColor = MaterialTheme.colorScheme.onSurfaceVariant),
-        modifier = Modifier
+        modifier = modifier
             .width(40.dp)
             .padding(vertical = mSize)
             .height(xsSize)

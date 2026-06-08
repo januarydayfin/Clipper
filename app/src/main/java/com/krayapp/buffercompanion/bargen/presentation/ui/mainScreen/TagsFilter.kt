@@ -6,7 +6,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
@@ -56,7 +58,7 @@ fun SelectedFilterTags(modifier: Modifier = Modifier) {
     }
 
     if (tagsUi.isNotEmpty())
-        Space(height = mSize)
+        Spacer(modifier = Modifier.height(mSize))
 
     Surface(
         modifier = modifier
@@ -109,7 +111,6 @@ fun SelectedFilterTags(modifier: Modifier = Modifier) {
 
     }
     if (tagsUi.isNotEmpty())
-        Space(height = mSize)
-
+        Spacer(modifier = Modifier.height(mSize))
 
 }

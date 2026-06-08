@@ -14,11 +14,9 @@ import com.krayapp.buffercompanion.bargen.presentation.models.BarcodeUiModel
 
 @Composable
 fun StringedInfo(
-    state: State<BarcodeUiModel>,
+    model: BarcodeUiModel,
     onUpdate: (BarcodeUiModel) -> Unit = { }
 ) {
-    val model = state.value
-
     OutlinedTextField(
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
         value = model.content,

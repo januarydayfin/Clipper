@@ -1,12 +1,17 @@
 package com.krayapp.buffercompanion.bargen.presentation.ui.bottomsheets.mainBottomSheet
 
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -20,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.unit.dp
 import com.krayapp.buffercompanion.bargen.R
 import com.krayapp.buffercompanion.bargen.presentation.models.TagUiModel
 import com.krayapp.buffercompanion.bargen.presentation.utils.BargenChip
@@ -49,7 +55,8 @@ fun TagBlock(
         }
     }
     Column(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth(),
         horizontalAlignment = Alignment.Start
     ) {
         OutlinedTextField(
@@ -63,7 +70,10 @@ fun TagBlock(
         //добавляемые теги
         FlowRow(
             horizontalArrangement = Arrangement.Start,
-            modifier = Modifier.minimumInteractiveComponentSize()
+            modifier = Modifier
+                .minimumInteractiveComponentSize()
+                .heightIn(0.dp, 200.dp)
+                .verticalScroll(rememberScrollState())
         ) {
             applyingTagsState.forEach {
                 BargenChip(it)
@@ -73,11 +83,15 @@ fun TagBlock(
         if (foundTagsState.isNotEmpty()) {
             Text(
                 text = stringResource(R.string.similar_tags),
-                style = MaterialTheme.typography.labelMedium
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurface
             )
             //превью
             FlowRow(
-                modifier = Modifier.minimumInteractiveComponentSize(),
+                modifier = Modifier
+                    .minimumInteractiveComponentSize()
+                    .heightIn(0.dp, 200.dp)
+                    .verticalScroll(rememberScrollState()),
                 horizontalArrangement = Arrangement.Start,
             ) {
                 foundTagsState.forEach {

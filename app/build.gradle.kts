@@ -9,12 +9,12 @@ plugins {
 
 android {
     namespace = "com.krayapp.buffercompanion.bargen"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.krayapp.buffercompanion.bargen"
         minSdk = 30
-        targetSdk = 36
+        targetSdk = 37
         versionCode = 324
         versionName = "3.2.4"
 
@@ -37,11 +37,11 @@ android {
         compose = true
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "11"
     }
 }
 

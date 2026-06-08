@@ -1,20 +1,24 @@
-package com.krayapp.buffercompanion.bargen.presentation.utils
+package com.krayapp.buffercompanion.bargen.presentation.utils.barcodeCard
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SwipeToDismissBox
@@ -26,6 +30,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
@@ -33,6 +38,8 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import com.google.zxing.BarcodeFormat
 import com.journeyapps.barcodescanner.ScanOptions.DATA_MATRIX
 import com.journeyapps.barcodescanner.ScanOptions.PDF_417
@@ -40,15 +47,18 @@ import com.journeyapps.barcodescanner.ScanOptions.QR_CODE
 import com.krayapp.buffercompanion.bargen.R
 import com.krayapp.buffercompanion.bargen.presentation.models.BarcodeUiModel
 import com.krayapp.buffercompanion.bargen.presentation.models.TagUiModel
-import com.krayapp.buffercompanion.bargen.presentation.ui.composables.CardPinner
 import com.krayapp.buffercompanion.bargen.presentation.ui.dialogs.ConfirmationDialog
+import com.krayapp.buffercompanion.bargen.presentation.utils.BargenChip
+import com.krayapp.buffercompanion.bargen.presentation.utils.Space
 import com.krayapp.buffercompanion.bargen.theme.AppTheme
 import com.krayapp.buffercompanion.bargen.theme.barcodePreviewSize
 import com.krayapp.buffercompanion.bargen.theme.cardColorsSelector
-import com.krayapp.buffercompanion.bargen.theme.keepPinSize
+import com.krayapp.buffercompanion.bargen.theme.lRoundedCornerShape
 import com.krayapp.buffercompanion.bargen.theme.lSize
+import com.krayapp.buffercompanion.bargen.theme.mRoundedCornerShape
 import com.krayapp.buffercompanion.bargen.theme.mSize
 import com.krayapp.buffercompanion.bargen.theme.sSize
+import com.krayapp.buffercompanion.bargen.theme.xsSize
 import kotlinx.coroutines.launch
 
 @Composable
@@ -77,10 +87,11 @@ fun BarcodeCard(
             onDeleteClicked(deleteDialogShowState.value)
         }
     }
+
     SwipeToDismissBox(
         modifier = modifier,
         enableDismissFromStartToEnd = false,
-        enableDismissFromEndToStart = swipeToDeleteAvailable,
+        enableDismissFromEndToStart = swipeToDeleteAvailable && !inSelectionMode,
         state = dismissState,
         onDismiss = {
             scope.launch {
@@ -91,80 +102,102 @@ fun BarcodeCard(
         backgroundContent = {
             RemoveCardBackground()
         }) {
-        Card(
-            shape = RoundedCornerShape(size = lSize),
-            colors = cardColorsSelector(model = uiModel, isCheckedForDelete = isCheckedForDeletion),
-            modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentHeight()
-                .pointerInput(uiModel, inSelectionMode) {
-                    detectTapGestures(
-                        onTap = {
-                            if (inSelectionMode)
-                                onSelectClick()
-                            else
-                                onCardClick()
-                        },
-                        onLongPress = if (inSelectionMode) null else {
-                            {
-                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                onSelectClick()
-                            }
-                        }
-                    )
-                }
-        ) {
-            Row(
+        Column(modifier = Modifier.fillMaxWidth()) {
+            Card(
+                shape = selectionShape(inSelectionMode),
+                colors = cardColorsSelector(
+                    model = uiModel,
+                    isCheckedForDelete = isCheckedForDeletion
+                ),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(sSize),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                BarcodeInfo(
-                    barcodePreviewRes =
-                        uiModel.barcodeType.getPreviewDrawableFromType(),
-                    barcodeTypeText = uiModel.barcodeType
-                )
-
-                Space(width = sSize)
-                ContentInfo(
-                    modifier = Modifier
-                        .weight(1f),
-                    name = uiModel.name,
-                    content = uiModel.content,
-                    tags = uiModel.tags
-                )
-
-                if (uiModel.isPinned && !inSelectionMode)
-                    CardPinner(modifier = Modifier.size(keepPinSize), pinned = !uiModel.isPinned)
-
-                if (inSelectionMode && pinAvailable) {
-                    CardPinner(
-                        modifier = Modifier.size(keepPinSize),
-                        pinned = uiModel.isPinned,
-                        onClick = {
-                            if (uiModel.isPinned)
-                                onUnpin()
-                            else
-                                onPin()
-                        })
-
-                    if (uiModel.isPinned) {
-                        Space(sSize)
-                        Icon(
-                            modifier = Modifier
-                                .size(keepPinSize)
-                                .then(reorderModifier),
-                            painter = painterResource(R.drawable.menu),
-                            contentDescription = null,
-                            tint = CardDefaults.cardColors().contentColor
+                    .wrapContentHeight()
+                    .zIndex(5f)
+                    .pointerInput(uiModel, inSelectionMode) {
+                        detectTapGestures(
+                            onTap = {
+                                if (inSelectionMode)
+                                    onSelectClick()
+                                else
+                                    onCardClick()
+                            },
+                            onLongPress = if (inSelectionMode) null else {
+                                {
+                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                    onSelectClick()
+                                }
+                            }
                         )
                     }
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(IntrinsicSize.Min),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    if (uiModel.isPinned)
+                        Box(
+                            modifier = Modifier
+                                .background(color = MaterialTheme.colorScheme.secondary)
+                                .fillMaxHeight()
+                                .width(5.dp)
+                        )
+
+                    Space(width = sSize)
+                    Column(modifier = Modifier.weight(1f).padding(vertical = xsSize)) {
+                        StringInfo(
+                            name = uiModel.name,
+                            content = uiModel.content,
+                        )
+
+                        Space(sSize)
+                        TagsRow(modifier = Modifier.padding(end = mSize), tags = uiModel.tags)
+                    }
+
+                    BarcodeInfo(
+                        barcodePreviewRes =
+                            uiModel.barcodeType.getPreviewDrawableFromType(),
+                    )
+                    Space(width = sSize)
 
                 }
             }
+            if (inSelectionMode) {
+                val menus = buildList {
+                    add(MenuOption.DELETE)
+                    if (!uiModel.isPinned && pinAvailable)
+                        add(MenuOption.PIN)
+
+                    if (uiModel.isPinned)
+                        add(MenuOption.UNPIN)
+
+                    if (uiModel.isPinned)
+                        add(MenuOption.DRAG)
+                }
+                ContextCardComponent(
+                    reorderModifier = reorderModifier,
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    onClick = {
+                        when (it) {
+                            MenuOption.PIN -> onPin()
+                            MenuOption.UNPIN -> onUnpin()
+                            MenuOption.DELETE -> {
+                                deleteDialogShowState.value = uiModel.id
+                            }
+
+                            else -> {}
+                        }
+                    },
+                    menus = menus
+                )
+            }
         }
+
     }
+
+
 }
 
 @Composable
@@ -179,7 +212,10 @@ private fun RemoveCardBackground() {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.End
     ) {
-        Column(modifier = Modifier.padding(horizontal = mSize), horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(
+            modifier = Modifier.padding(horizontal = mSize),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             Icon(
                 painter = painterResource(R.drawable.ic_delete),
                 contentDescription = "delete",
@@ -198,35 +234,72 @@ private fun RemoveCardBackground() {
 @Composable
 private fun BarcodeInfo(
     barcodePreviewRes: Int = R.drawable.pdf417_example,
-    barcodeTypeText: String = "pdf"
 ) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Image(
-            painter = painterResource(barcodePreviewRes),
-            modifier = Modifier.size(barcodePreviewSize),
-            contentDescription = "barcode_preview",
-            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface)
+    MaterialTheme {
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .background(
+                    color = MaterialTheme.colorScheme.surfaceContainerHighest,
+                    shape = mRoundedCornerShape
+                )
+                .padding(mSize)
+        ) {
+            Image(
+                painter = painterResource(barcodePreviewRes),
+                modifier = Modifier.size(barcodePreviewSize),
+                contentDescription = "barcode_preview",
+                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface)
+            )
+        }
+    }
+
+}
+
+@Composable
+private fun StringInfo(
+    modifier: Modifier = Modifier,
+    content: String = "content",
+    name: String = "name",
+) {
+    Column(modifier = modifier) {
+        Text(text = name, style = MaterialTheme.typography.bodyLarge, maxLines = 2)
+        Text(
+            modifier = Modifier.alpha(0.7f),
+            text = content,
+            style = MaterialTheme.typography.labelMedium,
+            maxLines = 2
         )
-        Text(text = barcodeTypeText, style = MaterialTheme.typography.labelSmall)
     }
 }
 
 @Composable
-private fun ContentInfo(
+private fun TagsRow(
     modifier: Modifier = Modifier,
-    content: String = "content",
-    name: String = "name",
     tags: List<TagUiModel>
 ) {
     Column(modifier = modifier) {
-        val textStyle = MaterialTheme.typography.titleMedium
-        Text(text = content, style = textStyle, maxLines = 2)
-        Text(text = name, style = textStyle, maxLines = 2)
-
-        FlowRow(Modifier.fillMaxWidth()) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(1.dp)
+                .background(
+                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
+                    shape = mRoundedCornerShape,
+                )
+        )
+        FlowRow {
             tags.forEach { BargenChip(model = it, selectable = false) }
         }
     }
+
+}
+
+private fun selectionShape(inSelection: Boolean): RoundedCornerShape {
+    return if (inSelection)
+        RoundedCornerShape(topEnd = lSize, topStart = lSize)
+    else
+        lRoundedCornerShape
 }
 
 private fun String.getPreviewDrawableFromType() =

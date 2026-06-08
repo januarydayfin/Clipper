@@ -18,7 +18,7 @@ splashScreen = "1.0.0"
 # Версии Compose
 composeUi = "1.9.2" # Для ui-unit-android
 composeUiTooling = "1.9.2" # Часто используется для ui-tooling
-composeMaterial3 = "1.5.0-alpha04" # Обновил до более общей версии для Material3
+composeMaterial3 = "1.5.0-alpha21" # Обновил до более общей версии для Material3
 adaptive = "1.1.0"
 composePaging = "3.3.6"
 datastore = "1.1.2"
