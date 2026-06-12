@@ -10,10 +10,13 @@ import com.krayapp.buffercompanion.bargen.presentation.utils.BargenChip
 import kotlin.collections.forEach
 
 @Composable
-fun TagRow(list: List<TagUiModel>) {
-    FlowRow(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+fun TagRow(list: List<TagUiModel>, onClick: () -> Unit = {}) {
+    FlowRow(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.Center
+    ) {
         list.forEach {
-            BargenChip(model = it)
+            BargenChip(model = it, onClick = onClick)
         }
     }
 

@@ -141,7 +141,7 @@ fun BarcodeCard(
                             modifier = Modifier
                                 .background(color = MaterialTheme.colorScheme.secondary)
                                 .fillMaxHeight()
-                                .width(5.dp)
+                                .width(7.dp)
                         )
 
                     Space(width = sSize)

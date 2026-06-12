@@ -1,6 +1,7 @@
 package com.krayapp.buffercompanion.bargen.presentation.ui.bottomsheets.mainBottomSheet
 
 import android.graphics.Bitmap
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
@@ -18,6 +19,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -47,6 +50,7 @@ import com.krayapp.buffercompanion.bargen.presentation.models.BarcodeUiModel
 import com.krayapp.buffercompanion.bargen.presentation.ui.bottomsheets.mainBottomSheet.components.BottomButtons
 import com.krayapp.buffercompanion.bargen.presentation.ui.bottomsheets.mainBottomSheet.components.ContentRow
 import com.krayapp.buffercompanion.bargen.presentation.ui.bottomsheets.mainBottomSheet.components.TagRow
+import com.krayapp.buffercompanion.bargen.presentation.ui.bottomsheets.mainBottomSheet.components.TopTitle
 import com.krayapp.buffercompanion.bargen.presentation.ui.bottomsheets.mainBottomSheet.dialog.InfoEditDialog
 import com.krayapp.buffercompanion.bargen.presentation.ui.bottomsheets.mainBottomSheet.dialog.TagEditDialog
 import com.krayapp.buffercompanion.bargen.presentation.ui.dialogs.BarcodeFormatDialog
@@ -127,47 +131,43 @@ fun MainBottomSheet(
 
     ModalBottomSheet(
         dragHandle = {
-            Box(Modifier.fillMaxWidth()) {
-                Text(
-                    modifier = Modifier
-                        .align(Alignment.Center)
-                        .width(250.dp)
-                        .basicMarquee(),
-                    text = modelState.name.takeIf { !it.isBlank() } ?: modelState.content,
-                    maxLines = 1,
-                    textAlign = TextAlign.Center,
-                    style = typography.titleLarge,
-                    fontWeight = FontWeight.Bold,
-                    color = colorScheme.onSurface
-                )
 
-                Box(
-                    modifier = Modifier
-                        .padding(sSize)
-                        .align(Alignment.CenterEnd)
-                ) {
-                    IconButton(
-                        modifier = Modifier
-                            .clip(CircleShape)
-                            .background(color = colorScheme.surfaceContainerHighest)
-                            .padding(sSize)
-                            .size(30.dp),
-                        onClick = { onApplyBarcode(modelState); dismiss() }) {
-                        Icon(
-                            painter = painterResource(R.drawable.outline_check_24),
-                            tint = colorScheme.onSurface,
-                            contentDescription = null
-                        )
-                    }
-                }
-
-            }
         },
         sheetState = sheetState,
         onDismissRequest = {
             onDismiss()
         }) {
         colorizeBottomsheetNavBar()
+
+        Box(Modifier.fillMaxWidth()) {
+            TopTitle(
+                modifier = Modifier.align(Alignment.Center),
+                initialText = modelState.name.takeIf { !it.isBlank() }
+                    ?: modelState.content,
+                onTextChange = { name ->
+                    modelState = modelState.copy(name = name)
+                })
+            Box(
+                modifier = Modifier
+                    .padding(sSize)
+                    .align(Alignment.CenterEnd)
+            ) {
+                IconButton(
+                    modifier = Modifier
+                        .clip(CircleShape)
+                        .background(color = colorScheme.surfaceContainerHighest)
+                        .padding(sSize)
+                        .size(30.dp),
+                    onClick = { onApplyBarcode(modelState); dismiss() }) {
+                    Icon(
+                        painter = painterResource(R.drawable.outline_check_24),
+                        tint = colorScheme.onSurface,
+                        contentDescription = null
+                    )
+                }
+            }
+
+        }
 
         BottomSheetContent(
             modifier = Modifier.padding(horizontal = mSize),
@@ -215,9 +215,9 @@ private fun BottomSheetContent(
             onModelUpdated(uiModel)
         }
 
-        TagRow(uiModel.tags)
-
-
+        TagRow(
+            list = uiModel.tags, onClick = onTagsSettingsClicked
+        )
 
         Column(
             modifier = Modifier

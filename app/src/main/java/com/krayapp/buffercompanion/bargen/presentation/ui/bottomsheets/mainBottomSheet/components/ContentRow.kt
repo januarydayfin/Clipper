@@ -12,6 +12,7 @@ import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -52,6 +53,7 @@ fun ContentRow(
                 color = colorScheme.onSurface,
                 textAlign = TextAlign.Center
             ),
+            cursorBrush = SolidColor(colorScheme.onSurface)
         )
     }
 }

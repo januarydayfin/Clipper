@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -21,6 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.krayapp.buffercompanion.bargen.R
 import com.krayapp.buffercompanion.bargen.theme.lSize
+import com.krayapp.buffercompanion.bargen.theme.mRoundedCornerShape
 
 @Composable
 fun ContextCardComponent(
@@ -38,7 +40,14 @@ fun ContextCardComponent(
                 shape = RoundedCornerShape(bottomEnd = lSize, bottomStart = lSize)
             )
     ) {
-        menus.forEach { option ->
+        menus.forEachIndexed { index, option ->
+            if (index != 0)
+                Box(modifier = Modifier
+                    .padding(vertical = 2.dp)
+                    .background(color = colorScheme.onSecondary.copy(alpha = 0.3f), shape = mRoundedCornerShape)
+                    .width(1.dp)
+                    .fillMaxHeight()
+                )
             Box(
                 modifier = Modifier
                     .then(reorderModifier.takeIf { option == MenuOption.DRAG } ?: Modifier)
@@ -50,7 +59,10 @@ fun ContextCardComponent(
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    modifier = Modifier.fillMaxHeight().aspectRatio(1f).padding(5.dp),
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .aspectRatio(1f)
+                        .padding(5.dp),
                     painter = painterResource(option.icon),
                     tint = colorScheme.onSecondary,
                     contentDescription = null
@@ -62,7 +74,7 @@ fun ContextCardComponent(
 
 
 enum class MenuOption(val icon: Int) {
-    PIN(R.drawable.ic_pin), UNPIN(R.drawable.ic_unpin), DRAG(R.drawable.menu), DELETE(R.drawable.ic_delete)
+    PIN(R.drawable.ic_pin), UNPIN(R.drawable.ic_unpin), DRAG(R.drawable.ic_drag), DELETE(R.drawable.ic_delete)
 }
 
 @Preview
