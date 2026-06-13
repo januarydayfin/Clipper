@@ -28,7 +28,7 @@ import com.github.skydoves.colorpicker.compose.HsvColorPicker
 import com.github.skydoves.colorpicker.compose.rememberColorPickerController
 import com.krayapp.buffercompanion.bargen.R
 import com.krayapp.buffercompanion.bargen.presentation.models.TagUiModel
-import com.krayapp.buffercompanion.bargen.presentation.utils.BargenChip
+import com.krayapp.buffercompanion.bargen.presentation.ui.composables.BargenChip
 import com.krayapp.buffercompanion.bargen.presentation.utils.Space
 import com.krayapp.buffercompanion.bargen.theme.mRoundedCornerShape
 import com.krayapp.buffercompanion.bargen.theme.mSize

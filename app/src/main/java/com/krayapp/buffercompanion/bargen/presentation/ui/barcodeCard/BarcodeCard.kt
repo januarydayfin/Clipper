@@ -1,4 +1,4 @@
-package com.krayapp.buffercompanion.bargen.presentation.utils.barcodeCard
+package com.krayapp.buffercompanion.bargen.presentation.ui.barcodeCard
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -48,7 +48,7 @@ import com.krayapp.buffercompanion.bargen.R
 import com.krayapp.buffercompanion.bargen.presentation.models.BarcodeUiModel
 import com.krayapp.buffercompanion.bargen.presentation.models.TagUiModel
 import com.krayapp.buffercompanion.bargen.presentation.ui.dialogs.ConfirmationDialog
-import com.krayapp.buffercompanion.bargen.presentation.utils.BargenChip
+import com.krayapp.buffercompanion.bargen.presentation.ui.composables.BargenChip
 import com.krayapp.buffercompanion.bargen.presentation.utils.Space
 import com.krayapp.buffercompanion.bargen.theme.AppTheme
 import com.krayapp.buffercompanion.bargen.theme.barcodePreviewSize

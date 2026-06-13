@@ -25,6 +25,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.krayapp.buffercompanion.bargen.R
+import com.krayapp.buffercompanion.bargen.presentation.ui.composables.SegmentButton
+import com.krayapp.buffercompanion.bargen.presentation.ui.composables.SegmentButtonType
 import com.krayapp.buffercompanion.bargen.presentation.utils.Space
 import com.krayapp.buffercompanion.bargen.theme.defaultAnimationDuration
 import com.krayapp.buffercompanion.bargen.theme.sSize
@@ -33,47 +35,38 @@ import com.krayapp.buffercompanion.bargen.theme.sSize
 @Composable
 fun BottomButtonGroup(
     modifier: Modifier = Modifier,
-    hideState: () ->LazyListState,
+    hide : Boolean ,
+    onImportFromGallery: () -> Unit,
     onScanClicked: () -> Unit = {},
     onCreateClicked: () -> Unit = {},
     onTagsClicked: () -> Unit = {},
 ) {
-
     val offsetState = animateIntAsState(
-        if (hideState().lastScrolledForward) 500 else 0,
+        targetValue = if (hide) 500 else 0,
         animationSpec = tween(defaultAnimationDuration)
     )
     Row(
-        horizontalArrangement = Arrangement.Center,
         modifier = modifier
             .wrapContentWidth()
             .offset {
                 IntOffset(y = offsetState.value, x = 0)
-            }
-    ) {
+            },
+        verticalAlignment = Alignment.CenterVertically) {
 
-        SplitButtonLayout(leadingButton = {
-            SplitButtonDefaults.LeadingButton(onClick = onCreateClicked) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_plus),
-                    modifier = Modifier.size(SplitButtonDefaults.LeadingIconSize),
-                    contentDescription = "Add new",
-                )
-                Spacer(Modifier.size(ButtonDefaults.IconSpacing))
-                Text(stringResource(R.string.create))
+        SegmentButton(
+            items = listOf(
+                SegmentButtonType.FROM_GALLERY, SegmentButtonType.CREATE_RAW,
+                SegmentButtonType.SCAN
+            )
+        ) {
+            when(it) {
+                SegmentButtonType.CREATE_RAW -> onCreateClicked()
+                SegmentButtonType.SCAN -> onScanClicked()
+                SegmentButtonType.FROM_GALLERY -> onImportFromGallery()
             }
-        }, trailingButton = {
-            SplitButtonDefaults.TrailingButton(onClick = onScanClicked) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_camera),
-                    modifier =
-                        Modifier.size(SplitButtonDefaults.TrailingIconSize),
-                    contentDescription = "Localized description",
-                )
-            }
-        })
+        }
 
-        Space(width = sSize)
+        Space(sSize)
         Button(
             modifier = Modifier
                 .wrapContentWidth()
@@ -95,4 +88,6 @@ fun BottomButtonGroup(
             }
         }
     }
+
+
 }

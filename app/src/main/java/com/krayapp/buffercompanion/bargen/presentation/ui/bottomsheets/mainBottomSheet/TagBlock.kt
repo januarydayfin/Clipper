@@ -1,11 +1,9 @@
 package com.krayapp.buffercompanion.bargen.presentation.ui.bottomsheets.mainBottomSheet
 
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
@@ -28,8 +26,8 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.krayapp.buffercompanion.bargen.R
 import com.krayapp.buffercompanion.bargen.presentation.models.TagUiModel
-import com.krayapp.buffercompanion.bargen.presentation.utils.BargenChip
-import com.krayapp.buffercompanion.bargen.presentation.utils.TagFounder
+import com.krayapp.buffercompanion.bargen.presentation.ui.composables.BargenChip
+import com.krayapp.buffercompanion.bargen.presentation.mvi.tags.TagFounder
 import org.koin.compose.koinInject
 
 @Composable

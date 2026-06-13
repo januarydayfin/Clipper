@@ -199,7 +199,9 @@ class MainActivity : AppCompatActivity() {
 
     @Composable
     private fun ShowSettingsBottomsheet() {
-        SettingsBottomSheet {
+        SettingsBottomSheet(onRestored = {
+            viewmodel.onIntent(MainIntent.RefreshList)
+        }) {
             viewmodel.onIntent(MainIntent.HideBottomSheet)
         }
     }

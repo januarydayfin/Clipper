@@ -17,9 +17,9 @@ data class BarcodeUiModel(
 
     val filename: String
         get() {
-            val mainName = name.ifEmpty {
+            val mainName = runCatching { name.ifEmpty {
                 content.substring(0, 8)
-            }
+            } }.getOrNull() ?: "Car"
             return "${mainName}_${Date().time}"
         }
 

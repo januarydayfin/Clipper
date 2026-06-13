@@ -30,8 +30,7 @@ import com.krayapp.buffercompanion.bargen.domain.usecase.tags.TagsUsecase
 import com.krayapp.buffercompanion.bargen.presentation.mapper.toTagUiModel
 import com.krayapp.buffercompanion.bargen.presentation.models.TagUiModel
 import com.krayapp.buffercompanion.bargen.presentation.models.setChecked
-import com.krayapp.buffercompanion.bargen.presentation.utils.BargenChip
-import com.krayapp.buffercompanion.bargen.presentation.utils.Space
+import com.krayapp.buffercompanion.bargen.presentation.ui.composables.BargenChip
 import com.krayapp.buffercompanion.bargen.theme.mRoundedCornerShape
 import com.krayapp.buffercompanion.bargen.theme.mSize
 import com.krayapp.buffercompanion.bargen.theme.sSize

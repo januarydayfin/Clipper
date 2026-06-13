@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -26,11 +25,10 @@ import com.krayapp.buffercompanion.bargen.R
 import com.krayapp.buffercompanion.bargen.presentation.models.TagUiModel
 import com.krayapp.buffercompanion.bargen.presentation.ui.dialogs.ColorPart
 import com.krayapp.buffercompanion.bargen.presentation.ui.dialogs.ConfirmationDialog
-import com.krayapp.buffercompanion.bargen.presentation.utils.BargenChip
+import com.krayapp.buffercompanion.bargen.presentation.ui.composables.BargenChip
 import com.krayapp.buffercompanion.bargen.presentation.utils.Space
 import com.krayapp.buffercompanion.bargen.theme.lSize
 import com.krayapp.buffercompanion.bargen.theme.mRoundedCornerShape
-import com.krayapp.buffercompanion.bargen.theme.mSize
 import com.krayapp.buffercompanion.bargen.theme.sSize
 
 @OptIn(ExperimentalMaterial3Api::class)

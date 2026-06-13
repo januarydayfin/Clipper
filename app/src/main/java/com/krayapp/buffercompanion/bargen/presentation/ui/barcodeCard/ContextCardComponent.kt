@@ -1,4 +1,4 @@
-package com.krayapp.buffercompanion.bargen.presentation.utils.barcodeCard
+package com.krayapp.buffercompanion.bargen.presentation.ui.barcodeCard
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

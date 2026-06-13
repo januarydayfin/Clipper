@@ -17,6 +17,7 @@
     <string name="settings_title">Settings</string>
 
     <string name="camera_required">The app needs access to the camera to scan</string>
+    <string name="failed_scan">Scan failed</string>
 
     <string name="light_theme">Light</string>
     <string name="system_theme">System</string>

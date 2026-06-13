@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.krayapp.buffercompanion.bargen.presentation.models.TagUiModel
-import com.krayapp.buffercompanion.bargen.presentation.utils.BargenChip
+import com.krayapp.buffercompanion.bargen.presentation.ui.composables.BargenChip
 import kotlin.collections.forEach
 
 @Composable
