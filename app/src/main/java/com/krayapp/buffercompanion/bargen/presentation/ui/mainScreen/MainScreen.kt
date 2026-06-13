@@ -54,6 +54,7 @@ import com.krayapp.buffercompanion.bargen.presentation.ui.composables.ToTopBadge
 import com.krayapp.buffercompanion.bargen.presentation.utils.ContentFromUriImage
 import com.krayapp.buffercompanion.bargen.presentation.utils.rememberImagePicker
 import com.krayapp.buffercompanion.bargen.presentation.viewmodels.BargenViewModel
+import com.krayapp.buffercompanion.bargen.theme.lSize
 import com.krayapp.buffercompanion.bargen.theme.mSize
 import com.krayapp.buffercompanion.bargen.theme.sSize
 import kotlinx.coroutines.launch
@@ -160,7 +161,7 @@ fun MainScreen(
         )
     }
     Scaffold(snackbarHost = {
-        SnackbarHost(hostState = snackbarHost)
+        SnackbarHost(modifier = Modifier.padding(bottom = lSize * 2), hostState = snackbarHost)
     }) {
         it
         Column(
@@ -260,8 +261,7 @@ fun MainScreen(
                 if (!uiState.inSelectionMode) {
                     BottomButtonGroup(
                         modifier = Modifier
-                            .align(Alignment.BottomCenter)
-                            .windowInsetsPadding(WindowInsets.navigationBars),
+                            .align(Alignment.BottomCenter),
                         hide = botButtonsHideState,
                         onCreateClicked = {
                             viewmodel.onIntent(MainIntent.ShowEmptyMainBottomSheet)
