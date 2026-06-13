@@ -75,6 +75,7 @@ dependencies {
     implementation(libs.zxing.android.embedded)
     implementation(libs.tedpermission.normal)
     implementation(libs.skydoves.colorpickerview)
+    implementation(libs.mlkit.barcode.scanning)
     implementation(libs.androidx.ui.text.google.fonts)
     implementation(libs.androidx.paging.common.android)
 

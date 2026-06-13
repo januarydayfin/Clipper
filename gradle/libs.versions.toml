@@ -40,6 +40,7 @@ pagingCommonAndroid = "3.3.6"
 
 koin = "4.0.3"
 orbit = "11.0.0"
+mlkit-barcode = "17.3.0"
 [plugins]
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 
@@ -99,6 +100,7 @@ zxing-android-embedded = { group = "com.journeyapps", name = "zxing-android-embe
 skydoves-colorpickerview = { group = "com.github.skydoves", name = "colorpicker-compose", version.ref = "colorpicker" }
 google-play-review = { group = "com.google.android.play", name = "review", version.ref = "playReview" }
 reorderable = { module = "sh.calvin.reorderable:reorderable", version.ref = "reorderable" }
+mlkit-barcode-scanning = { group = "com.google.mlkit", name = "barcode-scanning", version.ref = "mlkit-barcode" }
 
 # --- Тестирование ---
 junit-junit = { group = "junit", name = "junit", version.ref = "junit" }

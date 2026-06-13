@@ -145,7 +145,9 @@ fun BarcodeCard(
                         )
 
                     Space(width = sSize)
-                    Column(modifier = Modifier.weight(1f).padding(vertical = xsSize)) {
+                    Column(modifier = Modifier
+                        .weight(1f)
+                        .padding(vertical = xsSize)) {
                         StringInfo(
                             name = uiModel.name,
                             content = uiModel.content,
@@ -156,6 +158,7 @@ fun BarcodeCard(
                     }
 
                     BarcodeInfo(
+                        modifier = Modifier.padding(vertical = sSize),
                         barcodePreviewRes =
                             uiModel.barcodeType.getPreviewDrawableFromType(),
                     )
@@ -230,28 +233,26 @@ private fun RemoveCardBackground() {
     }
 }
 
-@Preview(showBackground = true)
 @Composable
 private fun BarcodeInfo(
+    modifier: Modifier = Modifier,
     barcodePreviewRes: Int = R.drawable.pdf417_example,
 ) {
-    MaterialTheme {
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .background(
-                    color = MaterialTheme.colorScheme.surfaceContainerHighest,
-                    shape = mRoundedCornerShape
-                )
-                .padding(mSize)
-        ) {
-            Image(
-                painter = painterResource(barcodePreviewRes),
-                modifier = Modifier.size(barcodePreviewSize),
-                contentDescription = "barcode_preview",
-                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface)
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = modifier
+            .background(
+                color = MaterialTheme.colorScheme.surfaceContainerHighest,
+                shape = mRoundedCornerShape
             )
-        }
+            .padding(mSize)
+    ) {
+        Image(
+            painter = painterResource(barcodePreviewRes),
+            modifier = Modifier.size(barcodePreviewSize),
+            contentDescription = "barcode_preview",
+            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface)
+        )
     }
 
 }
