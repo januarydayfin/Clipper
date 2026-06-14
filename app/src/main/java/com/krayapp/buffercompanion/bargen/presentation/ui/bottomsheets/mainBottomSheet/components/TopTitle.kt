@@ -3,6 +3,7 @@ package com.krayapp.buffercompanion.bargen.presentation.ui.bottomsheets.mainBott
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
@@ -17,6 +18,7 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -39,6 +41,7 @@ fun TopTitle(modifier: Modifier = Modifier, initialText: String, onTextChange: (
     }
 
     BasicTextField(
+        keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
         modifier = modifier
             .width(250.dp)
             .onFocusChanged { focus -> isFocused = focus.isFocused }
