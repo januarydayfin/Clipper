@@ -60,8 +60,7 @@ fun BottomButtonGroup(
             .background(color = MaterialTheme.colorScheme.surfaceContainer, shape = mRoundedCornerShape)
             .fillMaxWidth()
             .padding(top = mSize)
-            .windowInsetsPadding(WindowInsets.navigationBars)
-            ,
+            .windowInsetsPadding(WindowInsets.navigationBars),
         verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center
     ) {
 

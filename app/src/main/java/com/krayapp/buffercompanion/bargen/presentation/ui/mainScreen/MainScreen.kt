@@ -79,10 +79,22 @@ fun MainScreen(
     val lazyListState = rememberLazyListState()
 
     val botButtonsHideState by remember(
+        lazyItems.itemCount,
         lazyListState.canScrollForward,
+        lazyListState.canScrollBackward,
         lazyListState.lastScrolledForward
     ) {
-        mutableStateOf(!lazyListState.canScrollForward || lazyListState.lastScrolledForward)
+        val onBottom = !lazyListState.canScrollForward
+        val lastScrollBack = lazyListState.lastScrolledBackward
+        val scrollForward = lazyListState.lastScrolledForward
+        val canScrollTop = lazyListState.canScrollBackward
+        val hide = when {
+            onBottom -> canScrollTop
+            lastScrollBack -> false
+            scrollForward -> true
+            else -> false
+        }
+        mutableStateOf(hide)
     }
     val haptic = LocalHapticFeedback.current
     val reorderableLazyListState = rememberReorderableLazyListState(lazyListState) { from, to ->
