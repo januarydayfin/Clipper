@@ -31,14 +31,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
@@ -50,7 +48,6 @@ import com.krayapp.buffercompanion.bargen.presentation.models.BarcodeUiModel
 import com.krayapp.buffercompanion.bargen.presentation.mvi.main.MainIntent
 import com.krayapp.buffercompanion.bargen.presentation.ui.barcodeCard.BarcodeCard
 import com.krayapp.buffercompanion.bargen.presentation.ui.composables.HorizontalDivider
-import com.krayapp.buffercompanion.bargen.presentation.ui.composables.ToTopBadge
 import com.krayapp.buffercompanion.bargen.presentation.utils.ContentFromUriImage
 import com.krayapp.buffercompanion.bargen.presentation.utils.rememberImagePicker
 import com.krayapp.buffercompanion.bargen.presentation.viewmodels.BargenViewModel
@@ -77,7 +74,11 @@ fun MainScreen(
     //используется для адекватного перетаскивания
     var localPinned by remember { mutableStateOf(emptyList<BarcodeUiModel>()) }
     val lazyListState = rememberLazyListState()
-
+    val hideToTopBadge by remember {
+        derivedStateOf {
+            lazyListState.firstVisibleItemIndex < TOP_BADGE_HIDE_BORDER
+        }
+    }
     val botButtonsHideState by remember(
         lazyItems.itemCount,
         lazyListState.canScrollForward,
@@ -106,7 +107,7 @@ fun MainScreen(
 
     var snackbarHost by remember { mutableStateOf(SnackbarHostState()) }
 
-    val imageLauncher = rememberImagePicker {
+    val loadImageFromStorage = rememberImagePicker {
         it?.run {
             scope.launch {
                 val result = ContentFromUriImage(it)
@@ -172,9 +173,29 @@ fun MainScreen(
             reorderModifier = reorderModifier
         )
     }
-    Scaffold(snackbarHost = {
-        SnackbarHost(modifier = Modifier.padding(bottom = lSize * 2), hostState = snackbarHost)
-    }) {
+    Scaffold(
+        floatingActionButton = {
+            MainFab(
+                hide = botButtonsHideState,
+                onCreateClicked = {
+                    viewmodel.onIntent(MainIntent.ShowEmptyMainBottomSheet)
+                },
+                onTagsClicked = { viewmodel.onIntent(MainIntent.ShowTagsMenu) },
+                onScanClicked = onScanClicked,
+                toTopHide = hideToTopBadge,
+                onImportFromGallery = {
+                    loadImageFromStorage()
+                },
+                toTopClick = {
+                    scope.launch {
+                        lazyListState.animateScrollToItem(0)
+                    }
+                }
+            )
+        },
+        snackbarHost = {
+            SnackbarHost(modifier = Modifier.padding(bottom = lSize * 2), hostState = snackbarHost)
+        }) {
         it
         Column(
             Modifier
@@ -194,24 +215,6 @@ fun MainScreen(
             Box(
                 modifier = Modifier.fillMaxSize(),
             ) {
-                val hideToTopBadge by remember {
-                    derivedStateOf {
-                        lazyListState.firstVisibleItemIndex < TOP_BADGE_HIDE_BORDER
-                    }
-                }
-
-                ToTopBadge(
-                    modifier = Modifier
-                        .align(Alignment.BottomEnd)
-                        .zIndex(1f)
-                        .padding(bottom = 120.dp, end = mSize), hide = hideToTopBadge
-                ) {
-                    scope.launch {
-                        lazyListState.animateScrollToItem(0)
-                    }
-                }
-
-
                 LazyColumn(
                     state = lazyListState,
                     modifier = Modifier
@@ -269,21 +272,6 @@ fun MainScreen(
                     item {
                         Spacer(modifier = Modifier.padding(WindowInsets.navigationBars.asPaddingValues()))
                     }
-                }
-                if (!uiState.inSelectionMode) {
-                    BottomButtonGroup(
-                        modifier = Modifier
-                            .align(Alignment.BottomCenter),
-                        hide = botButtonsHideState,
-                        onCreateClicked = {
-                            viewmodel.onIntent(MainIntent.ShowEmptyMainBottomSheet)
-                        },
-                        onTagsClicked = { viewmodel.onIntent(MainIntent.ShowTagsMenu) },
-                        onScanClicked = onScanClicked,
-                        onImportFromGallery = {
-                            imageLauncher()
-                        }
-                    )
                 }
             }
         }

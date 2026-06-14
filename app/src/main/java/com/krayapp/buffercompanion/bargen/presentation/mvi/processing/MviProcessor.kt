@@ -91,14 +91,18 @@ class MviProcessor(
             is MainIntent.ShowSettingsBottomsheet -> showSettingsBottomSheet()
             is MainIntent.ShowTagsMenu -> showTagsBottomSheet()
             is MainIntent.CreateNewRecord -> {
-                val createdEntity = handler.createBarcodeRecord(intent)
-                if (intent.showAfterCreate && prefs.openCardAfterScan)
-                    showMainBottomSheet(createdEntity.toBarcodeUiModel())
+                val pinnedSize = container.stateFlow.value.pinnedBarcodes.size
+                var createdEntity = handler.createBarcodeRecord(intent)
                 if (prefs.autoPinOnScan &&
-                    container.stateFlow.value.pinnedBarcodes.size < MAX_PINNED_COUNT
+                    pinnedSize < MAX_PINNED_COUNT
                 ) {
                     pinHandler.onIntent(PinBarcode(createdEntity.id))
+                    createdEntity = createdEntity.copy(pinnedPosition = pinnedSize)
                 }
+
+                if (intent.showAfterCreate && prefs.openCardAfterScan)
+                    showMainBottomSheet(createdEntity.toBarcodeUiModel())
+
                 onIntent(MainIntent.RefreshList)
             }
 
