@@ -10,8 +10,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -36,7 +38,7 @@ fun SegmentFab(
                             .width(1.dp)
                             .fillMaxHeight()
                             .background(
-                                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                                color = contentColorFor(FloatingActionButtonDefaults.containerColor).copy(alpha = 0.5f),
                                 shape = mRoundedCornerShape
                             )
                     )

@@ -60,6 +60,9 @@ fun TagBlock(
         OutlinedTextField(
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
             modifier = Modifier.fillMaxWidth(),
+            placeholder = {
+                Text(text = "tag1,tag2,tag3...")
+            },
             state = tagsTextFieldState,
             label = {
                 Text(text = stringResource(R.string.tags))
