@@ -1,4 +1,4 @@
-package com.krayapp.buffercompanion.bargen.presentation.utils
+package com.krayapp.buffercompanion.bargen.presentation.ui.composables
 
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
@@ -18,13 +18,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import com.krayapp.buffercompanion.bargen.R
 import com.krayapp.buffercompanion.bargen.theme.labelIconSize
 import com.krayapp.buffercompanion.bargen.theme.sSize
 import com.krayapp.buffercompanion.bargen.theme.xsSize
 import com.krayapp.buffercompanion.bargen.presentation.models.TagUiModel
+import com.krayapp.buffercompanion.bargen.presentation.utils.Space
 
 @Composable
 fun BargenChip(

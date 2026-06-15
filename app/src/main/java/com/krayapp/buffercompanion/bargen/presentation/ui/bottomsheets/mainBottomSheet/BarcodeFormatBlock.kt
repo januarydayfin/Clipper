@@ -7,7 +7,6 @@ import androidx.compose.material3.SplitButtonDefaults
 import androidx.compose.material3.SplitButtonLayout
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import com.krayapp.buffercompanion.bargen.R
@@ -15,8 +14,7 @@ import com.krayapp.buffercompanion.bargen.presentation.models.BarcodeUiModel
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-internal fun BarcodeFormatBlock(state: State<BarcodeUiModel>, openDialog: () -> Unit) {
-    val model = state.value
+internal fun BarcodeFormatBlock(model:BarcodeUiModel, openDialog: () -> Unit) {
     SplitButtonLayout(leadingButton = {
         SplitButtonDefaults.LeadingButton(onClick = { openDialog() }) {
             Text(text = model.barcodeType)

@@ -9,14 +9,14 @@ plugins {
 
 android {
     namespace = "com.krayapp.buffercompanion.bargen"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.krayapp.buffercompanion.bargen"
         minSdk = 30
-        targetSdk = 36
-        versionCode = 324
-        versionName = "3.2.4"
+        targetSdk = 37
+        versionCode = 336
+        versionName = "3.3.6"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -37,11 +37,11 @@ android {
         compose = true
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "11"
     }
 }
 
@@ -75,6 +75,7 @@ dependencies {
     implementation(libs.zxing.android.embedded)
     implementation(libs.tedpermission.normal)
     implementation(libs.skydoves.colorpickerview)
+    implementation(libs.mlkit.barcode.scanning)
     implementation(libs.androidx.ui.text.google.fonts)
     implementation(libs.androidx.paging.common.android)
 

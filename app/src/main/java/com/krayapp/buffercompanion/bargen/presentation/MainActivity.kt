@@ -193,12 +193,15 @@ class MainActivity : AppCompatActivity() {
     private fun ShowTagBottomsheet() {
         TagsBottomSheet {
             viewmodel.onIntent(MainIntent.HideBottomSheet)
+            viewmodel.onIntent(MainIntent.RefreshList)
         }
     }
 
     @Composable
     private fun ShowSettingsBottomsheet() {
-        SettingsBottomSheet {
+        SettingsBottomSheet(onRestored = {
+            viewmodel.onIntent(MainIntent.RefreshList)
+        }) {
             viewmodel.onIntent(MainIntent.HideBottomSheet)
         }
     }

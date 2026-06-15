@@ -1,13 +1,10 @@
-package com.krayapp.buffercompanion.bargen.presentation.utils
+package com.krayapp.buffercompanion.bargen.presentation.mvi.tags
 
-import android.util.Log
 import com.krayapp.buffercompanion.bargen.domain.usecase.tags.TagsUsecase
 import com.krayapp.buffercompanion.bargen.presentation.mapper.toTagUiModel
 import com.krayapp.buffercompanion.bargen.presentation.models.TagUiModel
 import com.krayapp.buffercompanion.bargen.utils.withIO
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 class TagFounder(private val tagsUsecase: TagsUsecase) {

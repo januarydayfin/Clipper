@@ -25,7 +25,7 @@ import com.krayapp.buffercompanion.bargen.presentation.mvi.tags.TagIntent
 import com.krayapp.buffercompanion.bargen.presentation.ui.composables.SheetDragger
 import com.krayapp.buffercompanion.bargen.presentation.ui.dialogs.setupTagDialog.SetupTagDialog
 import com.krayapp.buffercompanion.bargen.presentation.ui.mainScreen.SearchBar
-import com.krayapp.buffercompanion.bargen.presentation.utils.BargenChip
+import com.krayapp.buffercompanion.bargen.presentation.ui.composables.BargenChip
 import com.krayapp.buffercompanion.bargen.presentation.utils.colorizeBottomsheetNavBar
 import com.krayapp.buffercompanion.bargen.presentation.viewmodels.TagsViewModel
 import com.krayapp.buffercompanion.bargen.theme.mSize

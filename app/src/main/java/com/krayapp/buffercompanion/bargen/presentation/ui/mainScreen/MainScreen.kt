@@ -3,9 +3,12 @@ package com.krayapp.buffercompanion.bargen.presentation.ui.mainScreen
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
@@ -13,8 +16,11 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -25,25 +31,27 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
+import com.google.zxing.BarcodeFormat
+import com.krayapp.buffercompanion.bargen.R
 import com.krayapp.buffercompanion.bargen.data.room.MAX_PINNED_COUNT
 import com.krayapp.buffercompanion.bargen.data.room.TOP_BADGE_HIDE_BORDER
 import com.krayapp.buffercompanion.bargen.presentation.models.BarcodeUiModel
 import com.krayapp.buffercompanion.bargen.presentation.mvi.main.MainIntent
+import com.krayapp.buffercompanion.bargen.presentation.ui.barcodeCard.BarcodeCard
 import com.krayapp.buffercompanion.bargen.presentation.ui.composables.HorizontalDivider
-import com.krayapp.buffercompanion.bargen.presentation.ui.composables.ToTopBadge
-import com.krayapp.buffercompanion.bargen.presentation.utils.BarcodeCard
-import com.krayapp.buffercompanion.bargen.presentation.utils.Space
+import com.krayapp.buffercompanion.bargen.presentation.utils.ContentFromUriImage
+import com.krayapp.buffercompanion.bargen.presentation.utils.rememberImagePicker
 import com.krayapp.buffercompanion.bargen.presentation.viewmodels.BargenViewModel
+import com.krayapp.buffercompanion.bargen.theme.lSize
 import com.krayapp.buffercompanion.bargen.theme.mSize
 import com.krayapp.buffercompanion.bargen.theme.sSize
 import kotlinx.coroutines.launch
@@ -51,26 +59,72 @@ import org.koin.androidx.compose.koinViewModel
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyListState
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun MainScreen(
-    onScanClicked: () -> Unit
+    onScanClicked: () -> Unit,
 ) {
     val viewmodel: BargenViewModel = koinViewModel()
     val uiState by viewmodel.state.collectAsState()
 
+    val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val focus = LocalFocusManager.current
     val lazyItems = viewmodel.barcodePagingData.collectAsLazyPagingItems()
     //используется для адекватного перетаскивания
     var localPinned by remember { mutableStateOf(emptyList<BarcodeUiModel>()) }
     val lazyListState = rememberLazyListState()
-
+    val hideToTopBadge by remember {
+        derivedStateOf {
+            lazyListState.firstVisibleItemIndex < TOP_BADGE_HIDE_BORDER
+        }
+    }
+    val botButtonsHideState by remember(
+        lazyItems.itemCount,
+        lazyListState.canScrollForward,
+        lazyListState.canScrollBackward,
+        lazyListState.lastScrolledForward
+    ) {
+        val onBottom = !lazyListState.canScrollForward
+        val lastScrollBack = lazyListState.lastScrolledBackward
+        val scrollForward = lazyListState.lastScrolledForward
+        val canScrollTop = lazyListState.canScrollBackward
+        val hide = when {
+            onBottom -> canScrollTop
+            lastScrollBack -> false
+            scrollForward -> true
+            else -> false
+        }
+        mutableStateOf(hide)
+    }
     val haptic = LocalHapticFeedback.current
     val reorderableLazyListState = rememberReorderableLazyListState(lazyListState) { from, to ->
         localPinned = localPinned.toMutableList().apply {
             add(to.index, removeAt(from.index))
         }
         haptic.performHapticFeedback(HapticFeedbackType.ContextClick)
+    }
+
+    var snackbarHost by remember { mutableStateOf(SnackbarHostState()) }
+
+    val loadImageFromStorage = rememberImagePicker {
+        it?.run {
+            scope.launch {
+                val result = ContentFromUriImage(it)
+                if (result == null) {
+                    snackbarHost.showSnackbar(context.getString(R.string.failed_scan))
+                    return@launch
+                }
+                viewmodel.onIntent(
+                    MainIntent.CreateNewRecord(
+                        text = result.first,
+                        format = BarcodeFormat.valueOf(result.second),
+                        tagIds = emptyList(),
+                        showAfterCreate = true
+                    )
+                )
+            }
+        }
     }
 
     LaunchedEffect(uiState.pinnedBarcodes) {
@@ -119,7 +173,30 @@ fun MainScreen(
             reorderModifier = reorderModifier
         )
     }
-    Surface {
+    Scaffold(
+        floatingActionButton = {
+            MainFab(
+                hide = botButtonsHideState,
+                onCreateClicked = {
+                    viewmodel.onIntent(MainIntent.ShowEmptyMainBottomSheet)
+                },
+                onTagsClicked = { viewmodel.onIntent(MainIntent.ShowTagsMenu) },
+                onScanClicked = onScanClicked,
+                toTopHide = hideToTopBadge,
+                onImportFromGallery = {
+                    loadImageFromStorage()
+                },
+                toTopClick = {
+                    scope.launch {
+                        lazyListState.animateScrollToItem(0)
+                    }
+                }
+            )
+        },
+        snackbarHost = {
+            SnackbarHost(modifier = Modifier.padding(bottom = lSize * 2), hostState = snackbarHost)
+        }) {
+        it
         Column(
             Modifier
                 .fillMaxSize()
@@ -138,22 +215,6 @@ fun MainScreen(
             Box(
                 modifier = Modifier.fillMaxSize(),
             ) {
-                val hideToTopBadge by remember {
-                    derivedStateOf {
-                        lazyListState.firstVisibleItemIndex < TOP_BADGE_HIDE_BORDER
-                    }
-                }
-
-                ToTopBadge(
-                    modifier = Modifier
-                        .align(Alignment.BottomEnd)
-                        .zIndex(1f)
-                        .padding(bottom = 120.dp, end = mSize), hide = hideToTopBadge
-                ) {
-                    scope.launch {
-                        lazyListState.animateScrollToItem(0)
-                    }
-                }
                 LazyColumn(
                     state = lazyListState,
                     modifier = Modifier
@@ -177,7 +238,7 @@ fun MainScreen(
                                     reorderModifier = Modifier.draggableHandle(interactionSource = interactionSource),
                                 )
                             }
-                            Space(height = mSize)
+                            Spacer(modifier = Modifier.height(mSize))
                         }
 
                         if (uiState.hasPinnedBarcodes)
@@ -191,7 +252,7 @@ fun MainScreen(
                                         color = MaterialTheme.colorScheme.surfaceContainerHighest
                                     )
                                 HorizontalDivider()
-                                Space(height = mSize)
+                                Spacer(modifier = Modifier.height(mSize))
                             }
                     }
                     items(
@@ -204,22 +265,14 @@ fun MainScreen(
                                 item = item,
                                 pinAvailable = uiState.pinnedBarcodes.size < MAX_PINNED_COUNT,
                             )
-                            Space(height = mSize)
+                            Spacer(modifier = Modifier.height(mSize))
                         }
                     }
+
+                    item {
+                        Spacer(modifier = Modifier.padding(WindowInsets.navigationBars.asPaddingValues()))
+                    }
                 }
-                if (!uiState.inSelectionMode)
-                    BottomButtonGroup(
-                        modifier = Modifier
-                            .align(Alignment.BottomCenter)
-                            .windowInsetsPadding(WindowInsets.navigationBars),
-                        hideState = { lazyListState },
-                        onCreateClicked = {
-                            viewmodel.onIntent(MainIntent.ShowEmptyMainBottomSheet)
-                        },
-                        onTagsClicked = { viewmodel.onIntent(MainIntent.ShowTagsMenu) },
-                        onScanClicked = onScanClicked
-                    )
             }
         }
     }

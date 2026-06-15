@@ -6,7 +6,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
@@ -28,8 +30,7 @@ import com.krayapp.buffercompanion.bargen.domain.usecase.tags.TagsUsecase
 import com.krayapp.buffercompanion.bargen.presentation.mapper.toTagUiModel
 import com.krayapp.buffercompanion.bargen.presentation.models.TagUiModel
 import com.krayapp.buffercompanion.bargen.presentation.models.setChecked
-import com.krayapp.buffercompanion.bargen.presentation.utils.BargenChip
-import com.krayapp.buffercompanion.bargen.presentation.utils.Space
+import com.krayapp.buffercompanion.bargen.presentation.ui.composables.BargenChip
 import com.krayapp.buffercompanion.bargen.theme.mRoundedCornerShape
 import com.krayapp.buffercompanion.bargen.theme.mSize
 import com.krayapp.buffercompanion.bargen.theme.sSize
@@ -56,7 +57,7 @@ fun SelectedFilterTags(modifier: Modifier = Modifier) {
     }
 
     if (tagsUi.isNotEmpty())
-        Space(height = mSize)
+        Spacer(modifier = Modifier.height(mSize))
 
     Surface(
         modifier = modifier
@@ -109,7 +110,6 @@ fun SelectedFilterTags(modifier: Modifier = Modifier) {
 
     }
     if (tagsUi.isNotEmpty())
-        Space(height = mSize)
-
+        Spacer(modifier = Modifier.height(mSize))
 
 }

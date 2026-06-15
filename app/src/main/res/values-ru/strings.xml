@@ -71,6 +71,7 @@
 
     <string name="backup_restore">Сохранить/восстановить данные</string>
 
+    <string name="failed_scan">Не удалось отсканировать</string>
     <string name="restore">Восстановить</string>
     <string name="backup">Выгрузить</string>
     <string name="app_will_close">Приложение закрывается</string>

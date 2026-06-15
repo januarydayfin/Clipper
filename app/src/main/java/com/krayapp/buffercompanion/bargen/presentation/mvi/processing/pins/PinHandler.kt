@@ -53,7 +53,7 @@ class PinHandler(
 
     suspend fun getAllPinnedBarcodes() = PinnerBarcodeUsecase.getPinnedBarcodes()
 
-    suspend fun refreshPinnedBarcodes() {
+    private suspend fun refreshPinnedBarcodes() {
         val pinnedBarcodes = PinnerBarcodeUsecase.getPinnedBarcodes().map { it.toBarcodeUiModel() }
         host.intent {
             reduce {

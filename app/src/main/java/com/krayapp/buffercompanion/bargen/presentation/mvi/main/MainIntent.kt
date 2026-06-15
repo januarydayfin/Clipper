@@ -14,6 +14,7 @@ sealed interface MainIntent {
     data object CleanTagsSelection: MainIntent
     data object HideBottomSheet : MainIntent
 
+    data object RefreshList : MainIntent
     data class DeleteBarcode(val id: String): MainIntent
     data object DeleteAllSelectedCards: MainIntent
     data class CheckBarcodeForSelection(val id: String): MainIntent

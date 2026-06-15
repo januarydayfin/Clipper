@@ -33,6 +33,7 @@ import org.orbitmvi.orbit.compose.collectAsState
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsBottomSheet(
+    onRestored: () -> Unit,
     onDismiss: () -> Unit,
 ) {
     val viewmodel: SettingsViewModel = koinViewModel()
@@ -58,6 +59,7 @@ fun SettingsBottomSheet(
             scope.io {
                 context.readFromFile(uri, onSuccess = {
                     applyBackupToDatabase(it)
+                    onRestored()
                 }, onError = {
                     context.toast(R.string.backup_error)
                 })
